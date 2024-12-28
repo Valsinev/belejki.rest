@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,8 +14,8 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -34,11 +35,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private List<User> friends;
-
-//    @OneToMany(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @Column(name = "roles")
-//    private List<UserRole> roles;
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Authority> authorities;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Reminder> reminders;
 
@@ -56,24 +55,33 @@ public class User {
     public User() {
     }
 
-    public User(String email, int enabled, String firstName, List<User> friends, LocalDate lastLogin, String lastName, String password, List<Reminder> reminders, boolean setForDeletion) {
-        this.email = email;
+    public User(String email, int enabled, String firstName, String lastName, LocalDate lastLogin, String password, boolean setForDeletion, List<Authority> authorities) {
+        this.username = email;
         this.enabled = enabled;
         this.firstName = firstName;
-        this.friends = friends;
-        this.lastLogin = lastLogin;
         this.lastName = lastName;
+        this.friends = new ArrayList<>();
+        this.lastLogin = lastLogin;
         this.password = password;
-        this.reminders = reminders;
+        this.reminders = new ArrayList<>();
         this.setForDeletion = setForDeletion;
+        this.authorities = authorities;
     }
 
-    public String getEmail() {
-        return email;
+    public List<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getEnabled() {
@@ -140,16 +148,22 @@ public class User {
         this.setForDeletion = setForDeletion;
     }
 
+    public void addReminder(Reminder reminder) {
+        if (reminder!=null) {
+            this.reminders.add(reminder);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return enabled == user.enabled && setForDeletion == user.setForDeletion && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(lastLogin, user.lastLogin) && Objects.equals(friends, user.friends) && Objects.equals(reminders, user.reminders);
+        return enabled == user.enabled && setForDeletion == user.setForDeletion && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(lastLogin, user.lastLogin) && Objects.equals(friends, user.friends) && Objects.equals(authorities, user.authorities) && Objects.equals(reminders, user.reminders);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, firstName, lastName, password, enabled, lastLogin, setForDeletion, friends, reminders);
+        return Objects.hash(username, firstName, lastName, password, enabled, lastLogin, setForDeletion, friends, authorities, reminders);
     }
 }
 

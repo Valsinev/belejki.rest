@@ -2,7 +2,6 @@ package com.example.belejki.demo.entity;
 
 
 import jakarta.persistence.*;
-import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -26,23 +25,27 @@ public class Reminder {
     private LocalDate expiration;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
     @Column(name = "expired")
     private boolean expired;
-    @Column(name = "almost_expired")
-    private boolean expiresInNumberOfDays;
+    @Column(name = "expires_soon")
+    private boolean expiresSoon;
+    @Column(name = "sended_mail")
+    private boolean sendedMail;
 
     public Reminder() {
     }
 
-    public Reminder(String description, LocalDate expiration, boolean expired, boolean expiresInNumberOfDays, int importanceLevel, String name, User userId) {
+    public Reminder(String name, String description, LocalDate expiration, boolean expired, boolean expiresSoon, int importanceLevel, User userId, boolean sendedMail) {
+
+        this.name = name;
         this.description = description;
         this.expiration = expiration;
         this.expired = expired;
-        this.expiresInNumberOfDays = expiresInNumberOfDays;
+        this.expiresSoon = expiresSoon;
         this.importanceLevel = importanceLevel;
-        this.name = name;
-        this.userId = userId;
+        this.user = userId;
+        this.sendedMail = sendedMail;
     }
 
     public String getDescription() {
@@ -69,12 +72,12 @@ public class Reminder {
         this.expired = expired;
     }
 
-    public boolean isExpiresInNumberOfDays() {
-        return expiresInNumberOfDays;
+    public boolean isExpiresSoon() {
+        return expiresSoon;
     }
 
-    public void setExpiresInNumberOfDays(boolean expiresInNumberOfDays) {
-        this.expiresInNumberOfDays = expiresInNumberOfDays;
+    public void setExpiresSoon(boolean expiresSoon) {
+        this.expiresSoon = expiresSoon;
     }
 
     public Long getId() {
@@ -101,24 +104,47 @@ public class Reminder {
         this.name = name;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public boolean isSendedMail() {
+        return sendedMail;
+    }
+
+    public void setSendedMail(boolean sendedMail) {
+        this.sendedMail = sendedMail;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Reminder reminder = (Reminder) o;
-        return importanceLevel == reminder.importanceLevel && expired == reminder.expired && expiresInNumberOfDays == reminder.expiresInNumberOfDays && Objects.equals(id, reminder.id) && Objects.equals(name, reminder.name) && Objects.equals(description, reminder.description) && Objects.equals(expiration, reminder.expiration) && Objects.equals(userId, reminder.userId);
+        return importanceLevel == reminder.importanceLevel && expired == reminder.expired && expiresSoon == reminder.expiresSoon && sendedMail == reminder.sendedMail && Objects.equals(id, reminder.id) && Objects.equals(name, reminder.name) && Objects.equals(description, reminder.description) && Objects.equals(expiration, reminder.expiration) && Objects.equals(user, reminder.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, importanceLevel, description, expiration, userId, expired, expiresInNumberOfDays);
+        return Objects.hash(id, name, importanceLevel, description, expiration, user, expired, expiresSoon, sendedMail);
+    }
+
+    @Override
+    public String toString() {
+        return "Reminder{" +
+                "description='" + description + '\'' +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", importanceLevel=" + importanceLevel +
+                ", expiration=" + expiration +
+                ", userId=" + user +
+                ", expired=" + expired +
+                ", expiresSoon=" + expiresSoon +
+                ", sendedMail=" + sendedMail +
+                '}';
     }
 }
 
