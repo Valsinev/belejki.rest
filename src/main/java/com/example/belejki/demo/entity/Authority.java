@@ -2,9 +2,15 @@ package com.example.belejki.demo.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "authorities")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Authority {
 
 
@@ -17,9 +23,6 @@ public class Authority {
     private User user;
     @Column(name = "authority")
     private String authority;
-
-    public Authority() {
-    }
 
     public Authority(String authority, User user) {
         this.authority = authority;

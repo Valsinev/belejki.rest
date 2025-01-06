@@ -2,6 +2,9 @@ package com.example.belejki.demo.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -9,6 +12,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "reminders")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Reminder {
     @Id
     @Column(name = "id")
@@ -33,19 +39,15 @@ public class Reminder {
     @Column(name = "sended_mail")
     private boolean sendedMail;
 
-    public Reminder() {
-    }
-
-    public Reminder(String name, String description, LocalDate expiration, boolean expired, boolean expiresSoon, int importanceLevel, User userId, boolean sendedMail) {
+    public Reminder(String name, String description, LocalDate expiration, int importanceLevel) {
 
         this.name = name;
         this.description = description;
         this.expiration = expiration;
-        this.expired = expired;
-        this.expiresSoon = expiresSoon;
+        this.expired = false;
+        this.expiresSoon = false;
         this.importanceLevel = importanceLevel;
-        this.user = userId;
-        this.sendedMail = sendedMail;
+        this.sendedMail = false;
     }
 
     public String getDescription() {

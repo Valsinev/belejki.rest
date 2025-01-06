@@ -2,6 +2,10 @@ package com.example.belejki.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +15,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -42,30 +50,29 @@ public class User {
     private List<Reminder> reminders;
 
 
-//    @OneToMany(mappedBy = "wishUserId", cascade = CascadeType.ALL)
-//    @Column(name = "wish_list")
-//    private List<Wish> wishList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(name = "wish_list")
+    private List<Wish> wishList;
 
 
-//    @OneToMany(mappedBy = "shopperId", cascade = CascadeType.ALL)
-//    @Column(name = "shopping_list")
-//    private List<ShoppingItem> shoppingItems;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(name = "shopping_list")
+    private List<ShoppingItem> shoppingItems;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Recipe> recipes;
 
-    public User() {
-    }
-
-    public User(String email, int enabled, String firstName, String lastName, LocalDate lastLogin, String password, boolean setForDeletion, List<Authority> authorities) {
+    public User(String email, String firstName, String lastName, String password) {
         this.username = email;
-        this.enabled = enabled;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.friends = new ArrayList<>();
-        this.lastLogin = lastLogin;
         this.password = password;
+        this.enabled = 1;
+        this.lastLogin = LocalDate.now();
+        this.setForDeletion = false;
+        this.friends = new ArrayList<>();
         this.reminders = new ArrayList<>();
-        this.setForDeletion = setForDeletion;
-        this.authorities = authorities;
+        this.recipes = new ArrayList<>();
     }
 
     public List<Authority> getAuthorities() {

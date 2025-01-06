@@ -1,28 +1,25 @@
 package com.example.belejki.demo.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "ingredients")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "shop_items")
-public class ShoppingItem {
+public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "name")
     private String name;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String quantity;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 }
-
