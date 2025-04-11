@@ -27,7 +27,7 @@ public class Recipe {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Ingredient> ingredients;
 
