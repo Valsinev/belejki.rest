@@ -1,5 +1,7 @@
 package com.example.belejki.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +25,10 @@ public class Recipe {
     private String howToMake;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Ingredient> ingredients;
 
 }

@@ -1,5 +1,6 @@
 package com.example.belejki.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,6 @@ public class Ingredient {
     private String quantity;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id", nullable = false)
+    @JsonBackReference
     private Recipe recipe;
 }
