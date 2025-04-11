@@ -1,6 +1,6 @@
 package com.example.belejki.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Entity
@@ -31,35 +30,34 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "enabled")
-    private int enabled;
+    private boolean enabled;
     @Column(name = "last_login")
     private LocalDate lastLogin;
     @Column(name = "is_set_for_deletion")
     private boolean setForDeletion;
-    @ManyToMany
-    @JoinTable(
-            name = "user_friends",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id")
-    )
-    private List<User> friends;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Friendship> friendships;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Authority> authorities;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Reminder> reminders;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "wish_list")
+    @JsonManagedReference
     private List<Wish> wishList;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "shopping_list")
+    @JsonManagedReference
     private List<ShoppingItem> shoppingItems;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Recipe> recipes;
 
     public User(String email, String firstName, String lastName, String password) {
@@ -67,10 +65,10 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.enabled = 1;
+        this.enabled = true;
         this.lastLogin = LocalDate.now();
         this.setForDeletion = false;
-        this.friends = new ArrayList<>();
+        this.friendships = new ArrayList<>();
         this.reminders = new ArrayList<>();
         this.recipes = new ArrayList<>();
     }
@@ -91,28 +89,12 @@ public class User {
         this.username = username;
     }
 
-    public int getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(int enabled) {
-        this.enabled = enabled;
-    }
-
     public String getFirstName() {
         return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public List<User> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(List<User> friends) {
-        this.friends = friends;
     }
 
     public LocalDate getLastLogin() {
@@ -155,22 +137,6 @@ public class User {
         this.setForDeletion = setForDeletion;
     }
 
-    public void addReminder(Reminder reminder) {
-        if (reminder!=null) {
-            this.reminders.add(reminder);
-        }
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return enabled == user.enabled && setForDeletion == user.setForDeletion && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(lastLogin, user.lastLogin) && Objects.equals(friends, user.friends) && Objects.equals(authorities, user.authorities) && Objects.equals(reminders, user.reminders);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(username, firstName, lastName, password, enabled, lastLogin, setForDeletion, friends, authorities, reminders);
-    }
 }
 

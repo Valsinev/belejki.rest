@@ -1,6 +1,7 @@
 package com.example.belejki.demo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table(name = "reminders")
@@ -31,13 +31,16 @@ public class Reminder {
     private LocalDate expiration;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
     @Column(name = "expired")
     private boolean expired;
     @Column(name = "expires_soon")
-    private boolean expiresSoon;
-    @Column(name = "sended_mail")
-    private boolean sendedMail;
+    private boolean expiresSoon; //flag if reminder expires in 'n' number of days
+    @Column(name = "month_mail")
+    private boolean monthMail; //flag if mail is sended month before expires
+    @Column(name = "week_mail")
+    private boolean weekMail; //flag if mail is sended week before expires
 
     public Reminder(String name, String description, LocalDate expiration, int importanceLevel) {
 
@@ -47,7 +50,8 @@ public class Reminder {
         this.expired = false;
         this.expiresSoon = false;
         this.importanceLevel = importanceLevel;
-        this.sendedMail = false;
+        this.monthMail = false;
+        this.weekMail = false;
     }
 
     public String getDescription() {
@@ -114,39 +118,20 @@ public class Reminder {
         this.user = user;
     }
 
-    public boolean isSendedMail() {
-        return sendedMail;
+    public boolean isMonthMail() {
+        return monthMail;
     }
 
-    public void setSendedMail(boolean sendedMail) {
-        this.sendedMail = sendedMail;
+    public void setMonthMail(boolean monthMail) {
+        this.monthMail = monthMail;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Reminder reminder = (Reminder) o;
-        return importanceLevel == reminder.importanceLevel && expired == reminder.expired && expiresSoon == reminder.expiresSoon && sendedMail == reminder.sendedMail && Objects.equals(id, reminder.id) && Objects.equals(name, reminder.name) && Objects.equals(description, reminder.description) && Objects.equals(expiration, reminder.expiration) && Objects.equals(user, reminder.user);
+    public boolean isWeekMail() {
+        return weekMail;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, importanceLevel, description, expiration, user, expired, expiresSoon, sendedMail);
-    }
-
-    @Override
-    public String toString() {
-        return "Reminder{" +
-                "description='" + description + '\'' +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", importanceLevel=" + importanceLevel +
-                ", expiration=" + expiration +
-                ", userId=" + user +
-                ", expired=" + expired +
-                ", expiresSoon=" + expiresSoon +
-                ", sendedMail=" + sendedMail +
-                '}';
+    public void setWeekMail(boolean weekMail) {
+        this.weekMail = weekMail;
     }
 }
 

@@ -72,6 +72,9 @@ public class DataInitializer {
             //save users
             userRepository.saveAll(users);
 
+            venio.getFriendships().add(new Friendship(null, venio, vili));
+            userRepository.save(venio);
+
             System.out.println("Dummy data inserted!");
         };
     }
