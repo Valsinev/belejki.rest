@@ -1,14 +1,11 @@
 package com.belejki.belejki.restful.security;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,11 +27,8 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(configurer ->
                 configurer
-                        .requestMatchers(HttpMethod.GET, "/reminders").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/reminders/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/reminders").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/reminders").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/reminders/**").hasRole("USER")
+                        //ADMIN access:
+                        .requestMatchers(HttpMethod.GET, "/").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
@@ -50,23 +44,38 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/authorities").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/authorities/**").hasRole("ADMIN")
 
+                        //USER access:
+                        .requestMatchers(HttpMethod.GET, "/reminders").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/reminders/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/reminders").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/reminders").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/reminders/**").hasRole("USER")
+
                         //define paths for recipe
                         .requestMatchers(HttpMethod.GET, "/recipes/**").hasRole("USER")
 
-                        //define paths for ingridients
+                        //define paths for ingredients
                         .requestMatchers(HttpMethod.GET, "/ingredients/**").hasRole("USER")
 
                         //define paths for friendships
+                        .requestMatchers(HttpMethod.GET, "/friendships/**").hasRole("USER")
 
-                        //define paths for recipeingridients
 
-                        //define paths for shoppingitems
+                        //define paths for recipeIngredients
+                        .requestMatchers(HttpMethod.GET, "/recipeIngredients/**").hasRole("USER")
+
+
+                        //define paths for shoppingItems
+                        .requestMatchers(HttpMethod.GET, "/shoppingItems/**").hasRole("USER")
 
                         //define paths for wishes
-        );
+                        .requestMatchers(HttpMethod.GET, "/wishes/**").hasRole("USER")
+
+
+                );
 
         httpSecurity.httpBasic(Customizer.withDefaults());
-        httpSecurity.csrf(csrf -> csrf.disable());
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 }
