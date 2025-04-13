@@ -24,11 +24,12 @@ public class DataInitializer {
     @Transactional
     public void populateData() {
         // Create user
-//        User user = new User("venio@abv.bg", "Venislav", "Stoyanov", "{noop}1q2w3e");
-//        user.setEnabled(true);
-//        user.setLastLogin(LocalDate.now());
-//        user.setAuthorities(List.of(new Authority(null, user, "ROLE_ADMIN")));
-//        userRepository.save(user); // make sure user is managed
+        User user = new User("venio@abv.bg", "Venislav", "Stoyanov", "{noop}1q2w3e");
+        user.setAuthorities(List.of(
+                new Authority(null, user, "ROLE_ADMIN"),
+                new Authority(null, user, "ROLE_USER")
+                ));
+        userRepository.save(user); // make sure user is managed
 
     }
 }

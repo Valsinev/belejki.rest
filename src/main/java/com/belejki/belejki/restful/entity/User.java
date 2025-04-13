@@ -1,11 +1,7 @@
 package com.belejki.belejki.restful.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
 
+    @Getter
     @Id
     @Column(name = "username", unique = true, nullable = false)
     private String username;
@@ -30,111 +27,38 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "enabled")
-    private boolean enabled;
+    private boolean enabled = true;
     @Column(name = "last_login")
-    private LocalDate lastLogin;
+    private LocalDate lastLogin = LocalDate.now();
     @Column(name = "is_set_for_deletion")
     private boolean setForDeletion;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Friendship> friendships;
+    private List<Friendship> friendships = new ArrayList<>();
+    @Setter
+    @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Authority> authorities;
+    private List<Authority> authorities = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Reminder> reminders;
+    private List<Reminder> reminders = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "wish_list")
-    @JsonManagedReference
-    private List<Wish> wishList;
+    private List<Wish> wishList = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "shopping_list")
-    @JsonManagedReference
-    private List<ShoppingItem> shoppingItems;
+    private List<ShoppingItem> shoppingItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Recipe> recipes;
+    private List<Recipe> recipes = new ArrayList<>();
 
     public User(String email, String firstName, String lastName, String password) {
         this.username = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.enabled = true;
-        this.lastLogin = LocalDate.now();
-        this.setForDeletion = false;
-        this.friendships = new ArrayList<>();
-        this.reminders = new ArrayList<>();
-        this.recipes = new ArrayList<>();
-    }
-
-    public List<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(List<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public LocalDate getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(LocalDate lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Reminder> getReminders() {
-        return reminders;
-    }
-
-    public void setReminders(List<Reminder> reminders) {
-        this.reminders = reminders;
-    }
-
-    public boolean isSetForDeletion() {
-        return setForDeletion;
-    }
-
-    public void setSetForDeletion(boolean setForDeletion) {
-        this.setForDeletion = setForDeletion;
     }
 
 

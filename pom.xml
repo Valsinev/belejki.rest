@@ -11,8 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>belejki.demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>belejki.rest</name>
+	<description>restful app for taking notes/reminders</description>
 	<url/>
 	<licenses>
 		<license/>
