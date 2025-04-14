@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>rest</artifactId>
+	<artifactId>belejki.rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>belejki.rest</name>
 	<description>restful app for taking notes/reminders</description>
