@@ -22,9 +22,12 @@ public class ShoppingItem {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User user;
+
+    public ShoppingItem(String name) {
+        this.name = name;
+    }
 }
 

@@ -1,7 +1,10 @@
 package com.belejki.belejki.restful.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,26 +35,29 @@ public class User {
     private LocalDate lastLogin = LocalDate.now();
     @Column(name = "is_set_for_deletion")
     private boolean setForDeletion;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Friendship> friendships = new ArrayList<>();
-    @Setter
-    @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Authority> authorities = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Reminder> reminders = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @Column(name = "wish_list")
+    @JsonIgnore
     private List<Wish> wishList = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @Column(name = "shopping_list")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ShoppingItem> shoppingItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Recipe> recipes = new ArrayList<>();
 
     public User(String email, String firstName, String lastName, String password) {

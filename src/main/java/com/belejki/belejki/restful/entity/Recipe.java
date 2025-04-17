@@ -23,10 +23,8 @@ public class Recipe {
     private String howToMake;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
     private User user;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private Set<RecipeIngredient> recipeIngredients;
 
     public Recipe() {
