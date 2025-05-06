@@ -1,9 +1,12 @@
 package com.belejki.belejki.restful.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -17,4 +20,8 @@ public class Ingredient {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "ingredient")
+    @JsonManagedReference
+    private List<RecipeIngredient> recipeIngredients;
 }

@@ -2,6 +2,7 @@ package com.belejki.belejki.restful.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +26,9 @@ public class Wish {
     @Column(name = "link")
     private String link;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name = "user_id")
-    @JsonBackReference
+
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonManagedReference
     private User user;
 }
 

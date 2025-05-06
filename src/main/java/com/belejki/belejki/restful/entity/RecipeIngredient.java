@@ -1,5 +1,7 @@
 package com.belejki.belejki.restful.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,10 +20,12 @@ public class RecipeIngredient {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "recipe_id")
+    @JsonManagedReference
     private Recipe recipe;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ingredient_id")
+    @JsonBackReference
     private Ingredient ingredient;
 
     @Column(name = "quantity")

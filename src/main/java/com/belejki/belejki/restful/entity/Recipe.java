@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,13 +24,15 @@ public class Recipe {
     private String name;
     private String howToMake;
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonManagedReference
     private User user;
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private Set<RecipeIngredient> recipeIngredients;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<RecipeIngredient> recipeIngredients;
 
     public Recipe() {
-        this.recipeIngredients = new HashSet<>();
+        this.recipeIngredients = new ArrayList<>();
     }
 
     public void addIngredient(Ingredient ingredient, String quantity) {

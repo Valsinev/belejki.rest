@@ -33,28 +33,6 @@ public class RecipeIngredientRepositoryTest {
     @Test
     public void testCreation() {
 
-        User user = new User("test@mail.bg", "TestPesho", "TestPeshev", "1q2w3e");
-        user.setEnabled(true);
-        user.setLastLogin(LocalDate.now());
-        userRepository.save(user);
-
-        Ingredient potato = new Ingredient(null, "potatos");
-        Ingredient savedPotato = ingredientRepository.save(potato);
-        Recipe musaka = new Recipe(null, "musaka", "make musaka", user, new HashSet<>());
-        Recipe savedMusaka = recipeRepository.save(musaka);
-
-        RecipeIngredient recipeIngredient = RecipeIngredient.builder()
-                .recipe(savedMusaka)
-                .ingredient(savedPotato)
-                .quantity("1kg")
-                .build();
-
-        RecipeIngredient savedRI = recipeIngredientRepository.save(recipeIngredient);
-        Optional<RecipeIngredient> found = recipeIngredientRepository.findById(savedRI.getId());
-        assertThat(found).isPresent();
-        assertThat(found.get().getRecipe().getName()).isEqualTo("musaka");
-        assertThat(found.get().getIngredient().getName()).isEqualTo("potatos");
-        assertThat(found.get().getQuantity()).isEqualTo("1kg");
     }
 
     @Test

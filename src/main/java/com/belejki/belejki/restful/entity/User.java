@@ -1,26 +1,31 @@
 package com.belejki.belejki.restful.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
 @Entity
 @Table(name = "users")
 @Builder
-@Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class User {
+//@JsonIgnoreProperties({"friendships", "reminders", "wishList", "shoppingItems", "recipes"})
+public class User implements UserDetails {
 
-    @Getter
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "username", unique = true, nullable = false)
     private String username;
     @Column(name = "first_name")
@@ -32,32 +37,31 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled = true;
     @Column(name = "last_login")
-    private LocalDate lastLogin = LocalDate.now();
+    private LocalDate lastLogin;
     @Column(name = "is_set_for_deletion")
     private boolean setForDeletion;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Friendship> friendships = new ArrayList<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonBackReference
     private List<Authority> authorities = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private List<Reminder> reminders = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private List<Wish> wishList = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonBackReference
     private List<ShoppingItem> shoppingItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private List<Recipe> recipes = new ArrayList<>();
 
     public User(String email, String firstName, String lastName, String password) {
@@ -67,6 +71,155 @@ public class User {
         this.password = password;
     }
 
+    public User(String email, String firstName, String lastName, String password, List<Authority> authorities) {
+        this.username = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
+    public User() {
+    }
+
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public List<Friendship> getFriendships() {
+        return friendships;
+    }
+
+    public void setFriendships(List<Friendship> friendships) {
+        this.friendships = friendships;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDate getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDate lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public List<Reminder> getReminders() {
+        return reminders;
+    }
+
+    public void setReminders(List<Reminder> reminders) {
+        this.reminders = reminders;
+    }
+
+    public boolean isSetForDeletion() {
+        return setForDeletion;
+    }
+
+    public void setSetForDeletion(boolean setForDeletion) {
+        this.setForDeletion = setForDeletion;
+    }
+
+    public List<ShoppingItem> getShoppingItems() {
+        return shoppingItems;
+    }
+
+    public void setShoppingItems(List<ShoppingItem> shoppingItems) {
+        this.shoppingItems = shoppingItems;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Wish> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(List<Wish> wishList) {
+        this.wishList = wishList;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+    public void addAuthority(Authority authority) {
+        this.authorities.add(authority);
+    }
+
+    public List<Authority> getRoles() {
+        return this.authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
 }
 

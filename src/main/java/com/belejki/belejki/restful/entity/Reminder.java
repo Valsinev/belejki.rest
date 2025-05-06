@@ -2,6 +2,7 @@ package com.belejki.belejki.restful.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +31,8 @@ public class Reminder {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate expiration;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonManagedReference
     private User user;
     @Column(name = "expired")
     private boolean expired;
@@ -108,14 +109,6 @@ public class Reminder {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public boolean isMonthMail() {

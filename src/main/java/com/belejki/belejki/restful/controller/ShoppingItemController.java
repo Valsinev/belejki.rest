@@ -4,21 +4,20 @@ import com.belejki.belejki.restful.entity.ShoppingItem;
 import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.repository.ShoppingItemRepository;
 import com.belejki.belejki.restful.repository.UserRepository;
-import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/shopping-items")
 public class ShoppingItemController {
 
-    ShoppingItemRepository shoppingItemRepository;
-    UserRepository userRepository;
+    private final ShoppingItemRepository shoppingItemRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public ShoppingItemController(ShoppingItemRepository shoppingItemRepository, UserRepository userRepository) {
@@ -26,25 +25,61 @@ public class ShoppingItemController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/users/{username}/shoppingItems")
-    List<ShoppingItem> getAllShoppingItems(@PathVariable String username) {
-        Optional<User> byId = userRepository.findById(username);
-        if (byId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-        return byId.get().getShoppingItems();
+    //region GET METHODS
+
+    @GetMapping
+    Page<ShoppingItem> findAll(Pageable pageable) {
+        return shoppingItemRepository.findAll(pageable);
     }
 
-    @PostMapping(path = "/users/{username}/shoppingItems")
-    ShoppingItem addNewItem(@PathVariable String username,  @RequestBody ShoppingItem newItem) {
-        if (newItem == null) {
-            throw new NullPointerException("shopping item cannot be null!");
-        }
-        Optional<User> byId = userRepository.findById(username);
-        if (byId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-        newItem.setUser(byId.get());
-        return shoppingItemRepository.save(newItem);
+    @GetMapping("/{username}")
+    Page<ShoppingItem> findAllByUser_Username(@PathVariable String username, Pageable pageable) {
+        return shoppingItemRepository.findByUser_Username(username, pageable);
     }
+
+    //endregion
+
+
+
+    //region POST METHODS
+
+    @PostMapping
+    ShoppingItem save(@RequestBody ShoppingItem shoppingItem) {
+        return shoppingItemRepository.save(shoppingItem);
+    }
+
+    //endregion
+
+
+
+    //region DELETE METHODS
+
+    @DeleteMapping
+    public ResponseEntity delete(@RequestBody ShoppingItem shoppingItem) {
+        shoppingItemRepository.delete(shoppingItem);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity deleteById(@PathVariable Long id) {
+        shoppingItemRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity deleteAllByUser_Username(@PathVariable String username) {
+        List<ShoppingItem> founded = shoppingItemRepository.findByUser_Username(username);
+        shoppingItemRepository.deleteAll(founded);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/user")
+    public ResponseEntity deleteAllByUser(@RequestBody User user) {
+        List<ShoppingItem> founded = shoppingItemRepository.findByUser(user);
+        shoppingItemRepository.deleteAll(founded);
+        return ResponseEntity.noContent().build();
+    }
+
+    //endregion
 }
+
