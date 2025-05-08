@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class IngredientNotFoundException extends  RuntimeException {
-    public IngredientNotFoundException(String name) {
-        super("Not found ingredient with name: " + name);
+    public IngredientNotFoundException(String message) {
+        super(message);
     }
 }

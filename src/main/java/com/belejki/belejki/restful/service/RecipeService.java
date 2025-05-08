@@ -95,16 +95,5 @@ public class RecipeService {
     }
 
     private void saveNewIngredientIfDontExists(RecipeDto recipeDto, Recipe recipe) {
-        for (RecipeIngredientDto recipeIngredientDto : recipeDto.getIngredients()) {
-            Ingredient byName = ingredientRepository.findByNameIgnoreCase(recipeIngredientDto.getName());
-            if (byName == null) {
-                Ingredient newIng = new Ingredient();
-                newIng.setName(recipeIngredientDto.getName());
-                ingredientRepository.save(newIng);
-                recipe.addIngredient(newIng, recipeIngredientDto.getQuantity());
-            } else {
-                recipe.addIngredient(byName, recipeIngredientDto.getQuantity());
-            }
-        }
     }
 }
