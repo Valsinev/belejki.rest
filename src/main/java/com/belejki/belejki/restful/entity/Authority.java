@@ -20,7 +20,6 @@ public class Authority implements GrantedAuthority {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonManagedReference
     private User user;
     @Column(name = "authority")
     private String authority;

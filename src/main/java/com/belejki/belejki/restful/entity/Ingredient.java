@@ -22,6 +22,5 @@ public class Ingredient {
     private String name;
 
     @OneToMany(mappedBy = "ingredient")
-    @JsonManagedReference
     private List<RecipeIngredient> recipeIngredients;
 }

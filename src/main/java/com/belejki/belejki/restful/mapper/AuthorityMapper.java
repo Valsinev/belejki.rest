@@ -3,7 +3,6 @@ package com.belejki.belejki.restful.mapper;
 import com.belejki.belejki.restful.dto.AuthorityAdminDto;
 import com.belejki.belejki.restful.dto.AuthorityDto;
 import com.belejki.belejki.restful.entity.Authority;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -20,7 +20,6 @@ import java.util.List;
 @Table(name = "users")
 @Builder
 @AllArgsConstructor
-//@JsonIgnoreProperties({"friendships", "reminders", "wishList", "shoppingItems", "recipes"})
 public class User implements UserDetails {
 
     @Id
@@ -44,24 +43,19 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Friendship> friendships = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonBackReference
     private List<Authority> authorities = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
     private List<Reminder> reminders = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
     private List<Wish> wishList = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
     private List<ShoppingItem> shoppingItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonBackReference
     private List<Recipe> recipes = new ArrayList<>();
 
     public User(String email, String firstName, String lastName, String password) {
@@ -103,7 +97,7 @@ public class User implements UserDetails {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -221,5 +215,8 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void addFriendship(Friendship newFriendship) {
+        this.friendships.add(newFriendship);
+    }
 }
 

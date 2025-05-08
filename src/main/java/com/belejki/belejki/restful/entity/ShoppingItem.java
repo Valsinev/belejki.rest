@@ -31,7 +31,6 @@ public class ShoppingItem {
     @ManyToOne(cascade = CascadeType.ALL)
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonManagedReference
     private User user;
 
     public ShoppingItem(String name) {

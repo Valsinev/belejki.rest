@@ -1,6 +1,7 @@
 package com.belejki.belejki.restful.service;
 
 import com.belejki.belejki.restful.dto.UserDto;
+import com.belejki.belejki.restful.dto.UserPatchDto;
 import com.belejki.belejki.restful.entity.Authority;
 import com.belejki.belejki.restful.entity.Friendship;
 import com.belejki.belejki.restful.entity.User;
@@ -53,16 +54,38 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateByUser_Username(String username, UserDto updatedUser) {
-        User existing = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
 
-        existing.setUsername(updatedUser.getUsername());
-        existing.setFirstName(updatedUser.getFirstName());
-        existing.setLastName(updatedUser.getLastName());
+    public User update(User user, UserDto updatedUser) {
 
+        user.setUsername(updatedUser.getUsername());
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
 
-        return userRepository.save(existing);
+        return userRepository.save(user);
+    }
+
+    public User patchUser(Long id, UserPatchDto dto) {
+        User user = findById(id);
+
+        // Update only fields that are provided
+        if (dto.getUsername() != null) {
+            user.setUsername(dto.getUsername());
+        }
+
+        if (dto.getFirstName() != null) {
+            user.setFirstName(dto.getFirstName());
+        }
+
+        if (dto.getLastName() != null) {
+            user.setLastName(dto.getLastName());
+        }
+
+        if (dto.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        return userRepository.save(user);
     }
 
     public Page<User> findAll(Pageable pageable) {
@@ -82,22 +105,11 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found for id: " + id));
     }
 
-    public User updateByUserId(Long userId, UserDto updatedUser) {
-        User existing = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found."));
-
-        existing.setUsername(updatedUser.getUsername());
-        existing.setFirstName(updatedUser.getFirstName());
-        existing.setLastName(updatedUser.getLastName());
-
-
-        return userRepository.save(existing);
-    }
 
 
 
     @Transactional
-    public void delete(User user) {
+    public User delete(User user) {
         //setting the linked table constraints to null
         List<Friendship> byUser = friendshipRepository.findByUser(user);
         byUser.forEach(friendship -> friendship.setFriend(null));
@@ -109,20 +121,18 @@ public class UserService {
         friendshipRepository.deleteAll(allByFriendUsername);
 
         userRepository.delete(user);
+        return user;
     }
 
     public User deleteByUsername(String username) {
         User user = findByUsername(username);
-
-        userRepository.delete(user);
-        return user;
+        return delete(user);
     }
 
     public User deleteById(Long id) {
         User user = findById(id);
 
-        userRepository.delete(user);
-        return user;
+        return delete(user);
     }
 
     public List<User> deleteAllByIsSetForDeletion() {
@@ -131,17 +141,5 @@ public class UserService {
         return allBySetForDeletionTrue;
     }
 
-    public boolean authenticate(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
-
-    private boolean isValidEmail(String email) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        return email != null && matcher.matches();
-    }
-
-    public boolean isUsernameTaken(String username) {
-        return userRepository.existsByUsername(username);
-    }
 
 }

@@ -2,6 +2,7 @@ package com.belejki.belejki.restful.controller;
 
 import com.belejki.belejki.restful.dto.UserAdminDto;
 import com.belejki.belejki.restful.dto.UserDto;
+import com.belejki.belejki.restful.dto.UserPatchDto;
 import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.mapper.UserMapper;
 import com.belejki.belejki.restful.repository.UserRepository;
@@ -43,27 +44,36 @@ public class UserController {
 
     //region PUT METHODS
 
-    @PutMapping("/user/users/{username}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public UserAdminDto updateUserByUsername(@PathVariable String username,
-                                     @Valid @RequestBody UserDto user,
-                                     Authentication authentication) {
-
-        String loggedInUsername = authentication.getName();
-        // Allow user to update only their own data, or admin can update anyone
-        if (!loggedInUsername.equals(username) && !authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new AccessDeniedException("You cannot update other users.");
-        }
-        return userMapper.toAdminDto(userService.updateByUser_Username(username, user));
+    @PutMapping("/user/users/update/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
+    public UserAdminDto updateUserByUserId(@PathVariable Long id,
+                                           @Valid @RequestBody UserDto user) {
+        User byId = userService.findById(id);
+        User updated = userService.update(byId, user);
+        return userMapper.toAdminDto(updated);
     }
+
+    //endregion
+
+    //region PATCH METHODS
+    @PatchMapping("/user/users/patch/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id") // Example access control
+    public ResponseEntity<UserDto> patchUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserPatchDto patchDto) {
+
+        User updatedUser = userService.patchUser(id, patchDto);
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+    }
+
     //endregion
 
     //region GET METHODS
 
     @GetMapping("/admin/users")
     public Page<UserAdminDto> findAll(Pageable pageable) {
-        return userService.findAll(pageable).map(userMapper::toAdminDto);
+        return userService.findAll(pageable)
+                .map(userMapper::toAdminDto);
     }
 
     @GetMapping("/admin/users/disabled")
@@ -110,7 +120,7 @@ public class UserController {
 
     @DeleteMapping("/admin/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> delete(@RequestBody User user, Authentication authentication) {
+    public ResponseEntity<UserDto> delete(@RequestBody User user, Authentication authentication) {
         String username = user.getUsername();
         // Only allow deletion if the logged-in user is the same OR the user is an admin
         boolean isAdmin = authentication.getAuthorities()
@@ -121,8 +131,8 @@ public class UserController {
             throw new AccessDeniedException("You are not allowed to delete this user.");
         }
 
-        userService.delete(user);
-        return ResponseEntity.ok("User '" + username + "' deleted successfully.");
+        UserDto dto = userMapper.toDto(userService.delete(user));
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/admin/users/id/{id}")
@@ -170,5 +180,24 @@ public class UserController {
     }
 
     //endregion
+
+    private boolean hasAccess(Authentication authentication, Long targetId) {
+        if (authentication.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+            return true;
+        }
+
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        return user.getId().equals(targetId);
+    }
+
+    @GetMapping("/test-auth")
+    public String test(Authentication authentication) {
+        return "Hello " + authentication.getName() + ", roles: " +
+                authentication.getAuthorities().toString();
+    }
+
+
+
 
 }

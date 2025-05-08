@@ -25,10 +25,8 @@ public class Recipe {
     private String howToMake;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonManagedReference
     private User user;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
     private List<RecipeIngredient> recipeIngredients;
 
     public Recipe() {

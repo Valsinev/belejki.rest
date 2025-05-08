@@ -32,7 +32,6 @@ public class Reminder {
     private LocalDate expiration;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonManagedReference
     private User user;
     @Column(name = "expired")
     private boolean expired;

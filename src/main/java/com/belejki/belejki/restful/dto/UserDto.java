@@ -15,8 +15,10 @@ public class UserDto {
     @NotBlank(message = "Username is required.")
     private String username;
     @NotBlank(message = "First name is required.")
+    @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters.")
     private String firstName;
     @NotBlank(message = "Last name is required.")
+    @Size(min = 2, max = 24, message = "Last name must be between 2 and 24 characters.")
     private String lastName;
     private boolean enabled;
     private LocalDate lastLogin;

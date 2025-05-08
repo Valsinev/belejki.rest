@@ -55,7 +55,7 @@ public class SecurityConfig {
                         // USER access:
                         .requestMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/user/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user/users/update/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/user/**").hasRole("USER")
 
                         // All other requests require authentication

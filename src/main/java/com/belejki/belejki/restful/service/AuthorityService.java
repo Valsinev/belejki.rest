@@ -115,12 +115,6 @@ public class AuthorityService {
         return founded;
     }
 
-    public ResponseEntity deleteAll(List<Authority> authorities) {
-        authorityRepository.deleteAll(authorities);
-        return ResponseEntity.noContent().build();
-    }
-
-
 
 
 

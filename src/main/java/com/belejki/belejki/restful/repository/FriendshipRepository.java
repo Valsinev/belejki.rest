@@ -15,7 +15,9 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
     Friendship findByFriend_Username(String username);
 
-    Page<Friendship> findAllByUser_Username(String username, Pageable pageable);
 
+    Page<Friendship> findAllByFriend_Username(String username, Pageable pageable);
     List<Friendship> findAllByFriend_Username(String username);
+
+    Page<Friendship> findAllByUser_Username(String username, Pageable pageable);
 }

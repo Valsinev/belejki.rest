@@ -12,7 +12,6 @@ import lombok.NonNull;
 public class AuthorityDto {
 
     private Long id;
-    @NotBlank
     @NonNull
     private Long userId;
     private String username;

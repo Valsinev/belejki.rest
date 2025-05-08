@@ -20,12 +20,10 @@ public class RecipeIngredient {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "recipe_id")
-    @JsonManagedReference
     private Recipe recipe;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ingredient_id")
-    @JsonBackReference
     private Ingredient ingredient;
 
     @Column(name = "quantity")

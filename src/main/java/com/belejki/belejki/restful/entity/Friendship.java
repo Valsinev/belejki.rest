@@ -22,4 +22,9 @@ public class Friendship {
     @ManyToOne
     @JoinColumn(name = "friend_id", referencedColumnName = "id")
     private User friend;
+
+    public Friendship(User user, User friend) {
+        this.user = user;
+        this.friend = friend;
+    }
 }
