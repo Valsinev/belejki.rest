@@ -83,7 +83,7 @@ public class UserController {
 
     @GetMapping("/admin/users/set-for-deletion")
     public List<UserAdminDto> findAllBySetForDeletionTrue(Pageable pageable) {
-        return userRepository.findAllBySetForDeletionTrue().stream().map(userMapper::toAdminDto).toList();
+        return userRepository.findAllBySetForDeletionTrue(pageable).stream().map(userMapper::toAdminDto).toList();
     }
 
     @GetMapping("/admin/users/{username}")
@@ -167,7 +167,7 @@ public class UserController {
 
     @DeleteMapping("/admin/users/set-for-deletion")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserAdminDto>> deleteAllByIsSetForDeletion(Authentication authentication) {
+    public ResponseEntity<Page<UserAdminDto>> deleteAllByIsSetForDeletion(Authentication authentication, Pageable pageable) {
         boolean isAdmin = authentication.getAuthorities()
                 .stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
@@ -175,8 +175,8 @@ public class UserController {
         if (!isAdmin) {
             throw new AccessDeniedException("You are not allowed to delete users.");
         }
-        List<UserAdminDto> deleted = userService.deleteAllByIsSetForDeletion().stream().map(userMapper::toAdminDto).toList();
-        return ResponseEntity.ok(deleted);
+        Page<User> deleted = userService.deleteAllByIsSetForDeletion(pageable);
+        return ResponseEntity.ok(deleted.map(userMapper::toAdminDto));
     }
 
     //endregion

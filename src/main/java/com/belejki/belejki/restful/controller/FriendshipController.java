@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.belejki.belejki.restful.controller.Utility.checkIfOwnerOrAdmin;
+
 @RestController
 public class FriendshipController {
 
@@ -152,18 +154,5 @@ public class FriendshipController {
 
     //endregion
 
-
-    private static boolean checkIfOwnerOrAdmin(Authentication authentication, String username) {
-        String authenticated = authentication.getName();
-        boolean isOwner = authenticated.equals(username);
-
-        boolean isAdmin = authentication.getAuthorities()
-                .stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        // Only allow deletion if the logged-in user is the same OR the user is an admin
-        if (isOwner || isAdmin) {
-            return true;
-        } else return false;
-    }
 
 }

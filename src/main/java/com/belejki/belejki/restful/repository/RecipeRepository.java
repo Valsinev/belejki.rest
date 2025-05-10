@@ -48,4 +48,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     Page<Recipe> findAllByNameContainingAndUser_Username(String name, String username, Pageable pageable);
     Page<Recipe> findAllByNameContainingAndUser(String name, User user, Pageable pageable);
+
+
+    Page<Recipe> findAllByNameContainingIgnoreCase(String recipeName, Pageable pageable);
+
+    Page<Recipe> findAllByUser_Id(Long id, Pageable pageable);
+
+    Page<Recipe> findAllByUser_Username(String username, Pageable pageable);
 }

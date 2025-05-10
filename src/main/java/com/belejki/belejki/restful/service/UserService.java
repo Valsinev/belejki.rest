@@ -135,8 +135,8 @@ public class UserService {
         return delete(user);
     }
 
-    public List<User> deleteAllByIsSetForDeletion() {
-        List<User> allBySetForDeletionTrue = userRepository.findAllBySetForDeletionTrue();
+    public Page<User> deleteAllByIsSetForDeletion(Pageable pageable) {
+        Page<User> allBySetForDeletionTrue = userRepository.findAllBySetForDeletionTrue(pageable);
         allBySetForDeletionTrue.forEach(this::delete);
         return allBySetForDeletionTrue;
     }

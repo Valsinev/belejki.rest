@@ -2,9 +2,7 @@ package com.belejki.belejki.restful.controller;
 
 import com.belejki.belejki.restful.dto.IngredientDto;
 import com.belejki.belejki.restful.entity.Ingredient;
-import com.belejki.belejki.restful.exception.IngredientNotFoundException;
 import com.belejki.belejki.restful.mapper.IngredientMapper;
-import com.belejki.belejki.restful.repository.IngredientRepository;
 import com.belejki.belejki.restful.service.IngredientService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -14,19 +12,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 public class IngredientController {
 
     private final IngredientService ingredientService;
-    private final IngredientRepository ingredientRepository;
     private final IngredientMapper ingredientMapper;
 
     @Autowired
-    public IngredientController(IngredientService ingredientService, IngredientRepository ingredientRepository, IngredientMapper ingredientMapper) {
+    public IngredientController(IngredientService ingredientService, IngredientMapper ingredientMapper) {
         this.ingredientService = ingredientService;
-        this.ingredientRepository = ingredientRepository;
         this.ingredientMapper = ingredientMapper;
     }
 
@@ -44,7 +39,8 @@ public class IngredientController {
 
     @GetMapping("/admin/ingredients")
     public Page<IngredientDto> findAll(Pageable pageable) {
-        return ingredientService.findAll(pageable).map(ingredientMapper::toDto);
+        return ingredientService.findAll(pageable)
+                .map(ingredientMapper::toDto);
     }
 
     @GetMapping("/admin/ingredients/{name}")

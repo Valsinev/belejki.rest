@@ -3,7 +3,10 @@ package com.belejki.belejki.restful.service;
 import com.belejki.belejki.restful.dto.IngredientDto;
 import com.belejki.belejki.restful.entity.Ingredient;
 import com.belejki.belejki.restful.exception.IngredientNotFoundException;
+import com.belejki.belejki.restful.mapper.IngredientMapper;
 import com.belejki.belejki.restful.repository.IngredientRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +18,13 @@ import java.util.Optional;
 @Service
 public class IngredientService {
 
-    IngredientRepository ingredientRepository;
+    private final IngredientRepository ingredientRepository;
+    private final IngredientMapper ingredientMapper;
 
     @Autowired
-    public IngredientService(IngredientRepository ingredientRepository) {
+    public IngredientService(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper) {
         this.ingredientRepository = ingredientRepository;
+        this.ingredientMapper = ingredientMapper;
     }
 
     public Page<Ingredient> findAll(Pageable pageable) {
@@ -43,6 +48,16 @@ public class IngredientService {
             newIngredient.setName(ingredient.getName());
             return ingredientRepository.save(newIngredient);
         } else return byName.get();
+    }
+
+    public Ingredient findOrCreateByName(String ingredientName) {
+
+        return ingredientRepository.findByName(ingredientName)
+                .orElseGet(()-> {
+                    Ingredient ingredient = new Ingredient(ingredientName);
+                    return ingredientRepository.save(ingredient);
+                        }
+                );
     }
 
     public Ingredient delete(Ingredient ingredient) {
@@ -69,4 +84,5 @@ public class IngredientService {
             throw new RuntimeException("Ingredient is used in recipes:" + usedInRecipeIds);
         }
     }
+
 }
