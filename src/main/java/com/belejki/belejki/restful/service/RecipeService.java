@@ -2,23 +2,21 @@ package com.belejki.belejki.restful.service;
 
 import com.belejki.belejki.restful.dto.RecipeDto;
 import com.belejki.belejki.restful.dto.RecipeIngredientDto;
-import com.belejki.belejki.restful.entity.Ingredient;
 import com.belejki.belejki.restful.entity.Recipe;
 import com.belejki.belejki.restful.entity.RecipeIngredient;
 import com.belejki.belejki.restful.entity.User;
-import com.belejki.belejki.restful.exception.RecipeIngredientNullOrEmptyException;
-import com.belejki.belejki.restful.exception.UserNotFoundException;
-import com.belejki.belejki.restful.repository.IngredientRepository;
+import com.belejki.belejki.restful.exception.RecipeNotFoundException;
+import com.belejki.belejki.restful.mapper.RecipeIngredientMapper;
+import com.belejki.belejki.restful.mapper.RecipesMapper;
 import com.belejki.belejki.restful.repository.RecipeRepository;
 import com.belejki.belejki.restful.repository.UserRepository;
+import jakarta.validation.Valid;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,13 +24,19 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
-    private final IngredientRepository ingredientRepository;
+    private final UserService userService;
+    private final RecipesMapper recipesMapper;
+    private final RecipeIngredientMapper recipeIngredientMapper;
+    private final IngredientService ingredientService;
 
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, IngredientRepository ingredientRepository) {
+    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, UserService userService, RecipesMapper recipesMapper, RecipeIngredientMapper recipeIngredientMapper, IngredientService ingredientService) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
-        this.ingredientRepository = ingredientRepository;
+        this.userService = userService;
+        this.recipesMapper = recipesMapper;
+        this.recipeIngredientMapper = recipeIngredientMapper;
+        this.ingredientService = ingredientService;
     }
 
     public Page<Recipe> findRecipesByAllIngredientNamesAndUser(List<String> ingredients, User user, Pageable pageable) {
@@ -43,57 +47,24 @@ public class RecipeService {
         return recipeRepository.findRecipesByAllIngredientNamesAndUsername(ingredients, ingredients.size(), username, pageable);
     }
 
-    public ResponseEntity<RecipeDto> save(RecipeDto recipeDto, Long userId) {
+    public Recipe save(RecipeDto dto, Long userId) {
 
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User not found."));
-
-            checkForEmptyNullFields(recipeDto);
-
-            Recipe recipe = new Recipe();
-            recipe.setUser(user);
-            recipe.setName(recipeDto.getName());
-            recipe.setHowToMake(recipeDto.getHowToMake());
-
-            //saves new ingredients if dont exist and assign them to the passed recipe
-            saveNewIngredientIfDontExists(recipeDto, recipe);
-
-            //update user's recipes
-            user.getRecipes().add(recipe);
-            userRepository.save(user);
-
-            RecipeIngredientDto recipeIngredientDto = new RecipeIngredientDto();
-
-            RecipeDto saved = new RecipeDto();
-
-            saved.setName(recipe.getName());
-            saved.setHowToMake(recipe.getHowToMake());
-                    saved.setIngredients(recipe.getRecipeIngredients().stream()
-                                    .map(recipeIngredient ->
-                                    new RecipeIngredientDto(recipeIngredient.getIngredient().getName(), recipeIngredient.getQuantity()))
-                                .toList());
-
-            return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        User user = userService.findById(userId);
+        Recipe recipe = new Recipe();
+        List<RecipeIngredientDto> recipeIngredientsDto = dto.getIngredients();
+        List<RecipeIngredient> recipeIngredients = recipeIngredientsDto
+                .stream()
+                .map(recipeIngredientDto ->
+                        recipeIngredientMapper.toEntity(recipeIngredientDto,
+                                recipe,
+                                ingredientService.findOrCreateByName(recipeIngredientDto.getIngredient())))
+                .toList();
+        Recipe finalRecipie = recipesMapper.toEntity(dto, user, recipeIngredients);
+        recipeRepository.save(finalRecipie);
+        return finalRecipie;
     }
 
-    private void checkForEmptyNullFields(RecipeDto recipeDto) {
-        checkNullOrEmpty(recipeDto.getName(),"Cannot save new Recipe without name.");
-        checkNullOrEmpty(recipeDto.getHowToMake(),"Cannot save new Recipe how to make instructions.");
-        if (recipeDto.getIngredients() == null || recipeDto.getIngredients().isEmpty()) {
-            throw new RuntimeException("Cannot save new Recipe without ingredients.");
-        }
-        for (RecipeIngredientDto recipeIngredientDto: recipeDto.getIngredients()) {
-            checkNullOrEmpty(recipeIngredientDto.getName(), "Cannot save ingredient with no name for recipe: " + recipeDto.getName());
-            checkNullOrEmpty(recipeIngredientDto.getQuantity(), "Cannot save ingredient with no quantity for recipe: " + recipeDto.getName());
-        }
-    }
-
-    private void checkNullOrEmpty(String string, String message) {
-        if (string == null || string.isEmpty()) {
-            throw new RuntimeException(message);
-        }
-    }
-
-    private void saveNewIngredientIfDontExists(RecipeDto recipeDto, Recipe recipe) {
+    public Recipe findById(@NonNull Long recipeId) {
+        return recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe not found for id: " + recipeId));
     }
 }

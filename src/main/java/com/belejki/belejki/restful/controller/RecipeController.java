@@ -4,8 +4,10 @@ import com.belejki.belejki.restful.dto.RecipeDto;
 import com.belejki.belejki.restful.entity.Recipe;
 import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.exception.RecipeNotFoundException;
+import com.belejki.belejki.restful.mapper.RecipesMapper;
 import com.belejki.belejki.restful.repository.RecipeRepository;
 import com.belejki.belejki.restful.service.RecipeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,19 +21,22 @@ public class RecipeController {
 
     private final RecipeRepository recipeRepository;
     private final RecipeService recipeService;
+    private final RecipesMapper recipesMapper;
 
     @Autowired
-    public RecipeController(RecipeRepository recipeIngredientRepository, RecipeService recipeService) {
+    public RecipeController(RecipeRepository recipeIngredientRepository, RecipeService recipeService, RecipesMapper recipesMapper) {
         this.recipeRepository = recipeIngredientRepository;
         this.recipeService = recipeService;
+        this.recipesMapper = recipesMapper;
     }
 
 
     //region POST METHODS
 
-    @PostMapping("/user/recipes/{username}")
-    public ResponseEntity<RecipeDto> save(@RequestBody RecipeDto recipe, @PathVariable Long userId) {
-        return recipeService.save(recipe, userId);
+    @PostMapping("/user/recipes/{userId}")
+    public ResponseEntity<RecipeDto> save(@Valid @RequestBody RecipeDto recipe, @PathVariable Long userId) {
+        Recipe save = recipeService.save(recipe, userId);
+        return ResponseEntity.ok(recipesMapper.toDto(save, userId));
     }
 
     //endregion
