@@ -1,123 +1,383 @@
 package com.belejki.belejki.restful.controller;
 
+import com.belejki.belejki.restful.dto.*;
 import com.belejki.belejki.restful.entity.Reminder;
 import com.belejki.belejki.restful.entity.User;
+import com.belejki.belejki.restful.mapper.ReminderMapper;
 import com.belejki.belejki.restful.repository.ReminderRepository;
 import com.belejki.belejki.restful.service.ReminderService;
+import com.belejki.belejki.restful.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
+
+import static com.belejki.belejki.restful.controller.Utility.checkIfOwnerOrAdmin;
 
 @RestController
 public class ReminderController {
 
-    private ReminderRepository reminderRepository;
-    private ReminderService reminderService;
+    private final ReminderRepository reminderRepository;
+    private final ReminderService reminderService;
+    private final ReminderMapper reminderMapper;
+    private final UserService userService;
 
     @Autowired
-    public ReminderController(ReminderRepository reminderRepository, ReminderService reminderService) {
+    public ReminderController(ReminderRepository reminderRepository, ReminderService reminderService, ReminderMapper reminderMapper, UserService userService) {
         this.reminderRepository = reminderRepository;
         this.reminderService = reminderService;
+        this.reminderMapper = reminderMapper;
+        this.userService = userService;
     }
 
-    //region GET METHODS
-
-    @GetMapping("/admin/reminders")
-    public Page<Reminder> findAll(Pageable pageable) {
-        return reminderRepository.findAll(pageable);
-    }
-
-    @GetMapping("/admin/reminders/expired")
-    public Page<Reminder> findAllExpired(Pageable pageable) {
-        return reminderRepository.findByExpiredTrue(pageable);
-    }
-
-
-    @GetMapping("/admin/reminders/expires-soon")
-    public Page<Reminder> findAllExpiresSoon(Pageable pageable) {
-        return reminderRepository.findByExpiresSoonTrue(pageable);
-    }
-
-
-    @GetMapping("/{username}/reminders")
-    public Page<Reminder> findAllByUser_Username(@PathVariable String username, Pageable pageable) {
-        return reminderRepository.findByUser_Username(username, pageable);
-    }
-
-    @GetMapping("/user/reminders")
-    public Page<Reminder> findAllByUser(@RequestBody User user, Pageable pageable) {
-        return reminderRepository.findByUser(user, pageable);
-    }
-
-    @GetMapping("/user/reminders/expired")
-    public Page<Reminder> findAllExpiredByUser(@RequestBody User user, Pageable pageable) {
-        return reminderRepository.findByExpiredTrueAndUser(user, pageable);
-    }
-
-
-    @GetMapping("/{username}/reminders/expired")
-    public Page<Reminder> findAllExpiredByUser_Username(@PathVariable String username, Pageable pageable) {
-        return reminderRepository.findByExpiredTrueAndUser_Username(username, pageable);
-    }
-
-
-    @GetMapping("/user/reminders/expires-soon")
-    public Page<Reminder> findAllExpiresSoonByUser(@RequestBody User user, Pageable pageable) {
-        return reminderRepository.findByExpiresSoonTrueAndUser(user, pageable);
-    }
-
-    @GetMapping("/{username}/reminders/expires-soon")
-    public Page<Reminder> findAllExpiresSoonByUser_Username(@PathVariable String username, Pageable pageable) {
-        return reminderRepository.findByExpiresSoonTrueAndUser_Username(username, pageable);
-    }
-
-    @GetMapping("/user/reminders/{username}")
-    public Page<Reminder> findAllByNameContainingAndUser_Username(@RequestParam String name, @PathVariable String username, Pageable pageable) {
-        return reminderRepository.findByNameContainingIgnoreCaseAndUser_Username(name, username, pageable);
-    }
-
-    //endregion
 
     //region POST METHODS
 
     @PostMapping("/user/reminders")
-    public Reminder save(@RequestBody Reminder reminder) {
-        return reminderRepository.save(reminder);
+    public ReminderDto save(@Valid @RequestBody ReminderDto reminder, Authentication authentication) {
+        String username = authentication.getName();
+        return reminderService.save(reminder, username);
     }
+
+    @PostMapping("/user/reminders/user/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ReminderDto saveWithUser_Username(@Valid @RequestBody ReminderDto dto,
+                                             @PathVariable String username,
+                                             Authentication authentication) {
+        boolean access = checkIfOwnerOrAdmin(authentication, username);
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can save reminder for username: " + username);
+        }
+        return reminderService.save(dto, username);
+    }
+
+    @PostMapping("/user/reminders/user/id/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ReminderDto saveWithUserId(@Valid @RequestBody ReminderDto dto,
+                                      @PathVariable Long id,
+                                      Authentication authentication) {
+        User byId = userService.findById(id);
+        String username = byId.getUsername();
+        boolean access = checkIfOwnerOrAdmin(authentication, username);
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can save reminder for username: " + username);
+        }
+        Reminder reminder = reminderService.saveWithUserId(dto, id);
+        return reminderMapper.toDto(reminder, id);
+    }
+
+    //endregion
+
+    //region GET METHODS
+
+    //region ADMIN
+    @GetMapping("/admin/reminders")
+    public Page<ReminderDto> findAll(Pageable pageable) {
+        Page<Reminder> all = reminderRepository.findAll(pageable);
+        return all.map(reminder -> reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/admin/reminders/user/id/{userId}")
+    public Page<ReminderDto> findAllByUser_Id(@PathVariable Long userId,
+                                              Pageable pageable) {
+        Page<Reminder> allByUserId = reminderRepository.findAllByUser_Id(userId, pageable);
+        return allByUserId.map(reminder -> reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/admin/reminders/user/{username}")
+    public Page<ReminderDto> findAllByUser_Username(@PathVariable String username,
+                                              Pageable pageable) {
+        Page<Reminder> allByUserUsername = reminderRepository.findAllByUser_Username(username, pageable);
+        return allByUserUsername.map(reminder -> reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/admin/reminders/expired")
+    public Page<ReminderDto> findAllExpired(Pageable pageable) {
+        Page<Reminder> byExpiredTrue = reminderRepository.findByExpiredTrue(pageable);
+        return byExpiredTrue
+                .map(reminder -> reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+
+    @GetMapping("/admin/reminders/expires-soon")
+    public Page<ReminderDto> findAllExpiresSoon(Pageable pageable) {
+        Page<Reminder> byExpiresSoonTrue = reminderRepository.findByExpiresSoonTrue(pageable);
+        return byExpiresSoonTrue
+                .map(reminder -> reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/admin/reminders/expires-today")
+    public Page<ReminderDto> findAllExpiresToday(Pageable pageable) {
+        Page<Reminder> byExpiresTodayTrue = reminderRepository.findByExpiresTodayTrue(pageable);
+        return byExpiresTodayTrue
+                .map(reminder -> reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    //endregion
+
+    //region USER
+
+    @GetMapping("/user/reminders/reminder")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ReminderDto findByReminder(@RequestBody Reminder reminder, Authentication authentication) {
+        Reminder byReminder = reminderService.findByReminder(reminder);
+        String username = byReminder.getUser().getUsername();
+        boolean access = checkIfOwnerOrAdmin(authentication, username);
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        return reminderMapper.toDto(byReminder, byReminder.getUser().getId());
+    }
+
+    @GetMapping("/user/reminders/id/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ReminderDto findByReminder(@PathVariable Long id, Authentication authentication) {
+        Reminder byReminder = reminderService.findById(id);
+        String username = byReminder.getUser().getUsername();
+        boolean access = checkIfOwnerOrAdmin(authentication, username);
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        return reminderMapper.toDto(byReminder, byReminder.getUser().getId());
+    }
+
+    @GetMapping("/user/reminders/user/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByUsername(@PathVariable String username,
+                                    Pageable pageable,
+                                    Authentication authentication) {
+        boolean access = checkIfOwnerOrAdmin(authentication, username);
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUsername = reminderService.findAllByUser_Username(username, pageable);
+        return byUserUsername.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/user/id/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByUser_Id(@PathVariable Long userId,
+                                          Pageable pageable,
+                                          Authentication authentication) {
+        User byId = userService.findById(userId);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByUser_Id(userId, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/expired/user/id/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByExpiredTrueAndUserId(@PathVariable Long userId,
+                                                   Pageable pageable,
+                                                   Authentication authentication) {
+        User byId = userService.findById(userId);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByExpiredTrueAndUser_Id(userId, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/expired/user/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByExpiredTrueAndUsername(@PathVariable String username,
+                                                       Pageable pageable,
+                                                       Authentication authentication) {
+        User byId = userService.findByUsername(username);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByExpiredTrueAndUser_Username(username, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/name/{name}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByNameContaining(@PathVariable String name,
+                                                                  Pageable pageable,
+                                                                  Authentication authentication) {
+        String username = authentication.getName();
+        Page<Reminder> byNameContainingAndUser = reminderService.findAllByNameContainingAndUser_Username(name, username, pageable);
+        return byNameContainingAndUser.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/description/{descr}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByDescriptionContaining(@PathVariable String descr,
+                                                          Pageable pageable,
+                                                          Authentication authentication) {
+        String username = authentication.getName();
+        Page<Reminder> byNameContainingAndUser = reminderService.findAllByDescriptionContainingAndUser_Username(descr, username, pageable);
+        return byNameContainingAndUser.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/expires-soon/user/id/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByExpiresSoonTrueAndUserId(@PathVariable Long userId,
+                                                                Pageable pageable,
+                                                                Authentication authentication) {
+        User byId = userService.findById(userId);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByExpiresSoonTrueAndUser_Id(userId, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/expires-soon/user/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByExpiresSoonTrueAndUserUsername(@PathVariable String username,
+                                                                  Pageable pageable,
+                                                                  Authentication authentication) {
+        User byId = userService.findByUsername(username);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByExpiresSoonTrueAndUser_Username(username, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/expires-today/user/id/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByExpiresTodayTrueAndUserId(@PathVariable Long userId,
+                                                                    Pageable pageable,
+                                                                    Authentication authentication) {
+        User byId = userService.findById(userId);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByExpiresTodayTrueAndUser_Id(userId, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/expires-today/user/{username}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByExpiresTodayTrueAndUserUsername(@PathVariable String username,
+                                                                          Pageable pageable,
+                                                                          Authentication authentication) {
+        User byId = userService.findByUsername(username);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can get this reminder.");
+        }
+        Page<Reminder> byUserUseId = reminderService.findAllByExpiresTodayTrueAndUser_Username(username, pageable);
+        return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+
+    //endregion
+
+    //endregion
+
+
+    //region PUT METHODS
+
+    @PutMapping("/user/reminders/update/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ReminderDto updateReminderById(@PathVariable Long id,
+                                           @Valid @RequestBody ReminderDto dto,
+                                          Authentication authentication) {
+        User user = userService.findById(dto.getUserId());
+        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can update this reminder.");
+        }
+        Reminder byId = reminderService.findById(id);
+        Reminder updated = reminderService.update(byId, dto);
+        return reminderMapper.toDto(updated, updated.getUser().getId());
+    }
+
+    //endregion
+
+    //region PATCH METHODS
+    @PatchMapping("/user/reminders/patch/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ReminderDto patchUser(
+            @PathVariable Long id,
+            @Valid @RequestBody ReminderPatchDto dto,
+            Authentication authentication) {
+        User user = userService.findById(dto.getUserId());
+        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can update this reminder.");
+        }
+
+        Reminder patchedReminder = reminderService.patchReminder(id, dto);
+        return reminderMapper.toDto(patchedReminder, patchedReminder.getUser().getId());
+    }
+
     //endregion
 
     //region DELETE METHODS
 
-    @DeleteMapping("/user/reminders")
-    public ResponseEntity delete(@RequestBody Reminder reminder) {
-        reminderRepository.delete(reminder);
-        return ResponseEntity.noContent().build();
-    }
 
     @DeleteMapping("/admin/reminders/id/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id) {
-        reminderRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReminderDto> deleteById(@PathVariable Long id) {
+        Reminder byId = reminderService.delete(id);
+        return ResponseEntity.ok(reminderMapper.toDto(byId, id));
     }
 
-    @DeleteMapping("/admin/reminders/user")
-    public ResponseEntity deleteAllByUser(@RequestBody User user) {
-        List<Reminder> byUser = reminderRepository.findByUser(user);
-        reminderRepository.deleteAll(byUser);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/admin/reminders/user/{username}")
+    public ResponseEntity<List<ReminderDto>> deleteAllByUser_Username(@PathVariable String username, Pageable pageable) {
+        Page<Reminder> reminders = reminderService.deleteAllByUser_Username(username, pageable);
+        List<ReminderDto> dto = reminders.stream().map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId())).toList();
+        return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/admin/reminders/{username}")
-    public ResponseEntity deleteAllByUser_Username(@PathVariable String username) {
-        List<Reminder> byUserUsername = reminderRepository.findByUser_Username(username);
-        reminderRepository.deleteAll(byUserUsername);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/admin/reminders/user/id/{id}")
+    public ResponseEntity<List<ReminderDto>> deleteAllByUser_Username(@PathVariable Long id, Pageable pageable) {
+        Page<Reminder> reminders = reminderService.deleteAllByUser_Id(id, pageable);
+        List<ReminderDto> dto = reminders.stream().map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId())).toList();
+        return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping("/admin/reminders/expired")
+    public ResponseEntity<List<ReminderDto>> deleteAllExpiredInYears(Pageable pageable) {
+        List<Reminder> expiredBeforeYears = reminderService.findAllExpiredBefore();
+        List<ReminderDto> dto = expiredBeforeYears.stream().map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId())).toList();
+        return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping("/user/reminders/id/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public ResponseEntity<ReminderDto> deleteWithUserById(@PathVariable Long id, Authentication authentication) {
+        Reminder byId = reminderService.findById(id);
+        boolean access = checkIfOwnerOrAdmin(authentication, byId.getUser().getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can delete this reminder.");
+        }
+        reminderService.delete(id);
+        return ResponseEntity.ok(reminderMapper.toDto(byId, byId.getUser().getId()));
+    }
 
     //endregion
 

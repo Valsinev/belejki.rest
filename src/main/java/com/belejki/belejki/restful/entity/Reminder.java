@@ -37,10 +37,14 @@ public class Reminder {
     private boolean expired;
     @Column(name = "expires_soon")
     private boolean expiresSoon; //flag if reminder expires in 'n' number of days
+    @Column(name = "expires_today")
+    private boolean expiresToday;
     @Column(name = "month_mail")
     private boolean monthMail; //flag if mail is sended month before expires
     @Column(name = "week_mail")
     private boolean weekMail; //flag if mail is sended week before expires
+    @Column(name = "today_mail")
+    private boolean todayMail; //flag if mail is sended day before expires
 
     public Reminder(String name, String description, LocalDate expiration, int importanceLevel) {
 
@@ -124,6 +128,30 @@ public class Reminder {
 
     public void setWeekMail(boolean weekMail) {
         this.weekMail = weekMail;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public boolean isExpiresToday() {
+        return expiresToday;
+    }
+
+    public void setExpiresToday(boolean expiresToday) {
+        this.expiresToday = expiresToday;
+    }
+
+    public boolean isTodayMail() {
+        return todayMail;
+    }
+
+    public void setTodayMail(boolean todayMail) {
+        this.todayMail = todayMail;
     }
 }
 

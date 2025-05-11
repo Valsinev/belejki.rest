@@ -2,10 +2,10 @@ package com.belejki.belejki.restful.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class RecipeDto {
     @Size(min = 10, max = 4000, message = "Instructions must be between 10 and 4000 characters.")
     @NotBlank(message = "Recipe must have instructions how to make.")
     private String howToMake;
-    @NonNull
+    @NotNull
     @Valid
     private List<RecipeIngredientDto> ingredients;
 

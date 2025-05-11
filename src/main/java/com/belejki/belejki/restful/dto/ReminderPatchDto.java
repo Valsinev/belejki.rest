@@ -14,19 +14,16 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class ReminderDto {
+public class ReminderPatchDto {
 
     private Long id;
     @NonNull
     private Long userId;
-    @NotBlank
     private String name;
-    @NotNull
     @Min(value = 1, message = "Importance level must be between 1 and 10 number.")
     @Max(value = 10, message = "Importance level must be between 1 and 10 number.")
     private Integer importanceLevel;
     private String description;
-    @NotNull
     @JsonFormat(pattern = "dd-MM-yyyy")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate expiration;
