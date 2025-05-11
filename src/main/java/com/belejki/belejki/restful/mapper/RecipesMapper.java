@@ -1,7 +1,6 @@
 package com.belejki.belejki.restful.mapper;
 
 import com.belejki.belejki.restful.dto.RecipeDto;
-import com.belejki.belejki.restful.dto.RecipeIngredientDto;
 import com.belejki.belejki.restful.entity.Recipe;
 import com.belejki.belejki.restful.entity.RecipeIngredient;
 import com.belejki.belejki.restful.entity.User;

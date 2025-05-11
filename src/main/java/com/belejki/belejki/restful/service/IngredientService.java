@@ -3,10 +3,7 @@ package com.belejki.belejki.restful.service;
 import com.belejki.belejki.restful.dto.IngredientDto;
 import com.belejki.belejki.restful.entity.Ingredient;
 import com.belejki.belejki.restful.exception.IngredientNotFoundException;
-import com.belejki.belejki.restful.mapper.IngredientMapper;
 import com.belejki.belejki.restful.repository.IngredientRepository;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +16,10 @@ import java.util.Optional;
 public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
-    private final IngredientMapper ingredientMapper;
 
     @Autowired
-    public IngredientService(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper) {
+    public IngredientService(IngredientRepository ingredientRepository) {
         this.ingredientRepository = ingredientRepository;
-        this.ingredientMapper = ingredientMapper;
     }
 
     public Page<Ingredient> findAll(Pageable pageable) {

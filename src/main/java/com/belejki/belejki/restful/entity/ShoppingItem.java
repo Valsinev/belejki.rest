@@ -1,13 +1,9 @@
 package com.belejki.belejki.restful.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.processing.Pattern;
 
 @Entity
 @Data
@@ -28,8 +24,7 @@ public class ShoppingItem {
     private String color;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
-
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

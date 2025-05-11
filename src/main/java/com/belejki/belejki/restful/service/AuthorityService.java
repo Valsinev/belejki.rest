@@ -1,7 +1,6 @@
 package com.belejki.belejki.restful.service;
 
 import com.belejki.belejki.restful.dto.AuthorityDto;
-import com.belejki.belejki.restful.dto.UserDto;
 import com.belejki.belejki.restful.entity.Authority;
 import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.exception.AuthorityAlreadyExistsException;
@@ -16,14 +15,12 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AuthorityService {

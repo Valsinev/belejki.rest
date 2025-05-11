@@ -76,6 +76,12 @@ public class UserController {
                 .map(userMapper::toAdminDto);
     }
 
+    @GetMapping("/admin/users/not-logged")
+    public Page<UserAdminDto> findAllNotLoggedBefore(Pageable pageable) {
+        Page<User> allNotLoggedBefore = userService.findAllNotLoggedBefore(pageable);
+        return allNotLoggedBefore.map(userMapper::toAdminDto);
+    }
+
     @GetMapping("/admin/users/disabled")
     public Page<UserAdminDto> findAllDisabled(Pageable pageable) {
         return userService.findByEnabledFalse(pageable).map(userMapper::toAdminDto);
@@ -179,23 +185,15 @@ public class UserController {
         return ResponseEntity.ok(deleted.map(userMapper::toAdminDto));
     }
 
+    @DeleteMapping("/admin/users/not-logged")
+    public ResponseEntity<List<UserAdminDto>> deleteAllNotLoggedInYears(Pageable pageable) {
+        Page<User> expiredBeforeYears = userService.findAllNotLoggedBefore(pageable);
+        List<UserAdminDto> list = expiredBeforeYears.stream().map(userMapper::toAdminDto).toList();
+        userRepository.deleteAll(expiredBeforeYears);
+        return ResponseEntity.ok(list);
+    }
+
     //endregion
-
-    private boolean hasAccess(Authentication authentication, Long targetId) {
-        if (authentication.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            return true;
-        }
-
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
-        return user.getId().equals(targetId);
-    }
-
-    @GetMapping("/test-auth")
-    public String test(Authentication authentication) {
-        return "Hello " + authentication.getName() + ", roles: " +
-                authentication.getAuthorities().toString();
-    }
 
 
 

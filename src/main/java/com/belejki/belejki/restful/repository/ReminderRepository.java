@@ -1,7 +1,6 @@
 package com.belejki.belejki.restful.repository;
 
 import com.belejki.belejki.restful.entity.Reminder;
-import com.belejki.belejki.restful.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

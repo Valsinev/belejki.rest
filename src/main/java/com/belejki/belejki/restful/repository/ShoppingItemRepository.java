@@ -16,4 +16,8 @@ public interface ShoppingItemRepository extends JpaRepository<ShoppingItem, Long
     List<ShoppingItem> findByUser(User user);
 
     Page<ShoppingItem> findByUser_Username(String username, Pageable pageable);
+
+    Page<ShoppingItem> findAllByUser_Username(String username, Pageable pageable);
+
+    Page<ShoppingItem> findAllByUser_Id(Long userId, Pageable pageable);
 }

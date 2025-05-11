@@ -1,12 +1,7 @@
 package com.belejki.belejki.restful.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -218,5 +213,6 @@ public class User implements UserDetails {
     public void addFriendship(Friendship newFriendship) {
         this.friendships.add(newFriendship);
     }
+
 }
 
