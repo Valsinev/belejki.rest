@@ -39,8 +39,9 @@ public class ReminderService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
         Reminder entity = reminderMapper.toEntity(reminder, user);
         setExpirationFlags(entity);
-        reminderRepository.save(entity);
-        reminder.setUserId(user.getId());
+        Reminder saved = reminderRepository.save(entity);
+        reminder.setUserId(saved.getUser().getId());
+        reminder.setId(saved.getId());
         return reminder;
     }
 

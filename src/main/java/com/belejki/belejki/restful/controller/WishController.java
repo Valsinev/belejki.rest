@@ -40,39 +40,26 @@ public class WishController {
     //region POST METHODS
 
     @PostMapping("/user/wishlist")
-    public Wish save(@RequestBody Wish wish) {
-        return wishRepository.save(wish);
-    }
-
-    @PostMapping("/user/wishlist/user/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    public WishDto saveForUser_Username(@Valid @RequestBody WishDto dto, @PathVariable String username, Authentication authentication) {
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
+    public WishDto saveForUser_Username(@Valid @RequestBody WishDto dto, Authentication authentication) {
+        String username = authentication.getName();
         User user = userService.findByUsername(username);
         Wish entity = wishMapper.toEntity(dto, user);
         wishRepository.save(entity);
-        return dto;
-    }
-
-    @PostMapping("/user/wishlist/user/id/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    public WishDto saveForUser_Username(@Valid @RequestBody WishDto dto, @PathVariable Long id, Authentication authentication) {
-        User user = userService.findById(id);
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
-        Wish entity = wishMapper.toEntity(dto, user);
-        wishRepository.save(entity);
+        dto.setId(entity.getId());
+        dto.setUserId(entity.getUser().getId());
         return dto;
     }
 
     //endregion
 
     //region GET METHODS
+    @GetMapping("/user/wishlist")
+    public Page<WishDto> findAllUserWishes(Authentication authentication, Pageable pageable) {
+        String username = authentication.getName();
+        Page<Wish> all = wishRepository.findAllByUser_Username(username, pageable);
+        return all.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));
+    }
+
     @GetMapping("/user/wishlist/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public WishDto findById(@PathVariable Long id, Authentication authentication) {
@@ -85,25 +72,14 @@ public class WishController {
         return wishMapper.toDto(wish, wish.getUser().getId());
     }
 
-    @GetMapping("/user/wishlist/user/id/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public Page<WishDto> findAllByUser_Id(@PathVariable Long id, Authentication authentication, Pageable pageable) {
-        User user = userService.findById(id);
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
+    @GetMapping("/admin/wishlist/user/id/{id}")
+    public Page<WishDto> findAllByUser_Id(@PathVariable Long id, Pageable pageable) {
         Page<Wish> allByUserId = wishRepository.findAllByUser_Id(id, pageable);
         return allByUserId.map(wish -> wishMapper.toDto(wish, id));
     }
 
-    @GetMapping("/user/wishlist/user/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public Page<WishDto> findAllByUser_Username(@PathVariable String username, Authentication authentication, Pageable pageable) {
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
+    @GetMapping("/admin/wishlist/user/{username}")
+    public Page<WishDto> findAllByUser_Username(@PathVariable String username, Pageable pageable) {
         Page<Wish> allByUserId = wishRepository.findAllByUser_Username(username, pageable);
         return allByUserId.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));
     }
@@ -163,27 +139,16 @@ public class WishController {
     }
 
 
-    @DeleteMapping("/user/wishlist/user/id/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public Page<WishDto> deleteAllByUser_Id(@PathVariable Long id, Authentication authentication, Pageable pageable) {
-        User user = userService.findById(id);
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
+    @DeleteMapping("/admin/wishlist/user/id/{id}")
+    public Page<WishDto> deleteAllByUser_Id(@PathVariable Long id, Pageable pageable) {
         Page<Wish> allByUserId = wishRepository.findAllByUser_Id(id, pageable);
         wishRepository.deleteAll(allByUserId);
         return allByUserId.map(wish -> wishMapper.toDto(wish, id));
     }
 
 
-    @DeleteMapping("/user/wishlist/user/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public Page<WishDto> deleteAllByUser_Username(@PathVariable String username, Authentication authentication, Pageable pageable) {
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
+    @DeleteMapping("/admin/wishlist/user/{username}")
+    public Page<WishDto> deleteAllByUser_Username(@PathVariable String username, Pageable pageable) {
         Page<Wish> allByUserUsername = wishRepository.findAllByUser_Username(username, pageable);
         wishRepository.deleteAll(allByUserUsername);
         return allByUserUsername.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));

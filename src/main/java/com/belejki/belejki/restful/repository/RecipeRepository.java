@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Recipe findByName(String name);
@@ -55,4 +56,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Page<Recipe> findAllByUser_Id(Long id, Pageable pageable);
 
     Page<Recipe> findAllByUser_Username(String username, Pageable pageable);
+
+    Optional<Recipe> findByIdAndUser_Username(Long id, String username);
 }

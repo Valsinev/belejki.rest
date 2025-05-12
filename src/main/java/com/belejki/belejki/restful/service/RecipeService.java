@@ -38,9 +38,8 @@ public class RecipeService {
 
     //Post
 
-    public Recipe saveByUserId(RecipeDto dto, Long userId) {
+    public Recipe saveByUserId(RecipeDto dto, User user) {
 
-        User user = userService.findById(userId);
         Recipe recipe = new Recipe();
         List<RecipeIngredientDto> recipeIngredientsDto = dto.getIngredients();
         List<RecipeIngredient> recipeIngredients = recipeIngredientsDto

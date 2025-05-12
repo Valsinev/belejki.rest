@@ -18,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Optional;
+
 import static com.belejki.belejki.restful.controller.Utility.checkIfOwnerOrAdmin;
 
 @RestController
@@ -40,15 +42,12 @@ public class ShoppingItemController {
     //region POST METHODS
 
     @PostMapping("/user/shopping-list")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     ShoppingItemDto save(@Valid @RequestBody ShoppingItemDto dto, Authentication authentication) {
-        User user = userService.findById(dto.getUserId());
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new shopping item.");
-        }
+        User user = userService.findByUsername(authentication.getName());
         ShoppingItem entity = shoppingItemMapper.toEntity(dto, user);
-        shoppingItemRepository.save(entity);
+        ShoppingItem saved = shoppingItemRepository.save(entity);
+        dto.setUserId(saved.getUser().getId());
+        dto.setId(saved.getId());
         return dto;
     }
 
@@ -57,68 +56,75 @@ public class ShoppingItemController {
     //region GET METHODS
 
 
-    @GetMapping("/user/shopping-list/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    ShoppingItemDto findById(@PathVariable Long id, Authentication authentication) {
-        ShoppingItem founded = shoppingItemRepository.findById(id)
-                .orElseThrow(() -> new ShoppingItemNotFoundException("No shopping item found for id: " + id));
-        boolean access = checkIfOwnerOrAdmin(authentication, founded.getUser().getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new shopping item.");
-        }
-        return shoppingItemMapper.toDto(founded, id);
+    @GetMapping("/admin/shopping-list/user/id/{userId}")
+    Page<ShoppingItemDto> findAllForUser_Id(@PathVariable Long userId, Pageable pageable) {
+        Page<ShoppingItem> all = shoppingItemRepository.findAllByUser_Id(userId, pageable);
+        return all.map(shoppingItem -> shoppingItemMapper.toDto(shoppingItem, shoppingItem.getUser().getId()));
     }
 
-    @GetMapping("/user/shopping-list/user/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    Page<ShoppingItemDto> findAll(@PathVariable String username, Pageable pageable, Authentication authentication) {
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new shopping item.");
-        }
+    @GetMapping("/admin/shopping-list/user/{username}")
+    Page<ShoppingItemDto> findAllForUser_Username(@PathVariable String username, Pageable pageable) {
         Page<ShoppingItem> all = shoppingItemRepository.findAllByUser_Username(username, pageable);
         return all.map(shoppingItem -> shoppingItemMapper.toDto(shoppingItem, shoppingItem.getUser().getId()));
     }
 
-    @GetMapping("/user/shopping-list/user/id/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    Page<ShoppingItemDto> findAll(@PathVariable Long userId, Pageable pageable, Authentication authentication) {
-        User user = userService.findById(userId);
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new shopping item.");
-        }
-        Page<ShoppingItem> all = shoppingItemRepository.findAllByUser_Id(userId, pageable);
+    @GetMapping("/user/shopping-list")
+    Page<ShoppingItemDto> findAll(Pageable pageable, Authentication authentication) {
+        String username = authentication.getName();
+        Page<ShoppingItem> all = shoppingItemRepository.findAllByUser_Username(username, pageable);
         return all.map(shoppingItem -> shoppingItemMapper.toDto(shoppingItem, shoppingItem.getUser().getId()));
     }
+
+    @GetMapping("/user/shopping-list/{id}")
+    ShoppingItemDto findById(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        ShoppingItem founded = shoppingItemRepository.findByIdAndUser_Username(id, username)
+                .orElseThrow(() -> new ShoppingItemNotFoundException("No shopping item found for id: " + id));
+        return shoppingItemMapper.toDto(founded, user.getId());
+    }
+
 
     //endregion
 
     //region DELETE METHODS
     @DeleteMapping("/user/shopping-list")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     public ShoppingItemDto delete(@RequestBody ShoppingItem shoppingItem, Authentication authentication) {
-        User user = shoppingItem.getUser();
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new shopping item.");
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        if (!shoppingItem.getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("You dont have permission to delete this shopping item.");
         }
         shoppingItemRepository.delete(shoppingItem);
         return shoppingItemMapper.toDto(shoppingItem, user.getId());
     }
 
     @DeleteMapping("/user/shopping-list/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     public ShoppingItemDto deleteById(@PathVariable Long id, Authentication authentication) {
         ShoppingItem shoppingItem = shoppingItemRepository.findById(id)
                 .orElseThrow(() -> new ShoppingItemNotFoundException("Shopping item not found for id: " + id));
         return delete(shoppingItem, authentication);
     }
 
-    @DeleteMapping("/user/shopping-list/nullify")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    @DeleteMapping("/user/shopping-list/empty")
     public Page<ShoppingItemDto> deleteAllOwning(Authentication authentication, Pageable pageable) {
         String username = authentication.getName();
+        Page<ShoppingItem> allByUserUsername = shoppingItemRepository.findAllByUser_Username(username, pageable);
+        shoppingItemRepository.deleteAll(allByUserUsername);
+        Page<ShoppingItemDto> dto = allByUserUsername.map(shoppingItem -> shoppingItemMapper.toDto(shoppingItem, shoppingItem.getUser().getId()));
+        return dto;
+    }
+
+    @DeleteMapping("/admin/shopping-list/{id}")
+    public ShoppingItemDto deleteByIdForAdmin(@PathVariable Long id) {
+        ShoppingItem shoppingItem = shoppingItemRepository.findById(id)
+                .orElseThrow(() -> new ShoppingItemNotFoundException("Shopping item not found for id: " + id));
+        shoppingItemRepository.delete(shoppingItem);
+        return shoppingItemMapper.toDto(shoppingItem, shoppingItem.getUser().getId());
+    }
+
+    @DeleteMapping("/admin/shopping-list/empty/user/{username}")
+    public Page<ShoppingItemDto> deleteAllOwning(@PathVariable String username, Pageable pageable) {
         Page<ShoppingItem> allByUserUsername = shoppingItemRepository.findAllByUser_Username(username, pageable);
         shoppingItemRepository.deleteAll(allByUserUsername);
         Page<ShoppingItemDto> dto = allByUserUsername.map(shoppingItem -> shoppingItemMapper.toDto(shoppingItem, shoppingItem.getUser().getId()));

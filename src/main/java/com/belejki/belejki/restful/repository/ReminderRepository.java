@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReminderRepository extends JpaRepository<Reminder, Long> {
 
@@ -40,4 +41,6 @@ public interface ReminderRepository extends JpaRepository<Reminder, Long> {
     Page<Reminder> findAllByNameContainingAndUser_Username(String name, String username, Pageable pageable);
 
     Page<Reminder> findAllByDescriptionContainingAndUser_Username(String descr, String username, Pageable pageable);
+
+    Optional<Reminder> findByIdAndUser_Username(Long id, String username);
 }

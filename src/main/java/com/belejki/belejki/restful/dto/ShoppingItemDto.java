@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShoppingItemDto {
     private Long id;
-    @NotNull
     private Long userId;
     @NotNull
     @NotBlank(message = "Item name is required.")

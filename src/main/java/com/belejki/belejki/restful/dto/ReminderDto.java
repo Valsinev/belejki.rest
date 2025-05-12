@@ -17,7 +17,6 @@ import java.time.LocalDate;
 public class ReminderDto {
 
     private Long id;
-    @NonNull
     private Long userId;
     @NotBlank
     private String name;

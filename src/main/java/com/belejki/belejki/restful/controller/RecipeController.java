@@ -42,53 +42,28 @@ public class RecipeController {
 
     //region POST METHODS
 
-    @PostMapping("/user/recipes/id/{userId}")
+    @PostMapping("/user/recipes")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public RecipeDto saveByUserId(@Valid @RequestBody RecipeDto recipe, @PathVariable Long userId, Authentication authentication) {
-        User user = userService.findById(userId);
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
-        Recipe save = recipeService.saveByUserId(recipe, userId);
-        return recipesMapper.toDto(save, userId);
-    }
-
-    @PostMapping("/user/recipes/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public RecipeDto saveByUsername(@Valid @RequestBody RecipeDto recipe, @PathVariable String username, Authentication authentication) {
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can save new wish item.");
-        }
-        Recipe save = recipeService.saveByUsername(recipe, username);
-        return recipesMapper.toDto(save, save.getUser().getId());
+    public RecipeDto saveByUserId(@Valid @RequestBody RecipeDto recipe, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        recipe.setUserId(user.getId());
+        Recipe saved = recipeService.saveByUserId(recipe, user);
+        return recipesMapper.toDto(saved, saved.getUser().getId());
     }
 
     //endregion
 
     //region GET METHODS
 
-    @GetMapping("/admin/recipes")
-    public Page<RecipeDto> findAll(Pageable pageable) {
-        Page<Recipe> all = recipeRepository.findAll(pageable);
-        return all.map(recipe -> recipesMapper.toDto(recipe, recipe.getUser().getId()));
-    }
 
     @GetMapping("/user/recipes/id/{id}")
-    //user can only find his own recipes by id
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     public RecipeDto findById(@PathVariable Long id, Authentication authentication) {
-        Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(
-                        () -> new RecipeNotFoundException("No recipe found with id = " + id)
-                );
-        String username = recipe.getUser().getUsername();
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can access this recipe.");
-        }
-        return recipesMapper.toDto(recipe, recipe.getUser().getId());
+        String username = authentication.getName();
+        Recipe founded = recipeRepository.findByIdAndUser_Username(id, username)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe not found for id: " + id));
+        recipeRepository.delete(founded);
+        return recipesMapper.toDto(founded, founded.getUser().getId());
     }
 
     @GetMapping("/user/recipes")
@@ -98,6 +73,34 @@ public class RecipeController {
         Page<RecipeDto> dto = allByUserUsername.map(recipe ->
                 recipesMapper.toDto(recipe, recipe.getUser().getId()));
         return dto;
+    }
+
+
+    @GetMapping("/user/recipes/{recipeName}")
+    public List<RecipeDto> findAllOwnedByNameContainingIgnoreCase(@PathVariable String recipeName, Authentication authentication, Pageable pageable) {
+        String username = authentication.getName();
+        Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingAndUser_Username(recipeName, username, pageable);
+        List<RecipeDto> foundedDto = byNameContainingIgnoreCase.stream()
+                .map(recipe ->
+                        recipesMapper.toDto(recipe, recipe.getUser().getId()))
+                .toList();
+        return foundedDto;
+    }
+
+
+    @GetMapping("/user/recipes/by-ingredients")
+    public Page<RecipeDto> findAllByIngredients(@RequestParam List<String> ingredients,
+                                                Pageable pageable,
+                                                Authentication authentication) {
+        String username = authentication.getName();
+        Page<Recipe> recipesByAllIngredientNamesAndUserUsername = recipeService.findRecipesByAllIngredientNamesAndUser_Username(ingredients, username, pageable);
+        return recipesByAllIngredientNamesAndUserUsername.map(recipe -> recipesMapper.toDto(recipe, recipe.getUser().getId()));
+    }
+
+    @GetMapping("/admin/recipes")
+    public Page<RecipeDto> findAll(Pageable pageable) {
+        Page<Recipe> all = recipeRepository.findAll(pageable);
+        return all.map(recipe -> recipesMapper.toDto(recipe, recipe.getUser().getId()));
     }
 
     @GetMapping("/admin/recipes/{recipeName}")
@@ -130,26 +133,6 @@ public class RecipeController {
         return foundedDto;
     }
 
-    @GetMapping("/user/recipes/{recipeName}")
-    public List<RecipeDto> findAllOwnedByNameContainingIgnoreCase(@PathVariable String recipeName, Authentication authentication, Pageable pageable) {
-        String username = authentication.getName();
-        Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingAndUser_Username(recipeName, username, pageable);
-        List<RecipeDto> foundedDto = byNameContainingIgnoreCase.stream()
-                .map(recipe ->
-                recipesMapper.toDto(recipe, recipe.getUser().getId()))
-                .toList();
-        return foundedDto;
-    }
-
-
-    @GetMapping("/user/recipes/by-ingredients")
-    public Page<RecipeDto> findAllByIngredients(@RequestParam List<String> ingredients,
-                                             Pageable pageable,
-                                             Authentication authentication) {
-        String username = authentication.getName();
-        Page<Recipe> recipesByAllIngredientNamesAndUserUsername = recipeService.findRecipesByAllIngredientNamesAndUser_Username(ingredients, username, pageable);
-        return recipesByAllIngredientNamesAndUserUsername.map(recipe -> recipesMapper.toDto(recipe, recipe.getUser().getId()));
-    }
 
     //endregion
 

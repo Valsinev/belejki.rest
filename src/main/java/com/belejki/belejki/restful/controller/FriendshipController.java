@@ -63,16 +63,16 @@ public class FriendshipController {
         return map;
     }
 
-    //returns friend name and List<Wish> wishlist of the friend(FriendshipDto)
-    @GetMapping("/user/friendships/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    public Page<FriendshipDto> findAllByUser_Username(@PathVariable String username,
-                                                      Pageable pageable,
+    @GetMapping("/user/friendships")
+    public Page<FriendshipDto> findAllUserFriendships(Pageable pageable,
                                                       Authentication authentication) {
-        boolean access = checkIfOwnerOrAdmin(authentication, username);
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can delete friendship with username: " + username);
-        }
+        String username = authentication.getName();
+        return service.findAllByUser_Username(username, pageable).map(friendshipMapper::toDto);
+    }
+
+    @GetMapping("/admin/friendships/{username}")
+    public Page<FriendshipDto> findAllByUser_Username(@PathVariable String username,
+                                                      Pageable pageable) {
         return service.findAllByUser_Username(username, pageable).map(friendshipMapper::toDto);
     }
 
