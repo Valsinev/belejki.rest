@@ -108,11 +108,9 @@ public class ReminderService {
 
 
     public Reminder update(Reminder reminder, @Valid ReminderDto dto) {
-        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new UserNotFoundException("User not found for id: " + dto.getUserId()));
         reminder.setName(dto.getName());
         reminder.setDescription(dto.getDescription());
         reminder.setImportanceLevel(dto.getImportanceLevel());
-        reminder.setUser(user);
         reminder.setExpiration(dto.getExpiration());
         reminder.setExpired(dto.isExpired());
         reminder.setExpiresSoon(dto.isExpiresSoon());
@@ -124,8 +122,7 @@ public class ReminderService {
         return reminderRepository.save(reminder);
     }
 
-    public Reminder patchReminder(Long id, @Valid ReminderPatchDto dto) {
-        Reminder reminder = findById(id);
+    public Reminder patchReminder(Reminder reminder, @Valid ReminderPatchDto dto) {
 
         // Update only fields that are provided
         if (dto.getName() != null) {

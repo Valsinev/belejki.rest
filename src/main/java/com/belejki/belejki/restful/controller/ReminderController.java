@@ -4,6 +4,7 @@ import com.belejki.belejki.restful.dto.*;
 import com.belejki.belejki.restful.entity.Reminder;
 import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.exception.RecipeNotFoundException;
+import com.belejki.belejki.restful.exception.ReminderNotFoundException;
 import com.belejki.belejki.restful.mapper.ReminderMapper;
 import com.belejki.belejki.restful.repository.ReminderRepository;
 import com.belejki.belejki.restful.service.ReminderService;
@@ -171,16 +172,12 @@ public class ReminderController {
     //region PUT METHODS
 
     @PutMapping("/user/reminders/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     public ReminderDto updateReminderById(@PathVariable Long id,
                                            @Valid @RequestBody ReminderDto dto,
                                           Authentication authentication) {
-        User user = userService.findById(dto.getUserId());
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can update this reminder.");
-        }
-        Reminder byId = reminderService.findById(id);
+        String username = authentication.getName();
+        Reminder byId = reminderRepository.findByIdAndUser_Username(id, username)
+                .orElseThrow(() -> new RecipeNotFoundException("Reminder not found for id: " + id));
         Reminder updated = reminderService.update(byId, dto);
         return reminderMapper.toDto(updated, updated.getUser().getId());
     }
@@ -189,18 +186,15 @@ public class ReminderController {
 
     //region PATCH METHODS
     @PatchMapping("/user/reminders/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     public ReminderDto patchUser(
             @PathVariable Long id,
             @Valid @RequestBody ReminderPatchDto dto,
             Authentication authentication) {
-        User user = userService.findById(dto.getUserId());
-        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
-        if (!access) {
-            throw new AccessDeniedException("Only owner or admin can update this reminder.");
-        }
+        String username = authentication.getName();
+        Reminder reminder = reminderRepository.findByIdAndUser_Username(id, username)
+                .orElseThrow(() -> new ReminderNotFoundException("Reminder not found for id: " + id));
 
-        Reminder patchedReminder = reminderService.patchReminder(id, dto);
+        Reminder patchedReminder = reminderService.patchReminder(reminder, dto);
         return reminderMapper.toDto(patchedReminder, patchedReminder.getUser().getId());
     }
 
