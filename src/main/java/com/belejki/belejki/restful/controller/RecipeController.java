@@ -2,10 +2,12 @@ package com.belejki.belejki.restful.controller;
 
 import com.belejki.belejki.restful.dto.RecipeDto;
 import com.belejki.belejki.restful.entity.Recipe;
+import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.exception.RecipeNotFoundException;
 import com.belejki.belejki.restful.mapper.RecipesMapper;
 import com.belejki.belejki.restful.repository.RecipeRepository;
 import com.belejki.belejki.restful.service.RecipeService;
+import com.belejki.belejki.restful.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,27 +29,40 @@ public class RecipeController {
     private final RecipeRepository recipeRepository;
     private final RecipeService recipeService;
     private final RecipesMapper recipesMapper;
+    private final UserService userService;
 
     @Autowired
-    public RecipeController(RecipeRepository recipeIngredientRepository, RecipeService recipeService, RecipesMapper recipesMapper) {
+    public RecipeController(RecipeRepository recipeIngredientRepository, RecipeService recipeService, RecipesMapper recipesMapper, UserService userService) {
         this.recipeRepository = recipeIngredientRepository;
         this.recipeService = recipeService;
         this.recipesMapper = recipesMapper;
+        this.userService = userService;
     }
 
 
     //region POST METHODS
 
     @PostMapping("/user/recipes/id/{userId}")
-    public ResponseEntity<RecipeDto> saveByUserId(@Valid @RequestBody RecipeDto recipe, @PathVariable Long userId) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public RecipeDto saveByUserId(@Valid @RequestBody RecipeDto recipe, @PathVariable Long userId, Authentication authentication) {
+        User user = userService.findById(userId);
+        boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can save new wish item.");
+        }
         Recipe save = recipeService.saveByUserId(recipe, userId);
-        return ResponseEntity.ok(recipesMapper.toDto(save, userId));
+        return recipesMapper.toDto(save, userId);
     }
 
     @PostMapping("/user/recipes/{username}")
-    public ResponseEntity<RecipeDto> saveByUsername(@Valid @RequestBody RecipeDto recipe, @PathVariable String username) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public RecipeDto saveByUsername(@Valid @RequestBody RecipeDto recipe, @PathVariable String username, Authentication authentication) {
+        boolean access = checkIfOwnerOrAdmin(authentication, username);
+        if (!access) {
+            throw new AccessDeniedException("Only owner or admin can save new wish item.");
+        }
         Recipe save = recipeService.saveByUsername(recipe, username);
-        return ResponseEntity.ok(recipesMapper.toDto(save, save.getUser().getId()));
+        return recipesMapper.toDto(save, save.getUser().getId());
     }
 
     //endregion

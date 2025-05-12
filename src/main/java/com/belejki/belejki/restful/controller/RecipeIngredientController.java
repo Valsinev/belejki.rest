@@ -6,6 +6,7 @@ import com.belejki.belejki.restful.entity.Recipe;
 import com.belejki.belejki.restful.entity.RecipeIngredient;
 import com.belejki.belejki.restful.exception.RecipeIngredientNotFoundException;
 import com.belejki.belejki.restful.mapper.RecipeIngredientMapper;
+import com.belejki.belejki.restful.repository.IngredientRepository;
 import com.belejki.belejki.restful.repository.RecipeIngredientRepository;
 import com.belejki.belejki.restful.service.IngredientService;
 import com.belejki.belejki.restful.service.RecipeIngredientService;
@@ -28,14 +29,16 @@ public class RecipeIngredientController {
     private final RecipeIngredientMapper recipeIngredientMapper;
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
+    private final IngredientRepository ingredientRepository;
 
     @Autowired
-    public RecipeIngredientController(RecipeIngredientRepository recipeIngredientRepository, RecipeIngredientService recipeIngredientService, RecipeIngredientMapper recipeIngredientMapper, RecipeService recipeService, IngredientService ingredientService) {
+    public RecipeIngredientController(RecipeIngredientRepository recipeIngredientRepository, RecipeIngredientService recipeIngredientService, RecipeIngredientMapper recipeIngredientMapper, RecipeService recipeService, IngredientService ingredientService, IngredientRepository ingredientRepository) {
         this.recipeIngredientRepository = recipeIngredientRepository;
         this.recipeIngredientService = recipeIngredientService;
         this.recipeIngredientMapper = recipeIngredientMapper;
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
+        this.ingredientRepository = ingredientRepository;
     }
 
 
@@ -44,7 +47,8 @@ public class RecipeIngredientController {
     @PostMapping("/user/recipe-ingredients")
     public ResponseEntity<RecipeIngredientDto> save(@Valid @RequestBody RecipeIngredientDto recipeIngredientDto) {
         Recipe recipe = recipeService.findById(recipeIngredientDto.getRecipeId());
-        Ingredient ingredient = ingredientService.findByName(recipeIngredientDto.getIngredient());
+        Ingredient ingredient = ingredientRepository.findByName(recipeIngredientDto.getIngredient())
+                .orElse(new Ingredient(recipeIngredientDto.getIngredient()));
         RecipeIngredient recipeIngredient = recipeIngredientMapper.toEntity(recipeIngredientDto, recipe, ingredient);
         RecipeIngredient saved = recipeIngredientService.save(recipeIngredient);
         RecipeIngredientDto dto = recipeIngredientMapper.toDto(saved);

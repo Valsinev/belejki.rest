@@ -20,7 +20,7 @@ public class Ingredient {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "ingredient", orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients;
 
     public Ingredient(String name) {

@@ -13,7 +13,7 @@ public class IngredientDto {
     private Long id;
     private List<Long> recipeIngredientIds;
     @NotBlank
-    @Size(min = 2, max = 24, message = "Ingredient must be between 2 and 24 characters.")
+    @Size(min = 2, max = 64, message = "Ingredient must be between 2 and 64 characters.")
     private String name;
 
 }

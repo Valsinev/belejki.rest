@@ -18,14 +18,14 @@ public class FriendshipDto {
     @NotBlank
     @Email(message = "Invalid format for email address.")
     private String friendName;
-    private List<Wish> friendWishlist;
+    private List<WishDto> friendWishlist;
 
     public FriendshipDto(String username, String friendName) {
         this.username = username;
         this.friendName = friendName;
     }
 
-    public FriendshipDto(String username, String friendName, List<Wish> wishlist) {
+    public FriendshipDto(String username, String friendName, List<WishDto> wishlist) {
         this.friendName = friendName;
         this.username = username;
         this.friendWishlist = wishlist;

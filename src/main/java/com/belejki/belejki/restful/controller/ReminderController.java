@@ -208,28 +208,6 @@ public class ReminderController {
                 reminderMapper.toDto(reminder, reminder.getUser().getId()));
     }
 
-    @GetMapping("/user/reminders/name/{name}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    public Page<ReminderDto> findAllOwnedByNameContaining(@PathVariable String name,
-                                                                  Pageable pageable,
-                                                                  Authentication authentication) {
-        String username = authentication.getName();
-        Page<Reminder> byNameContainingAndUser = reminderService.findAllByNameContainingAndUser_Username(name, username, pageable);
-        return byNameContainingAndUser.map(reminder ->
-                reminderMapper.toDto(reminder, reminder.getUser().getId()));
-    }
-
-    @GetMapping("/user/reminders/description/{descr}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
-    public Page<ReminderDto> findAllOwnedByDescriptionContaining(@PathVariable String descr,
-                                                          Pageable pageable,
-                                                          Authentication authentication) {
-        String username = authentication.getName();
-        Page<Reminder> byNameContainingAndUser = reminderService.findAllByDescriptionContainingAndUser_Username(descr, username, pageable);
-        return byNameContainingAndUser.map(reminder ->
-                reminderMapper.toDto(reminder, reminder.getUser().getId()));
-    }
-
     @GetMapping("/user/reminders/expires-soon/user/id/{userId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
     public Page<ReminderDto> findAllOwnedByExpiresSoonTrueAndUserId(@PathVariable Long userId,
@@ -287,6 +265,29 @@ public class ReminderController {
         }
         Page<Reminder> byUserUseId = reminderService.findAllByExpiresTodayTrueAndUser_Username(username, pageable);
         return byUserUseId.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+
+    @GetMapping("/user/reminders/name/{name}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByNameContaining(@PathVariable String name,
+                                                          Pageable pageable,
+                                                          Authentication authentication) {
+        String username = authentication.getName();
+        Page<Reminder> byNameContainingAndUser = reminderService.findAllByNameContainingAndUser_Username(name, username, pageable);
+        return byNameContainingAndUser.map(reminder ->
+                reminderMapper.toDto(reminder, reminder.getUser().getId()));
+    }
+
+    @GetMapping("/user/reminders/description/{descr}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER'")
+    public Page<ReminderDto> findAllOwnedByDescriptionContaining(@PathVariable String descr,
+                                                                 Pageable pageable,
+                                                                 Authentication authentication) {
+        String username = authentication.getName();
+        Page<Reminder> byNameContainingAndUser = reminderService.findAllByDescriptionContainingAndUser_Username(descr, username, pageable);
+        return byNameContainingAndUser.map(reminder ->
                 reminderMapper.toDto(reminder, reminder.getUser().getId()));
     }
 
@@ -359,7 +360,7 @@ public class ReminderController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/admin/reminders/expired")
+    @DeleteMapping("/admin/reminders/clear")
     public ResponseEntity<List<ReminderDto>> deleteAllExpiredInYears(Pageable pageable) {
         List<Reminder> expiredBeforeYears = reminderService.findAllExpiredBefore();
         List<ReminderDto> dto = expiredBeforeYears.stream().map(reminder ->

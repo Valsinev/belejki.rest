@@ -37,12 +37,8 @@ public class IngredientService {
 
     public Ingredient save(IngredientDto ingredient) {
 
-        Optional<Ingredient> byName = ingredientRepository.findByName(ingredient.getName());
-        Ingredient newIngredient = new Ingredient();
-        if (byName.isEmpty()) {
-            newIngredient.setName(ingredient.getName());
-            return ingredientRepository.save(newIngredient);
-        } else return byName.get();
+        return ingredientRepository.findByName(ingredient.getName())
+                .orElseGet(() -> ingredientRepository.save(new Ingredient(ingredient.getName())));
     }
 
     public Ingredient findOrCreateByName(String ingredientName) {

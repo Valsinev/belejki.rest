@@ -59,7 +59,8 @@ public class FriendshipController {
     @GetMapping("/admin/friendships")
     public Page<FriendshipDto> findAll(Pageable pageable) {
         Page<Friendship> all = friendshipRepository.findAll(pageable);
-        return all.map(friendshipMapper::toDto);
+        Page<FriendshipDto> map = all.map(friendshipMapper::toDto);
+        return map;
     }
 
     //returns friend name and List<Wish> wishlist of the friend(FriendshipDto)
@@ -74,7 +75,6 @@ public class FriendshipController {
         }
         return service.findAllByUser_Username(username, pageable).map(friendshipMapper::toDto);
     }
-
 
 
 

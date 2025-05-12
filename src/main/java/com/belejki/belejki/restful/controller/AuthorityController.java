@@ -34,7 +34,7 @@ public class AuthorityController {
 
     //region POST METHODS
 
-    @PostMapping("/admin/authorities/id/{userId}")
+    @PostMapping("/admin/authorities/user/id/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public AuthorityDto saveAuthority(@Valid @RequestBody AuthorityDto authority,
                                       @PathVariable Long userId,
@@ -55,12 +55,6 @@ public class AuthorityController {
     @GetMapping("/admin/authorities/id/{id}")
     public AuthorityDto findById(@PathVariable Long id) {
         return authorityMapper.toDtoLong(authorityService.findById(id));
-    }
-
-    @GetMapping("/admin/authorities/null")
-    public Page<Authority> findAllWithNullUser(Pageable pageable){
-        return authorityRepository.findAllByUserIsNull(pageable);
-
     }
 
     @GetMapping("/admin/authorities/{username}")
@@ -88,7 +82,7 @@ public class AuthorityController {
 
         return authorityMapper.toDtoLong(authorityService.updateById(id, authorityDto));
     }
-    //
+    //endregion
 
     //region DELETE METHODS
 
