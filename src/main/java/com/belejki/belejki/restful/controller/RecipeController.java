@@ -67,7 +67,7 @@ public class RecipeController {
     }
 
     @GetMapping("/user/recipes")
-    public Page<RecipeDto> findById(Authentication authentication, Pageable pageable) {
+    public Page<RecipeDto> findAllUserRecipes(Authentication authentication, Pageable pageable) {
         String username = authentication.getName();
         Page<Recipe> allByUserUsername = recipeService.findAllByUser_Username(username, pageable);
         Page<RecipeDto> dto = allByUserUsername.map(recipe ->

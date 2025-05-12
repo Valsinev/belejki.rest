@@ -32,8 +32,11 @@ public class IngredientController {
 
     @PostMapping("/user/ingredients")
     public IngredientDto save(@Valid @RequestBody IngredientDto ingredient) {
-        Ingredient saved = ingredientService.save(ingredient);
-        return ingredientMapper.toDto(saved);
+        Ingredient newIngredient = ingredientRepository.findByName(ingredient.getName())
+                .orElseGet(() -> new Ingredient(ingredient.getName()));
+
+        ingredientService.save(ingredient);
+        return ingredientMapper.toDto(newIngredient);
     }
 
     //endregion
@@ -61,11 +64,6 @@ public class IngredientController {
     //endregion
 
     //region DELETE METHODS
-    @DeleteMapping("/admin/ingredients")
-    public ResponseEntity<IngredientDto> delete(@RequestBody Ingredient ingredient) {
-        Ingredient deleted = ingredientService.delete(ingredient);
-        return ResponseEntity.ok(ingredientMapper.toDto(deleted));
-    }
 
     @DeleteMapping("/admin/ingredients/id/{id}")
     public ResponseEntity<IngredientDto> deleteById(@PathVariable Long id) {

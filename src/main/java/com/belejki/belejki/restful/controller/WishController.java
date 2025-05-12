@@ -93,7 +93,8 @@ public class WishController {
     public WishDto updateWishById(@PathVariable Long id,
                                           @Valid @RequestBody WishDto dto,
                                           Authentication authentication) {
-        User user = userService.findById(dto.getUserId());
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
         boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
         if (!access) {
             throw new AccessDeniedException("Only owner or admin can update this reminder.");
@@ -113,7 +114,8 @@ public class WishController {
             @PathVariable Long id,
             @Valid @RequestBody WishPatchDto dto,
             Authentication authentication) {
-        User user = userService.findById(dto.getUserId());
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
         boolean access = checkIfOwnerOrAdmin(authentication, user.getUsername());
         if (!access) {
             throw new AccessDeniedException("Only owner or admin can update this reminder.");
