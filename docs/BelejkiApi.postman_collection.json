@@ -1,0 +1,3979 @@
+{
+	"info": {
+		"_postman_id": "9fd25380-976b-4512-8a70-953f5ea9b018",
+		"name": "NotesApi",
+		"description": "**Api that stores notes for Users**:\n\n1. **Reminders**(stores events with expiration date)\n    \n2. **ShoppingItems**(stores shopping list)\n    \n3. **Wishlist**\n    \n4. **Recipes**(stores cooking recipes)\n    \n5. **Friendships**(adding user to friendlist and access his wishlist)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30376411"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Authorities",
+					"item": [
+						{
+							"name": "createsNewAuthority",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"authority\":\"ROLE_USER\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/user/id/2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"user",
+										"id",
+										"2"
+									]
+								},
+								"description": "**Creates new authority for passed user id. Only users with ROLE_ADMIN can access this endpoint.**\n\nuser authority can be:\n\n- ROLE_USER\n- ROLE_ADMIN"
+							},
+							"response": []
+						},
+						{
+							"name": "findsAllAuthorities",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities"
+									]
+								},
+								"description": "Gets all authorities for admin users."
+							},
+							"response": []
+						},
+						{
+							"name": "findsAuthorityById",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/id/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"id",
+										"1"
+									]
+								},
+								"description": "Finds authority by passed authority id. Only for admin users."
+							},
+							"response": []
+						},
+						{
+							"name": "findsAllAuthoritiesByUsername",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/pesho@abv.bg",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"pesho@abv.bg"
+									]
+								},
+								"description": "Finds all authorities of an existing user by passing the username of the user. Only for admin users."
+							},
+							"response": []
+						},
+						{
+							"name": "findsAllAuthoritiesByPassedRole",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/role/ROLE_USER",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"role",
+										"ROLE_USER"
+									]
+								},
+								"description": "Finds all authorities with the same name as the passed one."
+							},
+							"response": []
+						},
+						{
+							"name": "updatesAuthorityByPassedId",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":3,\n    \"authority\":\"DISABLED\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/id/3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"id",
+										"3"
+									]
+								},
+								"description": "Updates authority by passed authority id."
+							},
+							"response": []
+						},
+						{
+							"name": "deleteAllAuthoritiesOfPassedUser_Username",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/user/tosho@abv.bg",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"user",
+										"tosho@abv.bg"
+									]
+								},
+								"description": "Deletes all authorities of an user, by passing the username."
+							},
+							"response": []
+						},
+						{
+							"name": "deleteById",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/4",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"4"
+									]
+								},
+								"description": "Deletes authority by passed authority id."
+							},
+							"response": []
+						}
+					],
+					"description": "**CRUD methods for maniipulating authorities/roles for Users.**\n\n**Only Users with ROLE_ADMIN authentication have access.**"
+				},
+				{
+					"name": "saveNewUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Stoyanov\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"users"
+							]
+						},
+						"description": "Creates new user. Required:\n\n- username = valid email format\n    \n- firstName = between 2 and 24 characters long\n    \n- lastName = between 2 and 24 characters long\n    \n- password = between 8 and 64 characters long"
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"Pesho@abv.bg\",\n    \"firstName\":\"Updated Pesho\",\n    \"lastName\":\"Updated Stoev\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/users/update/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"users",
+								"update",
+								"1"
+							]
+						},
+						"description": "Updates user by passed user id."
+					},
+					"response": []
+				},
+				{
+					"name": "partialUserUpdate",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Stoev\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/users/patch/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"users",
+								"patch",
+								"1"
+							]
+						},
+						"description": "Partial update for user by passing user id."
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllUserForUsersWithRoleAmin",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "Gets all users. Pageable."
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllUsersNotLoggedFor2YearsByDefault",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/not-logged",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"not-logged"
+							]
+						},
+						"description": "Lists all users not logged for 2+ years. Pageable."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUsersWithDisabledFlag",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/disabled",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"disabled"
+							]
+						},
+						"description": "Finds all users with field disabled = true."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUsersWithSetForDeletionFlag",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/set-for-deletion",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"set-for-deletion"
+							]
+						},
+						"description": "Finds all users with field setForDeletion = true."
+					},
+					"response": []
+				},
+				{
+					"name": "findsUserByUsername",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"pesho@abv.bg"
+							]
+						},
+						"description": "Finds user by passed username."
+					},
+					"response": []
+				},
+				{
+					"name": "findsUserById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/id/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"id",
+								"1"
+							]
+						},
+						"description": "Finds user by passed user id."
+					},
+					"response": []
+				},
+				{
+					"name": "findsUserByFirstNameContainingIgnorecase",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/first-name/pes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"first-name",
+								"pes"
+							]
+						},
+						"description": "Gets all users containing passed string in their first name."
+					},
+					"response": []
+				},
+				{
+					"name": "findsUserByLastNameContainingIgnorecase",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/last-name/sto",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"last-name",
+								"sto"
+							]
+						},
+						"description": "Gets all users containing passed string in their last name."
+					},
+					"response": []
+				},
+				{
+					"name": "findsUserByFirstAndLastNameContainingIgnorecase",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/first-and-last-name?firstName=pe&lastName=s",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"first-and-last-name"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "pe"
+								},
+								{
+									"key": "lastName",
+									"value": "s"
+								}
+							]
+						},
+						"description": "Finds all users that in their first name contains the passed param for firstName and also their last name contains the passed param for lastName."
+					},
+					"response": []
+				},
+				{
+					"name": "delesUserByPassingTheUser",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Deletes user by passing the user object."
+					},
+					"response": []
+				},
+				{
+					"name": "delesUserById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/id/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"id",
+								"1"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "pe",
+									"disabled": true
+								},
+								{
+									"key": "lastName",
+									"value": "s",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Deletes user by passed user id."
+					},
+					"response": []
+				},
+				{
+					"name": "delesUserByUsername",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"pesho@abv.bg"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "pe",
+									"disabled": true
+								},
+								{
+									"key": "lastName",
+									"value": "s",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Deletes user by passed username."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllUsersWithSetForDeletionFlag",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/set-for-deletion",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"set-for-deletion"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "pe",
+									"disabled": true
+								},
+								{
+									"key": "lastName",
+									"value": "s",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Deletes all users with setForDeletion = true field/flag."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllUsersNotLoggedByMoreThan2YearsByDefault",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/not-logged",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"not-logged"
+							]
+						},
+						"description": "Deletes all users not logged for more than 2 years."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for CRUD operations for user entities"
+		},
+		{
+			"name": "Wish",
+			"item": [
+				{
+					"name": "CreateWishWithUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\":\"Watch\",\n    \"approximatePrice\": 150,\n    \"link\":\"https://www.seikowatches.com/global-en/selectregion\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/wishlist",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist"
+							]
+						},
+						"description": "Creates new Wish item for the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserWishes",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/wishlist",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist"
+							]
+						},
+						"description": "Shows the wishlist of the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"4"
+							]
+						},
+						"description": "finds a Wish by passed wish id."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllByUser_Id(For admin users)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/wishlist/user/id/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"wishlist",
+								"user",
+								"id",
+								"3"
+							]
+						},
+						"description": "Finds all Wishes for a user by passed user id. (Only for users with ROLE_ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllByUser_Username(for admin users)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/wishlist/user/pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"wishlist",
+								"user",
+								"pesho@abv.bg"
+							]
+						},
+						"description": "Finds all Wishes for a user by passed username.(Only for users with ROLE_ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "updateWishById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\":\"Asus Laptop\",\n    \"approximatePrice\": 1350,\n    \"link\":\"https://www.asus.com/laptops/for-work/all-series/filter?Category=2-in-1-laptops\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/update/6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"update",
+								"6"
+							]
+						},
+						"description": "Updates a wish by passed wish id."
+					},
+					"response": []
+				},
+				{
+					"name": "patchWishById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"approximatePrice\": 1050\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/patch/6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"patch",
+								"6"
+							]
+						},
+						"description": "Updates only the passed fields of a Wish by passed wish id."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteWishById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"3"
+							]
+						},
+						"description": "Deletes a Wish by passed wish id."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllWishByUser_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/wishlist/user/id/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"wishlist",
+								"user",
+								"id",
+								"4"
+							]
+						},
+						"description": "Deletes all Wishes of a user, by passed user id.(Only admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllByUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/wishlist/user/gosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"wishlist",
+								"user",
+								"gosho@abv.bg"
+							]
+						},
+						"description": "Deletes all Wishes of a user, by passed username.(Only admin access)"
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD operations for User's wishes(wishlist)."
+		},
+		{
+			"name": "Friendship",
+			"item": [
+				{
+					"name": "addFriendship",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"Pesho@abv.bg\",\n    \"friendName\":\"Tosho@abv.bg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/friendships",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"friendships"
+							]
+						},
+						"description": "Adds a Friend to a user."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllFriendships",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/friendships",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"friendships"
+							]
+						},
+						"description": "Gets all friendships.(Only admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserFriendships",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/friendships",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"friendships"
+							]
+						},
+						"description": "Gets all of the logged user friendships."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllByUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/friendships/tosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"friendships",
+								"tosho@abv.bg"
+							]
+						},
+						"description": "gets all friendships for user by passed username(only admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/friendships/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"friendships",
+								"1"
+							]
+						},
+						"description": "Deletes logged user's friendship if the passed id matches."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllByFriendUsername",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/friendships/friend/tosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"friendships",
+								"friend",
+								"tosho@abv.bg"
+							]
+						},
+						"description": "Deletes all friendships of a user by passed friend username."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllByUsername",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/friendships/user/pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"friendships",
+								"user",
+								"pesho@abv.bg"
+							]
+						},
+						"description": "Deletes all friendships of a user by passed username."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recipe",
+			"item": [
+				{
+					"name": "RecipeIngredient",
+					"item": [
+						{
+							"name": "Ingredient",
+							"item": [
+								{
+									"name": "SavesIngredientIfNotExistsByPassedIngredientObject",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\":\"tomatos\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/user/ingredients",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"user",
+												"ingredients"
+											]
+										},
+										"description": "Saves new ingredient if it does not exists in the database."
+									},
+									"response": []
+								},
+								{
+									"name": "findAll",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/ingredients",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"ingredients"
+											]
+										},
+										"description": "Finds all ingredients."
+									},
+									"response": []
+								},
+								{
+									"name": "findIngredientByIngredient_Name",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/ingredients/tomatoes",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"ingredients",
+												"tomatoes"
+											]
+										},
+										"description": "find ingredient by passed ingredient name."
+									},
+									"response": []
+								},
+								{
+									"name": "findIngredientByIngredient_Id",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/ingredients/id/12",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"ingredients",
+												"id",
+												"12"
+											]
+										},
+										"description": "finds ingredient by passed ingredient id."
+									},
+									"response": []
+								},
+								{
+									"name": "deletesIngredientByPassedIngredient_Id",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/ingredients/id/13",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"ingredients",
+												"id",
+												"13"
+											]
+										},
+										"description": "deletes ingredient by ingredient id."
+									},
+									"response": []
+								},
+								{
+									"name": "deletesIngredientByPassedIngredient_Name",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/ingredients/potatoes",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"ingredients",
+												"potatoes"
+											]
+										},
+										"description": "deletes ingredient by passed ingredient name."
+									},
+									"response": []
+								},
+								{
+									"name": "deletesAllIngredientsNotUsedInRecipeIngredient",
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": [
+												{
+													"key": "username",
+													"value": "pesho@abv.bg",
+													"type": "string"
+												},
+												{
+													"key": "password",
+													"value": "1q2w3e4r",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/admin/ingredients/clear",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"admin",
+												"ingredients",
+												"clear"
+											]
+										},
+										"description": "Deletes all ingredient not used in recipes."
+									},
+									"response": []
+								}
+							],
+							"description": "For CRUD operations for ingredients(mostly admin access). The table exists to create RecipeIngredients."
+						},
+						{
+							"name": "saveNewRecipeIngredientForRecipe",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"recipeId\":7,\n    \"ingredient\":\"tomatos\",\n    \"quantity\":\"500g\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients"
+									]
+								},
+								"description": "Saves new recipe ingredient for recipe by passed recipe id."
+							},
+							"response": []
+						},
+						{
+							"name": "findAllRecipeIngredients",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/recipe-ingredients",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"recipe-ingredients"
+									]
+								},
+								"description": "Gets all Recipe ingredients. Pageable.(Only admin access)"
+							},
+							"response": []
+						},
+						{
+							"name": "findById",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/recipe-ingredients/id/39",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"recipe-ingredients",
+										"id",
+										"39"
+									]
+								},
+								"description": "finds recipe ingredient by passed recipeIngredient id."
+							},
+							"response": []
+						},
+						{
+							"name": "findAllRecipeIngredientsForPassedRecipeName",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/recipe-ingredients/recipe/One-Pot Chicken Stew",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"recipe-ingredients",
+										"recipe",
+										"One-Pot Chicken Stew"
+									]
+								},
+								"description": "Finds all recipe ingredients for passed recipe by recipe name."
+							},
+							"response": []
+						},
+						{
+							"name": "findAllRecipeIngredientsForPassedRecipeObject",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\":7\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients/recipe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients",
+										"recipe"
+									]
+								},
+								"description": "Finds all recipe ingredients for passed recipe object."
+							},
+							"response": []
+						},
+						{
+							"name": "findAllRecipeIngredientsForPassedRecipe_Id",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients/recipe/id/7",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients",
+										"recipe",
+										"id",
+										"7"
+									]
+								},
+								"description": "finds all recipe ingredients for passed recipe by recipe id."
+							},
+							"response": []
+						},
+						{
+							"name": "deletesRecipeIngredientByPassedRecipeIngredientObject",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients"
+									]
+								},
+								"description": "Deletes recipe ingredient by passing the recipeIngredient object."
+							},
+							"response": []
+						},
+						{
+							"name": "deletesRecipeIngredientByPassedRecipeIngredient_Id",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients/id/42",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients",
+										"id",
+										"42"
+									]
+								},
+								"description": "Deletes recipe ingredient by passed recipe ingredient id."
+							},
+							"response": []
+						},
+						{
+							"name": "deletesAllRecipeIngredientByPassedRecipe_Object",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\":7\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients/recipe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients",
+										"recipe"
+									]
+								},
+								"description": "Deletes all recipe ingredient for recipe by passing the recipe object."
+							},
+							"response": []
+						},
+						{
+							"name": "deletesAllRecipeIngredientByPassedRecipe_Id",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "pesho@abv.bg",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1q2w3e4r",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\":7\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/user/recipe-ingredients/recipe/id/9",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"user",
+										"recipe-ingredients",
+										"recipe",
+										"id",
+										"9"
+									]
+								},
+								"description": "Deletes all recipe ingredients for a recipe by passing the recipe id."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "saveNewRecipeForUser",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "Pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Easy Weeknight Spaghetti\",\n    \"howToMake\":\"How to Make the Best Spaghetti You’ll start by making the easy meat sauce. Brown your meat in a bit of oil, and then stir in onions until they soften. Then add lots of flavor with garlic, tomato paste, oregano, and red pepper flakes. To finish the sauce, add a bit of water (or broth) and crushed tomatoes. Our easy sauce simmers for about 25 minutes, so about 15 minutes before it is ready, you can cook your spaghetti. For the best spaghetti, cook it in salted water. Pasta water should taste salty. I add a lot of salt to our pasta water (it makes the pasta taste delicious). I add about one tablespoon of salt for every four quarts (16 cups) of water, which is perfect for cooking one pound of pasta. If you still have it, check your package instructions. If you’ve tossed the package already, spaghetti takes 8 to 12 minutes. We recommend setting a timer for 8 minutes and then checking your spaghetti to see if it needs longer.There’s no need to rinse spaghetti after cooking, especially if you plan to toss it with a sauce. Rinsing removes the starch, which helps our sauce cling to the noodles. My only caveat to this is when I’m making cold pasta dishes, like pasta salad or macaroni salad. When your spaghetti is ready, toss it with your delicious homemade meat sauce and serve with some parmesan cheese sprinkled on top. Yum! \",\n\n    \"ingredients\": [\n        {\n        \"ingredient\":\"Spaghetti\",\n        \"quantity\":\"500g\"\n        },\n        {\n        \"ingredient\": \"Ground meat\",\n        \"quantity\":\"350g\"\n        },\n        {\n        \"ingredient\":\"Tomatoes and tomato paste\",\n        \"quantity\":\"150g\"\n        },\n        {\n        \"ingredient\":\"Onion, garlic, and spices\",\n        \"quantity\":\"by taste\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes"
+							]
+						},
+						"description": "Saves new recipe for the logged user. Required:\n\n- name = between 2 and 64 characters\n    \n- howToMake = between 10 and 4000 characters\n    \n\ningredients:\n\n- ingredient = between 2 and 64 characters\n    \n- quantity = between 2 and 64 characters"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRecipes",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"recipes"
+							]
+						},
+						"description": "Gets all recipes (admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findRecipeById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes/id/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes",
+								"id",
+								"2"
+							]
+						},
+						"description": "Find recipe by id for the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserRecipes",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes"
+							]
+						},
+						"description": "Gets all recipies of the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRecipesByNameContaining",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/recipes/s",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"recipes",
+								"s"
+							]
+						},
+						"description": "Gets all the recipes containing the passed string in their name.(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRecipesOfUserByPassedUser_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/recipes/user/id/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"recipes",
+								"user",
+								"id",
+								"2"
+							]
+						},
+						"description": "Finds all recipes for passed user by user id.(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRecipesOfUserByPassedUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/recipes/user/tosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"recipes",
+								"user",
+								"tosho@abv.bg"
+							]
+						},
+						"description": "Gets all recipes of an user by passed username.(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findRecipeByNameOfOwnedRecipes",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes/chicken",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes",
+								"chicken"
+							]
+						},
+						"description": "Finds all recipes contained passed string in their name."
+					},
+					"response": []
+				},
+				{
+					"name": "findInOwnedRecipesAllWithPassedIngredients",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes/by-ingredients?ingredients=Spaghetti&ingredients=Ground meat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes",
+								"by-ingredients"
+							],
+							"query": [
+								{
+									"key": "ingredients",
+									"value": "Spaghetti"
+								},
+								{
+									"key": "ingredients",
+									"value": "Ground meat"
+								}
+							]
+						},
+						"description": "Finds all recipes of the logged user containing the passed ingredients with params."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteByPassedRecipe",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes"
+							]
+						},
+						"description": "Deletes recipe by passed recipe object."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteFromOwnRecipesByRecipeId",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "Tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes",
+								"4"
+							]
+						},
+						"description": "Deletes recipe of the logged user by passing the recipe id."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllRecipesOfUserByPassedUser_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/recipes/user/id/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"recipes",
+								"user",
+								"id",
+								"3"
+							]
+						},
+						"description": "Deletes all the recipes of an user by passed user id.(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAllRecipesOfUserByPassedUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/recipes/user/Pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"recipes",
+								"user",
+								"Pesho@abv.bg"
+							]
+						},
+						"description": "Deletes all recipes of an user by passed username.(admin access)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reminder",
+			"item": [
+				{
+					"name": "savesNewReminder",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Comedy show\",\n    \"description\": \"Address: Sofia 'Pirotska' street 78\",\n    \"importanceLevel\":6,\n    \"expiration\": \"25-07-2025\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/reminders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders"
+							]
+						},
+						"description": "Saves new reminder for logged user.\n\n**Constraints:**\n\n- name = between 2 and 64 characters\n- importanceLevel = from 1 to 10 number value\n- expiration = dd-MM-yyyy format\n    \n- description = not more than 128 characters (not required)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllReminders",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders"
+							]
+						},
+						"description": "admin access"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersForUserByPassedUser_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/user/id/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"user",
+								"id",
+								"3"
+							]
+						},
+						"description": "Finds all reminders of an user by passed user id."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersForUserByPassedUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/user/tosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"user",
+								"tosho@abv.bg"
+							]
+						},
+						"description": "Finds all reminders of an user by passed username."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersWithExpiredFlagTrue",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/expired",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"expired"
+							]
+						},
+						"description": "Finds all reminders with expired = true field/flag(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersWithExpiresSoonFlagTrue",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/expires-soon",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"expires-soon"
+							]
+						},
+						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findsInOwnRemindersByPassedReminder_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/id/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"id",
+								"7"
+							]
+						},
+						"description": "Finds reminder of the current user by passed reminder id."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserReminders",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders"
+							]
+						},
+						"description": "Finds all reminders of the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserRemindersWithExpiredFlagTrue",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/expired",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"expired"
+							]
+						},
+						"description": "Finds all reminders of the logged user with expired = true field/flag"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserRemindersWithExpiresSoonFlagTrue",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/expires-soon",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"expires-soon"
+							]
+						},
+						"description": "Finds all reminders of the logged user with expiresSoon = true field/flag"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserRemindersWithExpiresTodayFlagTrue",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/expires-today",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"expires-today"
+							]
+						},
+						"description": "Finds all reminders of the logged user with expiresToday = true field/flag"
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllRemindersWithNameContainingPassedName",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/name/car",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"name",
+								"car"
+							]
+						},
+						"description": "Finds all reminders containing passed string in their names."
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllRemindersWithDescriptionContainingPassedDescription",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/description/change",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"description",
+								"change"
+							]
+						},
+						"description": "Finds all reminders containing passed string in their description."
+					},
+					"response": []
+				},
+				{
+					"name": "updatesReminderByPassedReminderSelectByPassedReminderId",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"car: change oil\",\n    \"description\": \"last changed 11-11-2024\",\n    \"importanceLevel\":8,\n    \"expiration\":\"16-11-2025\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/reminders/update/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"update",
+								"1"
+							]
+						},
+						"description": "Updates reminder by passed reminder id."
+					},
+					"response": []
+				},
+				{
+					"name": "partialUpdatesReminderByPassedReminderSelectByPassedReminderId",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"last changed 10-11-2024\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/reminders/patch/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"patch",
+								"2"
+							]
+						},
+						"description": "Partial update for Reminder of the logged user by passed reminder id."
+					},
+					"response": []
+				},
+				{
+					"name": "deletesReminderByPassedReminder_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/id/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"id",
+								"1"
+							]
+						},
+						"description": "Deletes reminder by passed reminder id(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "deletesAllRemindersForPassedUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/user/tosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"user",
+								"tosho@abv.bg"
+							]
+						},
+						"description": "Deletes all reminders of an user by passed username(ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "deletesAllRemindersForPassedUser_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/user/id/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"user",
+								"id",
+								"2"
+							]
+						},
+						"description": "Deletes all reminders of an user by passed user id(ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "deletesAllRemindersExpiredBefore2YearsByDefault",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/clear",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"clear"
+							]
+						},
+						"description": "Deletes all reminders expired by more than 2 years.(ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "deletesReminderFromOwnedReminderByPassingReminderId",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/id/9",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"id",
+								"9"
+							]
+						},
+						"description": "Deletes reminder of the logged user by passed reminder id."
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD operations for user reminders."
+		},
+		{
+			"name": "ShoppingItem",
+			"item": [
+				{
+					"name": "createsNewShoppingItem",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"onion\",\n    \"color\":\"#43eb34\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list"
+							]
+						},
+						"description": "CRUD methods for user's shopping list."
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllUsersShoppingItems",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list"
+							]
+						},
+						"description": "finds all shopping items for the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findShoppingItemByPassedShoppingItemId",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list",
+								"1"
+							]
+						},
+						"description": "Finds shopping item of the logged user by passing the shopping item id."
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllShoppingItemsOfAUserByPassedUser_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/shopping-list/user/id/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"shopping-list",
+								"user",
+								"id",
+								"3"
+							]
+						},
+						"description": "Finds all shopping items of an user by passed user id.(ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllShoppingItemsOfAUserByPassedUser_Username",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/shopping-list/user/pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"shopping-list",
+								"user",
+								"pesho@abv.bg"
+							]
+						},
+						"description": "Finds all shopping items of an user by passed username.(ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "deletesShoppingItemByPassingShoppingItemObject",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list"
+							]
+						},
+						"description": "Deletes a shopping item by passing the shopping item object."
+					},
+					"response": []
+				},
+				{
+					"name": "deletesShoppingItemByPassingShoppingItem_Id",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list",
+								"1"
+							]
+						},
+						"description": "Deletes logged user's shopping item by passing the shopping item id."
+					},
+					"response": []
+				},
+				{
+					"name": "removesAllShoppingItemsOfTheUser",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "tosho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list/empty",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list",
+								"empty"
+							]
+						},
+						"description": "Deletes all the shoppling items of the logged user.(clears shopping list)"
+					},
+					"response": []
+				},
+				{
+					"name": "removesShoppingItemWithPassedShoppingItem_Id(No restrictions)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/shopping-list/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"shopping-list",
+								"2"
+							]
+						},
+						"description": "Deletes shopping item from all shopping items by passing the shopping item id(ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "empyShoppingListForUserByPassedUser_Username(No restrictions)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "pesho@abv.bg",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "1q2w3e4r",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/shopping-list/empty/user/pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"shopping-list",
+								"empty",
+								"user",
+								"pesho@abv.bg"
+							]
+						},
+						"description": "Deletes all shopping items for an user by passed username.(ADMIN)"
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:9050",
+			"type": "string"
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
