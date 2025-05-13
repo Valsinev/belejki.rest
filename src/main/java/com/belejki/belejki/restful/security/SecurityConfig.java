@@ -42,6 +42,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(configurer -> configurer
+
                         .requestMatchers(HttpMethod.POST, "/user/users").permitAll()
 
                         // ADMIN access:

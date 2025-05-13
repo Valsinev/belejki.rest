@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import static com.belejki.belejki.restful.controller.Utility.checkIfOwnerOrAdmin;
 
 @RestController
-@RequestMapping
 public class WishController {
 
     private final WishRepository wishRepository;

@@ -23,7 +23,6 @@ import java.util.Optional;
 import static com.belejki.belejki.restful.controller.Utility.checkIfOwnerOrAdmin;
 
 @RestController
-@RequestMapping
 public class ShoppingItemController {
 
     private final ShoppingItemRepository shoppingItemRepository;
