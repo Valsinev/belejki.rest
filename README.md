@@ -34,12 +34,12 @@ Before running the application, set the following environment variables:
 
 Variable	                Description
 
-SERVER_PORT	                Optional – custom port (defaults to 8080)
-DATABASE_URL	            JDBC URL for MySQL (e.g., jdbc:mysql://localhost:3306/belejki)
-DATABASE_USER	            MySQL username
-DATABASE_PASSWORD	        MySQL password
-SPRING_SECURITY_USER	    Default username for Spring Security
-SPRING_SECURITY_PASSWORD	Default password for Spring Security
+- SERVER_PORT	            Optional – custom port (defaults to 8080)
+- DATABASE_URL	            JDBC URL for MySQL (e.g., jdbc:mysql://localhost:3306/belejki)
+- DATABASE_USER	            MySQL username
+- DATABASE_PASSWORD	        MySQL password
+- SPRING_SECURITY_USER	    Default username for Spring Security
+- SPRING_SECURITY_PASSWORD	Default password for Spring Security
 
 💡 In IntelliJ, you can define these in Run > Edit Configurations > Environment Variables.
 
@@ -103,7 +103,7 @@ This project uses a Postman collection to document and test the REST API.
     - Click **"Import"** > **"File"**, and choose the JSON file above.
 
 3. **Optional: Set up Environment**  
-   To simplify testing, set up Postman environment variables (e.g. `base_url`, `auth_token`, etc.).
+   To simplify testing, set up Postman environment variables (e.g. `base_url`, etc.).
 
 ### 🌐 Optional: Publish Online
 
