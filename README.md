@@ -25,7 +25,7 @@
 ### Clone the Repository
 
 bash
-git clone https://github.com/yourusername/belejki.rest.git
+git clone https://github.com/Valsinev/belejki.rest.git
 cd belejki.rest
 
 
