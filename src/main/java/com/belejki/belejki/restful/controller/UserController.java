@@ -7,7 +7,6 @@ import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.mapper.UserMapper;
 import com.belejki.belejki.restful.repository.UserRepository;
 import com.belejki.belejki.restful.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,7 +35,6 @@ public class UserController {
 
     //region POST METHODS
 
-    @Operation(summary = "Saves new user.")
     @PostMapping("/user/users")
     public UserAdminDto save(@Valid @RequestBody UserDto user) {
         return userMapper.toAdminDto(userService.createUser(user));
