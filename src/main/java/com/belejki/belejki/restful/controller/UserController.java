@@ -9,6 +9,7 @@ import com.belejki.belejki.restful.repository.UserRepository;
 import com.belejki.belejki.restful.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 @RestController
 public class UserController {
 
@@ -39,6 +43,29 @@ public class UserController {
     public UserAdminDto save(@Valid @RequestBody UserDto user) {
         return userMapper.toAdminDto(userService.createUser(user));
     }
+
+    @GetMapping("/confirm")
+    public ResponseEntity<String> confirmEmail(@RequestParam("token") String token) {
+        Optional<User> userOpt = userRepository.findByConfirmationToken(token);
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid token.");
+        }
+
+        User user = userOpt.get();
+
+        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().body("Token expired.");
+        }
+
+        user.setEnabled(true);
+        user.setConfirmationToken(null);
+        user.setTokenExpiry(null);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Email confirmed! You can now log in.");
+    }
+
 
     //endregion
 

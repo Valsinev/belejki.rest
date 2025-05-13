@@ -5,7 +5,7 @@
 
 ## ✨ Features
 
-- **User Accounts** – Register and manage users.
+- **User Registration & Authentication** – Register, confirm via email, and log in securely.
 - **Reminders** – Set reminders with expiration dates.
 - **Recipes** – Store and retrieve cooking recipes.
 - **Wishes** – Create wishlists with price estimates and item links.
@@ -13,16 +13,16 @@
 - **Friendships** – Add friends and access their wishlists.
 
 
-## 📦 Installation
+## ⚙️ Installation & Setup
 
 ### Requirements
 
 - Java 17+
 - Maven
 - MySQL 8+
-- IntelliJ IDEA (recommended for development)
+- IntelliJ IDEA (recommended)
 
-### Clone the Repository
+### 📥 Clone the Repository
 
 bash
 git clone https://github.com/Valsinev/belejki.rest.git
@@ -31,18 +31,40 @@ cd belejki.rest
 
 ### ⚙️ Environment Variables
 Before running the application, set the following environment variables:
+| Variable                   | Description                                                     | Default            |
+| -------------------------- | --------------------------------------------------------------- | ------------------ |
+| `SERVER_PORT`              | (Optional) Port to run the app on                               | `8080`             |
+| `APP_BASE_URL`             | (Optional) Base URL used in email confirmation links            | `http://localhost` |
+| `DATABASE_URL`             | JDBC URL for MySQL (e.g. `jdbc:mysql://localhost:3306/belejki`) | —                  |
+| `DATABASE_USER`            | MySQL username                                                  | —                  |
+| `DATABASE_PASSWORD`        | MySQL password                                                  | —                  |
+| `SPRING_SECURITY_USER`     | Default Spring Security username (for testing endpoints)        | —                  |
+| `SPRING_SECURITY_PASSWORD` | Spring Security password                                        | —                  |
+| `SPRING_MAIL_HOST`         | SMTP server host (e.g., `smtp.gmail.com`)                       | —                  |
+| `SPRING_MAIL_USERNAME`     | Email address used to send emails                               | —                  |
+| `SPRING_MAIL_PASSWORD`     | App-specific email password (for Gmail or similar)              | —                  |
 
-Variable	                Description
+💡 In IntelliJ, go to Run > Edit Configurations > Environment Variables to set these.
 
-- SERVER_PORT	            - Optional – custom port (defaults to 8080)
-- DATABASE_URL	            - JDBC URL for MySQL (e.g., jdbc:mysql://localhost:3306/belejki)
-- DATABASE_USER	         - MySQL username
-- DATABASE_PASSWORD	      - MySQL password
-- SPRING_SECURITY_USER	   - Default username for Spring Security
-- SPRING_SECURITY_PASSWORD	- Default password for Spring Security
+### 🛠️ Database Configuration
+This project uses Spring Data JPA with Hibernate for ORM.
+spring.jpa.hibernate.ddl-auto
 
-💡 In IntelliJ, you can define these in Run > Edit Configurations > Environment Variables.
-
+This setting controls how Hibernate handles your database schema at startup. Possible values:
+| Value         | Description                                                          |
+| ------------- | -------------------------------------------------------------------- |
+| `none`        | No schema changes.                                                   |
+| `create`      | Drops and recreates the database schema every run. ⚠️ Destroys data. |
+| `update`      | Updates schema without data loss. ✅ Recommended for development.     |
+| `validate`    | Validates schema matches entities. Fails if not.                     |
+| `create-drop` | Same as `create`, but also drops on shutdown. ⚠️ Destroys data.      |
+📌 JDBC URL Format
+Make sure your JDBC URL follows this format:
+jdbc:mysql://localhost:3306/belejki
+- localhost – Your DB host
+- 3306 – MySQL default port
+- belejki – Schema name you must create manually
+dont forget there is environment variable for the database url
 
 ### 🚀 Running the Application
 ✅ In IntelliJ (Recommended)
@@ -73,21 +95,6 @@ export DATABASE_USER=root
 export DATABASE_PASSWORD=yourpassword
 ...
 
-## 🛠️ Technologies Used
-
- - Java 17
-
- - Spring Boot
-
- - Spring Data JPA
-
- - Spring Security
-
- - MySQL
-
- - Maven
-
- - Postman
 
 ## 📫 API Documentation
 
@@ -111,3 +118,21 @@ If you want to share your API with others or teams, you can [publish the collect
 
 ---
 
+
+## 🛠️ Technologies Used
+
+- Java 17
+
+- Spring Boot
+
+- Spring Data JPA
+
+- Spring Security
+
+- Spring Mail
+
+- MySQL
+
+- Maven
+
+- Postman

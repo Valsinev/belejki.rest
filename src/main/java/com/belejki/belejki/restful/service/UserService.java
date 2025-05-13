@@ -13,12 +13,14 @@ import com.belejki.belejki.restful.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -33,13 +35,15 @@ public class UserService {
     private final FriendshipRepository friendshipRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final EmailService emailService;
 
     @Autowired
-    public UserService(UserRepository repository, FriendshipRepository friendshipRepository, PasswordEncoder passwordEncoder, AuthorityService authorityService, UserMapper userMapper) {
+    public UserService(UserRepository repository, FriendshipRepository friendshipRepository, PasswordEncoder passwordEncoder, AuthorityService authorityService, UserMapper userMapper, EmailService emailService) {
         this.userRepository = repository;
         this.friendshipRepository = friendshipRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.emailService = emailService;
     }
 
     public User createUser(UserDto dto) {
@@ -47,11 +51,17 @@ public class UserService {
             throw new UserAlreadyExistsException("User with username " + dto.getUsername() + " already exists");
         }
         User user = userMapper.toEntity(dto);
+        user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setLastLogin(LocalDate.now());
         user.setAuthorities(List.of(new Authority(null, user, UserRoles.ROLE_USER.name())));
-        user.setEnabled(true);
-        return userRepository.save(user);
+
+        String token = UUID.randomUUID().toString();
+        user.setConfirmationToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        User saveduser = userRepository.save(user);
+        emailService.sendConfirmationEmail(user.getUsername(), token);
+        return saveduser;
     }
 
 

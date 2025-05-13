@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(configurer -> configurer
 
                         .requestMatchers(HttpMethod.POST, "/user/users").permitAll()
+                        .requestMatchers("/confirm").permitAll()
 
                         // ADMIN access:
                         .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
