@@ -48,7 +48,7 @@ Before running the application, set the following environment variables:
 
 ### 🛠️ Database Configuration
 This project uses Spring Data JPA with Hibernate for ORM.
-spring.jpa.hibernate.ddl-auto
+- spring.jpa.hibernate.ddl-auto
 
 This setting controls how Hibernate handles your database schema at startup. Possible values:
 | Value         | Description                                                          |
@@ -58,6 +58,7 @@ This setting controls how Hibernate handles your database schema at startup. Pos
 | `update`      | Updates schema without data loss. ✅ Recommended for development.     |
 | `validate`    | Validates schema matches entities. Fails if not.                     |
 | `create-drop` | Same as `create`, but also drops on shutdown. ⚠️ Destroys data.      |
+
 📌 JDBC URL Format
 Make sure your JDBC URL follows this format:
 jdbc:mysql://localhost:3306/belejki
