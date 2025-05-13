@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "9fd25380-976b-4512-8a70-953f5ea9b018",
-		"name": "NotesApi",
+		"name": "NotesApi(Belejki)",
 		"description": "**Api that stores notes for Users**:\n\n1. **Reminders**(stores events with expiration date)\n    \n2. **ShoppingItems**(stores shopping list)\n    \n3. **Wishlist**\n    \n4. **Recipes**(stores cooking recipes)\n    \n5. **Friendships**(adding user to friendlist and access his wishlist)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30376411"
@@ -343,7 +343,7 @@
 								"users"
 							]
 						},
-						"description": "Creates new user. Required:\n\n- username = valid email format\n    \n- firstName = between 2 and 24 characters long\n    \n- lastName = between 2 and 24 characters long\n    \n- password = between 8 and 64 characters long"
+						"description": "Creates new user. Required:\n\n- username = valid email format\n- firstName = between 2 and 24 characters long\n- lastName = between 2 and 24 characters long\n- password = between 8 and 64 characters long\n    \n\nThis sends confirmation token/link to the email/username. The user is disabled until he visit the link."
 					},
 					"response": []
 				},
