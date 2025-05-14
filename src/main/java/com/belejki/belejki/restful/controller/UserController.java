@@ -97,6 +97,12 @@ public class UserController {
 
     //region GET METHODS
 
+    @GetMapping("/user")
+    public UserDto userDashboardEndpoint(Authentication authentication) {
+        User user = userService.findByUsername(authentication.getName());
+        return userMapper.toDto(user);
+    }
+
     @GetMapping("/admin/users")
     public Page<UserAdminDto> findAll(Pageable pageable) {
         return userService.findAll(pageable)

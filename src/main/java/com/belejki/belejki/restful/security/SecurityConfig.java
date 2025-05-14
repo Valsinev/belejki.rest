@@ -1,23 +1,34 @@
 package com.belejki.belejki.restful.security;
 
 import com.belejki.belejki.restful.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
+
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
@@ -39,34 +50,33 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .authorizeHttpRequests(configurer -> configurer
-
-                        .requestMatchers(HttpMethod.POST, "/user/users").permitAll()
-                        .requestMatchers("/confirm").permitAll()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/user/users").permitAll() // Allow user registration
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll() // Allow login
+                        .requestMatchers("/confirm").permitAll() // Allow email confirmation
 
                         // ADMIN access:
                         .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // USER access:
-                        .requestMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/user/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/user/users/update/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/user/**").hasRole("USER")
+                        .requestMatchers("/user/**").hasRole("USER")
 
-                        // All other requests require authentication
-                        .anyRequest().authenticated()
-                );
+                        // Any other request:
+                        .anyRequest().authenticated() // Require authentication for any other request
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, ex1) -> { // Custom unauthorized response
+                            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
-        httpSecurity.httpBasic(withDefaults());
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
-        return httpSecurity.build();
+        return http.build();
     }
 }

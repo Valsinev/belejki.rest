@@ -17,16 +17,11 @@
 							"name": "createsNewAuthority",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -63,16 +58,11 @@
 							"name": "findsAllAuthorities",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -97,16 +87,11 @@
 							"name": "findsAuthorityById",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -133,16 +118,11 @@
 							"name": "findsAllAuthoritiesByUsername",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -168,16 +148,11 @@
 							"name": "findsAllAuthoritiesByPassedRole",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -204,16 +179,11 @@
 							"name": "updatesAuthorityByPassedId",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -249,16 +219,11 @@
 							"name": "deleteAllAuthoritiesOfPassedUser_Username",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -285,16 +250,11 @@
 							"name": "deleteById",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -348,19 +308,70 @@
 					"response": []
 				},
 				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"jwtToken\", jsonData.token);",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"valsinev@abv.bg\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "This endpoint sends request for existing user in the database and returns JWT token for user authentication."
+					},
+					"response": []
+				},
+				{
 					"name": "updateUserById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"jwtToken\", jsonData.token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -396,16 +407,11 @@
 					"name": "partialUserUpdate",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -439,18 +445,26 @@
 				},
 				{
 					"name": "findsAllUserForUsersWithRoleAmin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -473,18 +487,25 @@
 				},
 				{
 					"name": "findsAllUsersNotLoggedFor2YearsByDefault",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -510,16 +531,11 @@
 					"name": "findAllUsersWithDisabledFlag",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -580,16 +596,11 @@
 					"name": "findsUserByUsername",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -615,16 +626,11 @@
 					"name": "findsUserById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -651,16 +657,11 @@
 					"name": "findsUserByFirstNameContainingIgnorecase",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -687,16 +688,11 @@
 					"name": "findsUserByLastNameContainingIgnorecase",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -723,16 +719,11 @@
 					"name": "findsUserByFirstAndLastNameContainingIgnorecase",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -768,16 +759,11 @@
 					"name": "delesUserByPassingTheUser",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -823,16 +809,11 @@
 					"name": "delesUserById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -880,16 +861,11 @@
 					"name": "delesUserByUsername",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -936,16 +912,11 @@
 					"name": "deleteAllUsersWithSetForDeletionFlag",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -992,16 +963,11 @@
 					"name": "deleteAllUsersNotLoggedByMoreThan2YearsByDefault",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1042,16 +1008,11 @@
 					"name": "CreateWishWithUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1085,16 +1046,11 @@
 					"name": "findAllUserWishes",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1119,16 +1075,11 @@
 					"name": "findById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "gosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1154,16 +1105,11 @@
 					"name": "findAllByUser_Id(For admin users)",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1191,16 +1137,11 @@
 					"name": "findAllByUser_Username(for admin users)",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1227,16 +1168,11 @@
 					"name": "updateWishById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1272,16 +1208,11 @@
 					"name": "patchWishById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1317,16 +1248,11 @@
 					"name": "deleteWishById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "gosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1352,16 +1278,11 @@
 					"name": "deleteAllWishByUser_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "gosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1389,16 +1310,11 @@
 					"name": "deleteAllByUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "gosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1431,16 +1347,11 @@
 					"name": "addFriendship",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1474,16 +1385,11 @@
 					"name": "findAllFriendships",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1508,16 +1414,11 @@
 					"name": "findAllUserFriendships",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1542,16 +1443,11 @@
 					"name": "findAllByUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1577,16 +1473,11 @@
 					"name": "deleteById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1612,16 +1503,11 @@
 					"name": "deleteAllByFriendUsername",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1648,16 +1534,11 @@
 					"name": "deleteAllByUsername",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -1695,16 +1576,11 @@
 									"name": "SavesIngredientIfNotExistsByPassedIngredientObject",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1738,16 +1614,11 @@
 									"name": "findAll",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1772,16 +1643,11 @@
 									"name": "findIngredientByIngredient_Name",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1807,16 +1673,11 @@
 									"name": "findIngredientByIngredient_Id",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1843,16 +1704,11 @@
 									"name": "deletesIngredientByPassedIngredient_Id",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1879,16 +1735,11 @@
 									"name": "deletesIngredientByPassedIngredient_Name",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1914,16 +1765,11 @@
 									"name": "deletesAllIngredientsNotUsedInRecipeIngredient",
 									"request": {
 										"auth": {
-											"type": "basic",
-											"basic": [
+											"type": "bearer",
+											"bearer": [
 												{
-													"key": "username",
-													"value": "pesho@abv.bg",
-													"type": "string"
-												},
-												{
-													"key": "password",
-													"value": "1q2w3e4r",
+													"key": "token",
+													"value": "{{jwtToken}}",
 													"type": "string"
 												}
 											]
@@ -1952,16 +1798,11 @@
 							"name": "saveNewRecipeIngredientForRecipe",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -1995,16 +1836,11 @@
 							"name": "findAllRecipeIngredients",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2029,16 +1865,11 @@
 							"name": "findById",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2065,16 +1896,11 @@
 							"name": "findAllRecipeIngredientsForPassedRecipeName",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2104,16 +1930,11 @@
 							},
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2148,16 +1969,11 @@
 							"name": "findAllRecipeIngredientsForPassedRecipe_Id",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2185,16 +2001,11 @@
 							"name": "deletesRecipeIngredientByPassedRecipeIngredientObject",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2219,16 +2030,11 @@
 							"name": "deletesRecipeIngredientByPassedRecipeIngredient_Id",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2255,16 +2061,11 @@
 							"name": "deletesAllRecipeIngredientByPassedRecipe_Object",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2299,16 +2100,11 @@
 							"name": "deletesAllRecipeIngredientByPassedRecipe_Id",
 							"request": {
 								"auth": {
-									"type": "basic",
-									"basic": [
+									"type": "bearer",
+									"bearer": [
 										{
-											"key": "username",
-											"value": "pesho@abv.bg",
-											"type": "string"
-										},
-										{
-											"key": "password",
-											"value": "1q2w3e4r",
+											"key": "token",
+											"value": "{{jwtToken}}",
 											"type": "string"
 										}
 									]
@@ -2347,16 +2143,11 @@
 					"name": "saveNewRecipeForUser",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "Pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2390,16 +2181,11 @@
 					"name": "findAllRecipes",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2424,16 +2210,11 @@
 					"name": "findRecipeById",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2460,16 +2241,11 @@
 					"name": "findAllUserRecipes",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2494,16 +2270,11 @@
 					"name": "findAllRecipesByNameContaining",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2529,16 +2300,11 @@
 					"name": "findAllRecipesOfUserByPassedUser_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2566,16 +2332,11 @@
 					"name": "findAllRecipesOfUserByPassedUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2602,16 +2363,11 @@
 					"name": "findRecipeByNameOfOwnedRecipes",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2637,16 +2393,11 @@
 					"name": "findInOwnedRecipesAllWithPassedIngredients",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2682,16 +2433,11 @@
 					"name": "deleteByPassedRecipe",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2725,16 +2471,11 @@
 					"name": "deleteFromOwnRecipesByRecipeId",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "Tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2760,16 +2501,11 @@
 					"name": "deleteAllRecipesOfUserByPassedUser_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2797,16 +2533,11 @@
 					"name": "deleteAllRecipesOfUserByPassedUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2838,16 +2569,11 @@
 					"name": "savesNewReminder",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2881,16 +2607,11 @@
 					"name": "findAllReminders",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2915,16 +2636,11 @@
 					"name": "findAllRemindersForUserByPassedUser_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2952,16 +2668,11 @@
 					"name": "findAllRemindersForUserByPassedUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -2988,16 +2699,11 @@
 					"name": "findAllRemindersWithExpiredFlagTrue",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3023,16 +2729,11 @@
 					"name": "findAllRemindersWithExpiresSoonFlagTrue",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3058,16 +2759,11 @@
 					"name": "findsInOwnRemindersByPassedReminder_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3094,16 +2790,11 @@
 					"name": "findAllUserReminders",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3128,16 +2819,11 @@
 					"name": "findAllUserRemindersWithExpiredFlagTrue",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3163,16 +2849,11 @@
 					"name": "findAllUserRemindersWithExpiresSoonFlagTrue",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3198,16 +2879,11 @@
 					"name": "findAllUserRemindersWithExpiresTodayFlagTrue",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3233,16 +2909,11 @@
 					"name": "findsAllRemindersWithNameContainingPassedName",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3269,16 +2940,11 @@
 					"name": "findsAllRemindersWithDescriptionContainingPassedDescription",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3305,16 +2971,11 @@
 					"name": "updatesReminderByPassedReminderSelectByPassedReminderId",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3350,16 +3011,11 @@
 					"name": "partialUpdatesReminderByPassedReminderSelectByPassedReminderId",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3395,16 +3051,11 @@
 					"name": "deletesReminderByPassedReminder_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3431,16 +3082,11 @@
 					"name": "deletesAllRemindersForPassedUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3467,16 +3113,11 @@
 					"name": "deletesAllRemindersForPassedUser_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3504,16 +3145,11 @@
 					"name": "deletesAllRemindersExpiredBefore2YearsByDefault",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3539,16 +3175,11 @@
 					"name": "deletesReminderFromOwnedReminderByPassingReminderId",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3581,16 +3212,11 @@
 					"name": "createsNewShoppingItem",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3624,16 +3250,11 @@
 					"name": "findsAllUsersShoppingItems",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3658,16 +3279,11 @@
 					"name": "findShoppingItemByPassedShoppingItemId",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3693,16 +3309,11 @@
 					"name": "findsAllShoppingItemsOfAUserByPassedUser_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3730,16 +3341,11 @@
 					"name": "findsAllShoppingItemsOfAUserByPassedUser_Username",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3766,16 +3372,11 @@
 					"name": "deletesShoppingItemByPassingShoppingItemObject",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3800,16 +3401,11 @@
 					"name": "deletesShoppingItemByPassingShoppingItem_Id",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3835,16 +3431,11 @@
 					"name": "removesAllShoppingItemsOfTheUser",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "tosho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3870,16 +3461,11 @@
 					"name": "removesShoppingItemWithPassedShoppingItem_Id(No restrictions)",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -3905,16 +3491,11 @@
 					"name": "empyShoppingListForUserByPassedUser_Username(No restrictions)",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
