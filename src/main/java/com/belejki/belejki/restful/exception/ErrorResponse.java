@@ -1,9 +1,12 @@
 package com.belejki.belejki.restful.exception;
 
+import java.util.Map;
+
 public class ErrorResponse {
     private int status;
     private String message;
     private long timeStamp;
+    private Map<String, String> errors;
 
     public ErrorResponse() {
     }
@@ -36,5 +39,13 @@ public class ErrorResponse {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Map<String, String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(Map<String, String> errors) {
+        this.errors = errors;
     }
 }
