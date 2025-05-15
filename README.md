@@ -111,11 +111,8 @@ This project uses a Postman collection to document and test the REST API.
     - Click **"Import"** > **"File"**, and choose the JSON file above.
 
 3. **Optional: Set up Environment**  
-   To simplify testing, set up Postman environment variables (e.g. `base_url`, etc.).
+   To simplify testing, set up Postman environment variables (e.g. `base_url`, `jwtToken` etc.).
 
-### 🌐 Optional: Publish Online
-
-If you want to share your API with others or teams, you can [publish the collection on Postman Cloud](https://learning.postman.com/docs/publishing-your-api/documenting-your-api/#publishing-documentation).
 
 ---
 
