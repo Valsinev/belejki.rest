@@ -22,8 +22,8 @@ public class ReminderPatchDto {
     @Max(value = 10, message = "Importance level must be between 1 and 10 number.")
     private Integer importanceLevel;
     private String description;
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")  // Optional if used in REST serialization
     private LocalDate expiration;
     private boolean expired;
     private boolean expiresSoon;

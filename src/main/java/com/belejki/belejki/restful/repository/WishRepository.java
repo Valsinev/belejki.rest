@@ -21,4 +21,9 @@ public interface WishRepository extends JpaRepository<Wish, Long> {
     Page<Wish> findAllByUser_Id(Long id, Pageable pageable);
 
     Page<Wish> findAllByUser_Username(String username, Pageable pageable);
+
+
+    Page<Wish> findAllByDescriptionContainingAndUser_Username(String description, String username, Pageable pageable);
+
+    Page<Wish> findAllByApproximatePriceLessThanAndUser_Username(Long price, String username, Pageable pageable);
 }

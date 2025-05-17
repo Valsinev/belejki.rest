@@ -2,11 +2,15 @@ package com.belejki.belejki.restful.controller;
 
 import com.belejki.belejki.restful.dto.FriendshipDto;
 import com.belejki.belejki.restful.entity.Friendship;
+import com.belejki.belejki.restful.entity.User;
 import com.belejki.belejki.restful.exception.FriendshipNotFoundException;
+import com.belejki.belejki.restful.exception.UserNotFoundException;
 import com.belejki.belejki.restful.mapper.FriendshipMapper;
 import com.belejki.belejki.restful.repository.FriendshipRepository;
+import com.belejki.belejki.restful.repository.UserRepository;
 import com.belejki.belejki.restful.service.FriendshipService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,27 +31,30 @@ public class FriendshipController {
     private final FriendshipRepository friendshipRepository;
     private final FriendshipService service;
     private final FriendshipMapper friendshipMapper;
+    private final UserRepository userRepository;
 
     @Autowired
-    public FriendshipController(FriendshipService service, FriendshipRepository friendshipRepository, FriendshipMapper friendshipMapper) {
+    public FriendshipController(FriendshipService service, FriendshipRepository friendshipRepository, FriendshipMapper friendshipMapper, UserRepository userRepository) {
         this.service = service;
         this.friendshipRepository = friendshipRepository;
         this.friendshipMapper = friendshipMapper;
+        this.userRepository = userRepository;
     }
 
     //region POST METHODS
 
-    @PostMapping("/user/friendships")
-    public FriendshipDto save(@Valid @RequestBody FriendshipDto friendshipDto,
+    @PostMapping("/user/friendships/{friendName}")
+    public FriendshipDto save(@Email @PathVariable String friendName,
                               Authentication authentication) {
         String username = authentication.getName();
-        boolean isOwner = username.equals(friendshipDto.getUsername());
 
-        if (!isOwner) {
-            throw new AccessDeniedException("You cannot create friendships for other users.");
-        }
+        if (friendName.equals(username)) throw new AccessDeniedException("You cannot add yourself as friend.");
 
-        return friendshipMapper.toDto(service.save(friendshipDto));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found for username: " + username));
+        User friend = userRepository.findByUsername(friendName).orElseThrow(() -> new UserNotFoundException("User not found for username: " + friendName));
+
+        FriendshipDto dto = friendshipMapper.toDto(service.save(new Friendship(user, friend)));
+        return dto;
     }
 
     //endregion

@@ -9,6 +9,7 @@ import com.belejki.belejki.restful.repository.WishRepository;
 import com.belejki.belejki.restful.service.UserService;
 import com.belejki.belejki.restful.service.WishService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,11 +78,33 @@ public class WishController {
         return allByUserId.map(wish -> wishMapper.toDto(wish, id));
     }
 
-    @GetMapping("/admin/wishlist/user/{username}")
+    @GetMapping("/user/wishlist/user/{username}")
     public Page<WishDto> findAllByUser_Username(@PathVariable String username, Pageable pageable) {
         Page<Wish> allByUserId = wishRepository.findAllByUser_Username(username, pageable);
         return allByUserId.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));
     }
+
+    @GetMapping("/user/wishlist/description/{description}")
+    public Page<WishDto> findAllUserWishesByDescriptionContaining(@PathVariable String description, Authentication authentication, Pageable pageable) {
+        String username = authentication.getName();
+        Page<Wish> all = wishRepository.findAllByDescriptionContainingAndUser_Username(description, username, pageable);
+        return all.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));
+    }
+
+    @GetMapping("/user/wishlist/price/{price}")
+    public Page<WishDto> findAllUserWishesByPriceBellow(@PathVariable Long price, Authentication authentication, Pageable pageable) {
+        String username = authentication.getName();
+        Page<Wish> all = wishRepository.findAllByApproximatePriceLessThanAndUser_Username(price, username, pageable);
+        return all.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));
+    }
+
+
+    @GetMapping("/user/wishlist/by-price-and-username")
+    public Page<WishDto> findAllWishesByPriceBellowAndUser_Username(@RequestParam Long price, @Email @RequestParam String username, Authentication authentication, Pageable pageable) {
+        Page<Wish> all = wishRepository.findAllByApproximatePriceLessThanAndUser_Username(price, username, pageable);
+        return all.map(wish -> wishMapper.toDto(wish, wish.getUser().getId()));
+    }
+
 
     //endregion
 

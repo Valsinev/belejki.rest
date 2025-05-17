@@ -12,21 +12,14 @@ import java.util.List;
 @Component
 public class FriendshipMapper {
 
-    private final WishMapper wishMapper;
-
-    @Autowired
-    public FriendshipMapper(WishMapper wishMapper) {
-        this.wishMapper = wishMapper;
-    }
 
     public FriendshipDto toDto(Friendship friendship) {
         FriendshipDto dto = new FriendshipDto();
         dto.setId(friendship.getId());
         dto.setUsername(friendship.getUser().getUsername());
         dto.setFriendName(friendship.getFriend().getUsername());
-        List<Wish> wishList = friendship.getFriend().getWishList();
-        List<WishDto> wishListDto = wishList.stream().map(wish -> wishMapper.toDto(wish, wish.getUser().getId())).toList();
-        dto.setFriendWishlist(wishListDto);
+        dto.setFirstName(friendship.getFriend().getFirstName());
+        dto.setLastName(friendship.getFriend().getLastName());
 
         return dto;
     }

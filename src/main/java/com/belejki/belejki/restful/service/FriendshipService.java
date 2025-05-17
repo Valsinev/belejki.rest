@@ -34,24 +34,15 @@ public class FriendshipService {
         return friendshipRepository.findById(id).orElseThrow(() -> new FriendshipNotFoundException("Friendship not found with id: " + id));
     }
 
-    public Friendship save(FriendshipDto friendship) {
-        String username = friendship.getUsername();
-        String friendName = friendship.getFriendName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found for username: " + username));
-        User friend = userRepository.findByUsername(friendName).orElseThrow(() -> new UserNotFoundException("User not found for username: " + friendName));
-        checkIfFriendIsAlreadyAdded(friend, user);
-        Friendship newFriendship = new Friendship(user, friend);
-        user.addFriendship(newFriendship);
-        userRepository.save(user);
-        return newFriendship;
+    public Friendship save(Friendship friendship) {
+        checkIfFriendIsAlreadyAdded(friendship);
+        return friendshipRepository.save(friendship);
     }
 
-    private void checkIfFriendIsAlreadyAdded(User friend, User user) {
-        List<String> friendNames = user.getFriendships().stream()
-                .map(friendship -> friendship.getFriend().getUsername())
-                .toList();
-
-        if (friendNames.contains(friend.getUsername())) {
+    private void checkIfFriendIsAlreadyAdded(Friendship friendship) {
+        User user = friendship.getUser();
+        List<String> friendsUsernames = user.getFriendships().stream().map(fr -> fr.getFriend().getUsername()).toList();
+        if (friendsUsernames.contains(friendship.getFriend().getUsername())) {
             throw new RuntimeException("Friend already exist.");
         }
     }

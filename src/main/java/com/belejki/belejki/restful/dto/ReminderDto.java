@@ -25,8 +25,8 @@ public class ReminderDto {
     @Size(max = 128, message = "Reminder name name must be between 2 and 64 characters.")
     private String description;
     @NotNull
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")  // Optional if used in REST serialization
     private LocalDate expiration;
     private boolean expired;
     private boolean expiresSoon;

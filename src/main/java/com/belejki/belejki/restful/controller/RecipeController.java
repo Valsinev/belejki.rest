@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.belejki.belejki.restful.controller.Utility.checkIfOwnerOrAdmin;
 
@@ -77,14 +78,28 @@ public class RecipeController {
 
 
     @GetMapping("/user/recipes/{recipeName}")
-    public List<RecipeDto> findAllOwnedByNameContainingIgnoreCase(@PathVariable String recipeName, Authentication authentication, Pageable pageable) {
+    public Page<RecipeDto> findAllOwnedByNameContainingIgnoreCase(@PathVariable String recipeName, Authentication authentication, Pageable pageable) {
         String username = authentication.getName();
         Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingAndUser_Username(recipeName, username, pageable);
-        List<RecipeDto> foundedDto = byNameContainingIgnoreCase.stream()
-                .map(recipe ->
-                        recipesMapper.toDto(recipe, recipe.getUser().getId()))
-                .toList();
-        return foundedDto;
+        return byNameContainingIgnoreCase.map(recipe ->
+                        recipesMapper.toDto(recipe, recipe.getUser().getId()));
+    }
+
+    @GetMapping("/user/recipes/by-name-and-username")
+    public Page<RecipeDto> findAllOwnedByNameContainingAndUsername(@RequestParam String recipeName, @RequestParam String username, Authentication authentication, Pageable pageable) {
+        Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingAndUser_Username(recipeName, username, pageable);
+        return byNameContainingIgnoreCase.map(recipe ->
+                recipesMapper.toDto(recipe, recipe.getUser().getId()));
+    }
+
+
+    @GetMapping("/user/recipes/by-ingredients-and-username")
+    public Page<RecipeDto> findAllByIngredientsAndUsername(@RequestParam List<String> ingredients,
+                                                @RequestParam String username,
+                                                Pageable pageable,
+                                                Authentication authentication) {
+        Page<Recipe> recipesByAllIngredientNamesAndUserUsername = recipeService.findRecipesByAllIngredientNamesAndUser_Username(ingredients, username, pageable);
+        return recipesByAllIngredientNamesAndUserUsername.map(recipe -> recipesMapper.toDto(recipe, recipe.getUser().getId()));
     }
 
 
@@ -104,12 +119,11 @@ public class RecipeController {
     }
 
     @GetMapping("/admin/recipes/{recipeName}")
-    public List<RecipeDto> findAllByNameContainingIgnoreCase(@PathVariable String recipeName, Pageable pageable) {
+    public Page<RecipeDto> findAllByNameContainingIgnoreCase(@PathVariable String recipeName, Pageable pageable) {
         Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingIgnoreCase(recipeName, pageable);
-        List<RecipeDto> foundedDto = byNameContainingIgnoreCase.stream()
+        Page<RecipeDto> foundedDto = byNameContainingIgnoreCase
                 .map(recipe ->
-                        recipesMapper.toDto(recipe, recipe.getUser().getId()))
-                .toList();
+                        recipesMapper.toDto(recipe, recipe.getUser().getId()));
         return foundedDto;
     }
 
