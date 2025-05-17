@@ -329,7 +329,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"valsinev@abv.bg\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"raw": "{\n    \"username\":\"venio@abv.bg\",\n    \"password\":\"1q2w3e4r\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1005,7 +1005,7 @@
 			"name": "Wish",
 			"item": [
 				{
-					"name": "CreateWishWithUser_Username",
+					"name": "CreateWish",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1072,6 +1072,108 @@
 					"response": []
 				},
 				{
+					"name": "findAllUserWishesByDescriptionContaining",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/description/wa",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"description",
+								"wa"
+							]
+						},
+						"description": "Finds all wish items that cointain in their description the passed string"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserWishesByPriceLessThan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/price/170",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"price",
+								"170"
+							]
+						},
+						"description": "Finds all wish items that have approximate price less than the passed long value."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllWishesByPriceLessThanAndUser_Username",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/wishlist/by-price-and-username?price=300&username=pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"wishlist",
+								"by-price-and-username"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "300"
+								},
+								{
+									"key": "username",
+									"value": "pesho@abv.bg"
+								}
+							]
+						},
+						"description": "Finds all wish items that have approximate price less than the passed long value."
+					},
+					"response": []
+				},
+				{
 					"name": "findById",
 					"request": {
 						"auth": {
@@ -1134,7 +1236,7 @@
 					"response": []
 				},
 				{
-					"name": "findAllByUser_Username(for admin users)",
+					"name": "findAllByUser_Username",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1149,15 +1251,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/wishlist/user/pesho@abv.bg",
+							"raw": "{{base_url}}/user/wishlist/user/valsinev@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"admin",
+								"user",
 								"wishlist",
 								"user",
-								"pesho@abv.bg"
+								"valsinev@abv.bg"
 							]
 						},
 						"description": "Finds all Wishes for a user by passed username.(Only for users with ROLE_ADMIN)"
@@ -1358,23 +1460,15 @@
 						},
 						"method": "POST",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\":\"Pesho@abv.bg\",\n    \"friendName\":\"Tosho@abv.bg\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{base_url}}/user/friendships",
+							"raw": "{{base_url}}/user/friendships/pesho@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"friendships"
+								"friendships",
+								"pesho@abv.bg"
 							]
 						},
 						"description": "Adds a Friend to a user."
@@ -2390,6 +2484,46 @@
 					"response": []
 				},
 				{
+					"name": "findRecipeByNameContainingAndUsername",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes/by-name-and-username?recipeName=Spaghetti&username=pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes",
+								"by-name-and-username"
+							],
+							"query": [
+								{
+									"key": "recipeName",
+									"value": "Spaghetti"
+								},
+								{
+									"key": "username",
+									"value": "pesho@abv.bg"
+								}
+							]
+						},
+						"description": "Finds all recipes contained passed string in their name."
+					},
+					"response": []
+				},
+				{
 					"name": "findInOwnedRecipesAllWithPassedIngredients",
 					"request": {
 						"auth": {
@@ -2422,6 +2556,50 @@
 								{
 									"key": "ingredients",
 									"value": "Ground meat"
+								}
+							]
+						},
+						"description": "Finds all recipes of the logged user containing the passed ingredients with params."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllUserRecipesAllWithPassedIngredientsAndUsername",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/recipes/by-ingredients-and-username?ingredients=Spaghetti&ingredients=Ground meat&username=pesho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"recipes",
+								"by-ingredients-and-username"
+							],
+							"query": [
+								{
+									"key": "ingredients",
+									"value": "Spaghetti"
+								},
+								{
+									"key": "ingredients",
+									"value": "Ground meat"
+								},
+								{
+									"key": "username",
+									"value": "pesho@abv.bg"
 								}
 							]
 						},
@@ -2582,7 +2760,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"Comedy show\",\n    \"description\": \"Address: Sofia 'Pirotska' street 78\",\n    \"importanceLevel\":6,\n    \"expiration\": \"25-07-2025\"\n}",
+							"raw": "{\n    \"name\":\"almost\",\n    \"description\": \"Address: Sofia 'Pirotska' street 78\",\n    \"importanceLevel\":6,\n    \"expiration\": \"2025-05-22\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2984,7 +3162,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"car: change oil\",\n    \"description\": \"last changed 11-11-2024\",\n    \"importanceLevel\":8,\n    \"expiration\":\"16-11-2025\"\n}",
+							"raw": "{\n    \"name\":\"car: change oil\",\n    \"description\": \"last changed 11-11-2024\",\n    \"importanceLevel\":8,\n    \"expiration\":\"2026-11-23\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2992,15 +3170,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/reminders/update/1",
+							"raw": "{{base_url}}/user/reminders/6",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
 								"reminders",
-								"update",
-								"1"
+								"6"
 							]
 						},
 						"description": "Updates reminder by passed reminder id."
