@@ -10,6 +10,7 @@ import com.belejki.belejki.restful.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RestController
@@ -28,24 +30,26 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final MessageSource messageSource;
 
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository, UserMapper userMapper) {
+    public UserController(UserService userService, UserRepository userRepository, UserMapper userMapper, MessageSource messageSource) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.messageSource = messageSource;
     }
 
 
     //region POST METHODS
 
     @PostMapping("/user/users")
-    public UserAdminDto save(@Valid @RequestBody UserDto user) {
-        return userMapper.toAdminDto(userService.createUser(user));
+    public UserAdminDto save(@Valid @RequestBody UserDto user, Locale locale) {
+        return userMapper.toAdminDto(userService.createUser(user, locale));
     }
 
     @GetMapping("/confirm")
-    public ResponseEntity<String> confirmEmail(@RequestParam("token") String token) {
+    public ResponseEntity<String> confirmEmail(@RequestParam("token") String token, Locale locale) {
         Optional<User> userOpt = userRepository.findByConfirmationToken(token);
 
         if (userOpt.isEmpty()) {
@@ -63,7 +67,8 @@ public class UserController {
         user.setTokenExpiry(null);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Email confirmed! You can now log in.");
+        String message = messageSource.getMessage("confirm.success", null, locale);
+        return ResponseEntity.ok(message);
     }
 
 

@@ -46,7 +46,7 @@ public class UserService {
         this.emailService = emailService;
     }
 
-    public User createUser(UserDto dto) {
+    public User createUser(UserDto dto, Locale locale) {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new UserAlreadyExistsException("User with username " + dto.getUsername() + " already exists");
         }
@@ -60,7 +60,7 @@ public class UserService {
         user.setConfirmationToken(token);
         user.setTokenExpiry(LocalDateTime.now().plusHours(24));
         User saveduser = userRepository.save(user);
-        emailService.sendConfirmationEmail(user.getUsername(), token);
+        emailService.sendConfirmationEmail(user.getUsername(), token, locale);
         return saveduser;
     }
 

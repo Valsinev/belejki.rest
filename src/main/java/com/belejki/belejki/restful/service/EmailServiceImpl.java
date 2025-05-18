@@ -2,9 +2,12 @@ package com.belejki.belejki.restful.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -17,10 +20,18 @@ public class EmailServiceImpl implements EmailService {
     @Value("${server.port:8080}") // Default to 8080 if not set
     private String serverPort;
 
-    public void sendConfirmationEmail(String email, String token) {
+    @Autowired
+    private final MessageSource messageSource;
+
+    public EmailServiceImpl(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
+
+    public void sendConfirmationEmail(String email, String token, Locale locale) {
         String confirmationLink = baseUrl.concat(":").concat(serverPort).concat("/confirm?token=").concat(token);
-        String subject = "Confirm your email";
-        String message = "Click to confirm your email: " + confirmationLink;
+        String subject = messageSource.getMessage("email.confirm.subject", null, locale);
+        String message = messageSource.getMessage("email.confirm.body", new Object[]{confirmationLink}, locale);
 
         // Send the email (implementation depends on your email sending logic)
         sendEmail(email, subject, message);
@@ -33,5 +44,6 @@ public class EmailServiceImpl implements EmailService {
         message.setText(body);
         mailSender.send(message);
     }
+
 }
 
