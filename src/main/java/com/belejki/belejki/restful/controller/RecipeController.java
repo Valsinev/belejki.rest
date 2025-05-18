@@ -18,6 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,8 +88,12 @@ public class RecipeController {
     }
 
     @GetMapping("/user/recipes/by-name-and-username")
-    public Page<RecipeDto> findAllOwnedByNameContainingAndUsername(@RequestParam String recipeName, @RequestParam String username, Authentication authentication, Pageable pageable) {
-        Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingAndUser_Username(recipeName, username, pageable);
+    public Page<RecipeDto> findAllOwnedByNameContainingAndUsername(@RequestParam String recipeName,
+                                                                   @RequestParam String username,
+                                                                   Pageable pageable) {
+        String decodedRecipeName = URLDecoder.decode(recipeName, StandardCharsets.UTF_8);
+
+        Page<Recipe> byNameContainingIgnoreCase = recipeRepository.findAllByNameContainingAndUser_Username(decodedRecipeName, username, pageable);
         return byNameContainingIgnoreCase.map(recipe ->
                 recipesMapper.toDto(recipe, recipe.getUser().getId()));
     }
@@ -96,8 +102,7 @@ public class RecipeController {
     @GetMapping("/user/recipes/by-ingredients-and-username")
     public Page<RecipeDto> findAllByIngredientsAndUsername(@RequestParam List<String> ingredients,
                                                 @RequestParam String username,
-                                                Pageable pageable,
-                                                Authentication authentication) {
+                                                Pageable pageable) {
         Page<Recipe> recipesByAllIngredientNamesAndUserUsername = recipeService.findRecipesByAllIngredientNamesAndUser_Username(ingredients, username, pageable);
         return recipesByAllIngredientNamesAndUserUsername.map(recipe -> recipesMapper.toDto(recipe, recipe.getUser().getId()));
     }
