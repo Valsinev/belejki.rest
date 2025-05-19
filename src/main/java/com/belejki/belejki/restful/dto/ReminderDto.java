@@ -31,6 +31,7 @@ public class ReminderDto {
     private boolean expired;
     private boolean expiresSoon;
     private boolean expiresToday;
+    private boolean expiresAfterMonth;
     private boolean monthMail;
     private boolean weekMail;
     private boolean todayMail;

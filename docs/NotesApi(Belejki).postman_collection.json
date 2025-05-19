@@ -286,7 +286,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Stoyanov\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Peshev\",\n    \"password\":\"1q2w3e4r.\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -329,7 +329,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"venio@abv.bg\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"password\":\"1q2w3e4r.\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2927,6 +2927,36 @@
 								"admin",
 								"reminders",
 								"expires-soon"
+							]
+						},
+						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersWithExpiresAfterMonthFlagTrue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reminders/expires-month",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"reminders",
+								"expires-month"
 							]
 						},
 						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"

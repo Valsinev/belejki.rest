@@ -60,6 +60,7 @@ public class UserService {
         user.setConfirmationToken(token);
         user.setTokenExpiry(LocalDateTime.now().plusHours(24));
         User saveduser = userRepository.save(user);
+        user.setLocale(locale.toLanguageTag());
         emailService.sendConfirmationEmail(user.getUsername(), token, locale);
         return saveduser;
     }

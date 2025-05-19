@@ -37,6 +37,8 @@ public class Reminder {
     private boolean expiresSoon; //flag if reminder expires in 'n' number of days
     @Column(name = "expires_today")
     private boolean expiresToday;
+    @Column(name = "expires_after_month")
+    private boolean expiresAfterMonth;
     @Column(name = "month_mail")
     private boolean monthMail; //flag if mail is sended month before expires
     @Column(name = "week_mail")
@@ -150,6 +152,14 @@ public class Reminder {
 
     public void setTodayMail(boolean todayMail) {
         this.todayMail = todayMail;
+    }
+
+    public boolean isExpiresAfterMonth() {
+        return expiresAfterMonth;
+    }
+
+    public void setExpiresAfterMonth(boolean expiresAfterMonth) {
+        this.expiresAfterMonth = expiresAfterMonth;
     }
 }
 

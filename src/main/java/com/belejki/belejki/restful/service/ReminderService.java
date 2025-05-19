@@ -34,7 +34,7 @@ public class ReminderService {
     }
 
 
-    public ReminderDto save(@Valid ReminderDto reminder, String username) {
+    public Reminder save(@Valid ReminderDto reminder, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
         Reminder entity = reminderMapper.toEntity(reminder, user);
@@ -42,7 +42,7 @@ public class ReminderService {
         Reminder saved = reminderRepository.save(entity);
         reminder.setUserId(saved.getUser().getId());
         reminder.setId(saved.getId());
-        return reminder;
+        return saved;
     }
 
     public Reminder saveWithUserId(@Valid ReminderDto dto, Long id) {
@@ -115,9 +115,10 @@ public class ReminderService {
         reminder.setExpired(dto.isExpired());
         reminder.setExpiresSoon(dto.isExpiresSoon());
         reminder.setExpiresToday(dto.isExpiresToday());
-        reminder.setMonthMail(dto.isMonthMail());
-        reminder.setWeekMail(dto.isWeekMail());
-        reminder.setTodayMail(dto.isTodayMail());
+        //resetting flags for the scheduler
+        reminder.setMonthMail(false);
+        reminder.setWeekMail(false);
+        reminder.setTodayMail(false);
 
         return reminderRepository.save(reminder);
     }
@@ -140,6 +141,10 @@ public class ReminderService {
         if (dto.getExpiration() != null) {
             reminder.setExpiration(dto.getExpiration());
             setExpirationFlags(reminder);
+            //resetting flags for the scheduler
+            reminder.setMonthMail(false);
+            reminder.setWeekMail(false);
+            reminder.setTodayMail(false);
         }
 
         return reminderRepository.save(reminder);
@@ -170,6 +175,7 @@ public class ReminderService {
         boolean isLessThanDaysBeforeExpire = now.isAfter(reminderDate.minusDays(DAYS_BEFORE_EXPIRE + 1)); //adding 1 to make it before today
         boolean expired = now.isAfter(reminderDate);
         boolean expiresToday = now.isEqual(reminderDate);
+        boolean expiresAfterMonth = now.isEqual(reminderDate.minusMonths(1));
 
         if (expired) {
             reminder.setExpired(true);
@@ -180,6 +186,10 @@ public class ReminderService {
             if (expiresToday) {
                 reminder.setExpiresToday(true);
             }
+        }
+
+        if (expiresAfterMonth) {
+            reminder.setExpiresAfterMonth(true);
         }
     }
 }

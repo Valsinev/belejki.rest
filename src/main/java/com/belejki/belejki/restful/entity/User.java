@@ -35,6 +35,8 @@ public class User implements UserDetails {
     private LocalDate lastLogin;
     @Column(name = "is_set_for_deletion")
     private boolean setForDeletion;
+    @Column(name = "locale")
+    private String locale;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Friendship> friendships = new ArrayList<>();
@@ -236,6 +238,14 @@ public class User implements UserDetails {
 
     public void setTokenExpiry(LocalDateTime tokenExpiry) {
         this.tokenExpiry = tokenExpiry;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }
 

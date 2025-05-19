@@ -45,4 +45,8 @@ public interface ReminderRepository extends JpaRepository<Reminder, Long> {
     Page<Reminder> findAllByDescriptionContainingAndUser_Username(String descr, String username, Pageable pageable);
 
     Optional<Reminder> findByIdAndUser_Username(Long id, String username);
+
+    Page<Reminder> findByExpiresAfterMonthTrue(Pageable pageable);
+
+    Page<Reminder> findAllByExpirationBefore(LocalDate cutoff, Pageable pageable);
 }
