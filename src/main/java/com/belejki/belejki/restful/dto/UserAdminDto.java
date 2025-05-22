@@ -24,5 +24,6 @@ public class UserAdminDto {
     private LocalDate lastLogin;
     private boolean setForDeletion;
     private List<AuthorityAdminDto> authorities;
+    private String confirmationToken;
 
 }

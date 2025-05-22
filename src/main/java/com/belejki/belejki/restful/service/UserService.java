@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 public class UserService {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    public static final int NOT_LOGGED_IN_YEARS = 2;
 
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
@@ -104,8 +103,8 @@ public class UserService {
     }
 
 
-    public Page<User> findAllNotLoggedBefore(Pageable pageable) {
-        LocalDate cutoffDate = LocalDate.now().minusYears(NOT_LOGGED_IN_YEARS);
+    public Page<User> findAllNotLoggedBefore(int months, Pageable pageable) {
+        LocalDate cutoffDate = LocalDate.now().minusMonths(months);
         return userRepository.findAllLastLoggedBefore(cutoffDate, pageable);
     }
 

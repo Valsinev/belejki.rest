@@ -114,10 +114,16 @@ public class UserController {
                 .map(userMapper::toAdminDto);
     }
 
-    @GetMapping("/admin/users/not-logged")
-    public Page<UserAdminDto> findAllNotLoggedBefore(Pageable pageable) {
-        Page<User> allNotLoggedBefore = userService.findAllNotLoggedBefore(pageable);
+    @GetMapping("/admin/users/not-logged/{months}")
+    public Page<UserAdminDto> findAllNotLoggedBefore(@PathVariable int months, Pageable pageable) {
+        Page<User> allNotLoggedBefore = userService.findAllNotLoggedBefore(months, pageable);
         return allNotLoggedBefore.map(userMapper::toAdminDto);
+    }
+
+    @GetMapping("/admin/users/not-confirmed")
+    public Page<UserAdminDto> findAllNotConfirmed(Pageable pageable) {
+        Page<User> notConfirmed = userRepository.findAllByConfirmationTokenNotNull(pageable);
+        return notConfirmed.map(userMapper::toAdminDto);
     }
 
     @GetMapping("/admin/users/disabled")
@@ -223,13 +229,21 @@ public class UserController {
         return ResponseEntity.ok(deleted.map(userMapper::toAdminDto));
     }
 
-    @DeleteMapping("/admin/users/not-logged")
-    public ResponseEntity<List<UserAdminDto>> deleteAllNotLoggedInYears(Pageable pageable) {
-        Page<User> expiredBeforeYears = userService.findAllNotLoggedBefore(pageable);
-        List<UserAdminDto> list = expiredBeforeYears.stream().map(userMapper::toAdminDto).toList();
-        userRepository.deleteAll(expiredBeforeYears);
+    @DeleteMapping("/admin/users/not-logged/{months}")
+    public ResponseEntity<Page<UserAdminDto>> deleteAllNotLoggedInYears(@PathVariable int months, Pageable pageable) {
+        Page<User> expiredBeforeMonths = userService.findAllNotLoggedBefore(months, pageable);
+        Page<UserAdminDto> list = expiredBeforeMonths.map(userMapper::toAdminDto);
+        userRepository.deleteAll(expiredBeforeMonths);
         return ResponseEntity.ok(list);
     }
+
+    @DeleteMapping("/admin/users/not-confirmed")
+    public ResponseEntity<Page<UserAdminDto>> deleteAllNotConfirmed(Pageable pageable) {
+        Page<User> allByConfirmationTokenNotNull = userRepository.findAllByConfirmationTokenNotNull(pageable);
+        userRepository.deleteAll(allByConfirmationTokenNotNull);
+        return ResponseEntity.ok(allByConfirmationTokenNotNull.map(userMapper::toAdminDto));
+    }
+
 
     //endregion
 

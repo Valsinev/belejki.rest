@@ -30,6 +30,7 @@ public class UserMapper {
         dto.setLastName(user.getLastName());
         dto.setEnabled(user.isEnabled());
         dto.setLastLogin(user.getLastLogin());
+        dto.setConfirmationToken(user.getConfirmationToken());
 
         // Map authorities using the entitiesMapper helper
         dto.setAuthorities(MapperUtility.entitiesMapper(user.getRoles(),AuthorityMapper::toDto));

@@ -36,4 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllLastLoggedBefore(@Param("cutoffDate") LocalDate cutoffDate, Pageable pageable);
 
     Optional<User> findByConfirmationToken(String token);
+
+    Page<User> findAllByConfirmationTokenNotNull(Pageable pageable);
 }
