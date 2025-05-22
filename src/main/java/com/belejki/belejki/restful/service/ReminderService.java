@@ -115,6 +115,7 @@ public class ReminderService {
         reminder.setExpired(dto.isExpired());
         reminder.setExpiresSoon(dto.isExpiresSoon());
         reminder.setExpiresToday(dto.isExpiresToday());
+        setExpirationFlags(reminder);
         //resetting flags for the scheduler
         reminder.setMonthMail(false);
         reminder.setWeekMail(false);
