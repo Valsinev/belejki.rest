@@ -39,6 +39,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, Locale locale) {
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -51,11 +52,12 @@ public class AuthController {
             User user = userRepository.findByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            user.setLocale(locale.toLanguageTag());
+            user.setLocale(request.getLocale());
             user.setLastLogin(LocalDate.now());
             userRepository.save(user);
 
             String token = jwtTokenProvider.generateToken(userDetails);
+            System.out.println("Received locale: " + locale.toLanguageTag());
             return ResponseEntity.ok(new JwtResponse(token));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

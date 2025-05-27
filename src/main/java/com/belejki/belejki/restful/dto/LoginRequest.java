@@ -1,32 +1,22 @@
 package com.belejki.belejki.restful.dto;
 
+import lombok.Data;
+
+import java.util.Locale;
+
+@Data
 public class LoginRequest {
     private String username;
     private String password;
+    private String locale;
 
     // Constructors (optional)
     public LoginRequest() {}
 
-    public LoginRequest(String username, String password) {
+    public LoginRequest(String username, String password, String locale) {
         this.username = username;
         this.password = password;
-    }
-
-    // Getters and Setters
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.locale = locale;
     }
 }
 
