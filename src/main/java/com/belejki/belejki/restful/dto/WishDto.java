@@ -18,7 +18,7 @@ public class WishDto {
     private Long id;
     private Long userId;
     @NotNull
-    @Size(min = 2, max = 24, message = "Wish description must be between 2 and 24 characters.")
+    @Size(min = 2, max = 64, message = "Wish description must be between 2 and 64 characters.")
     private String description;
     @NotNull
     @Min(value = 1, message = "The price must be at least 1.")
@@ -26,6 +26,7 @@ public class WishDto {
     private Double approximatePrice;
     @NotNull
     @Size(min = 2, max = 1024, message = "Wish link must be between 2 and 1024 characters.")
+    @Column(length = 1024)
     private String link;
 
 }

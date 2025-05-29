@@ -486,7 +486,7 @@
 					"response": []
 				},
 				{
-					"name": "findsAllUsersNotLoggedFor2YearsByDefault",
+					"name": "findsAllUsersNotLoggedForPassedMonths",
 					"event": [
 						{
 							"listen": "test",
@@ -513,17 +513,60 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/users/not-logged",
+							"raw": "{{base_url}}/admin/users/not-logged/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"admin",
 								"users",
-								"not-logged"
+								"not-logged",
+								"2"
 							]
 						},
-						"description": "Lists all users not logged for 2+ years. Pageable."
+						"description": "Finds all users not logged for passed months."
+					},
+					"response": []
+				},
+				{
+					"name": "findsAllNotConfirmedUsers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/not-confirmed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"not-confirmed"
+							]
+						},
+						"description": "Finds all users wich confirmationToken field != null(not confirmed)."
 					},
 					"response": []
 				},
@@ -960,7 +1003,7 @@
 					"response": []
 				},
 				{
-					"name": "deleteAllUsersNotLoggedByMoreThan2YearsByDefault",
+					"name": "deleteAllUsersNotLoggedForPassedMonths",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -984,17 +1027,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/admin/users/not-logged",
+							"raw": "{{base_url}}/admin/users/not-logged/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"admin",
 								"users",
-								"not-logged"
+								"not-logged",
+								"2"
 							]
 						},
-						"description": "Deletes all users not logged for more than 2 years."
+						"description": "Deletes all users not logged for passed months."
 					},
 					"response": []
 				}
@@ -2811,6 +2855,42 @@
 					"response": []
 				},
 				{
+					"name": "findAllReminderFlagsBeforePassedDate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/flags-before?cutoff=2025-06-29",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"flags-before"
+							],
+							"query": [
+								{
+									"key": "cutoff",
+									"value": "2025-06-29"
+								}
+							]
+						},
+						"description": "Returns the flags and expiration date of all reminders before passed date. (used for scheduler app to get and later update the flags)."
+					},
+					"response": []
+				},
+				{
 					"name": "findAllRemindersForUserByPassedUser_Id",
 					"request": {
 						"auth": {
@@ -3211,6 +3291,45 @@
 							]
 						},
 						"description": "Updates reminder by passed reminder id."
+					},
+					"response": []
+				},
+				{
+					"name": "patchesAllReminders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"id\":1,\n        \"expired\":true,\n        \"expiresSoon\":true,\n        \"expiresAfterMonth\":true,\n        \"expiresToday\":true\n    },\n    {\n        \"id\":2,\n        \"expired\":true,\n        \"expiresSoon\":true,\n        \"expiresAfterMonth\":true,\n        \"expiresToday\":true\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/patch",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"patch"
+							]
+						},
+						"description": "Partial update for schedule reminder entity for all passed reminders. Available fields for update:\n\n``` java\nprivate String description;\nprivate LocalDate expiration;\nprivate boolean expired;\nprivate boolean expiresSoon;\nprivate boolean expiresToday;\nprivate boolean expiresAfterMonth;\nprivate String username;\nprivate String locale;\nprivate boolean monthMail;\nprivate boolean weekMail;\nprivate boolean todayMail;\n\n ```"
 					},
 					"response": []
 				},
