@@ -47,8 +47,32 @@ Before running the application, set the following environment variables:
 💡 In IntelliJ, go to Run > Edit Configurations > Environment Variables to set these.
 
 ### 🛠️ Database Configuration
-This project uses Spring Data JPA with Hibernate for ORM.
+This project uses Spring Data JPA with Hibernate for ORM. You can create the database by changing this property in application.properties.
 - spring.jpa.hibernate.ddl-auto
+
+
+Or you can set up the database schema locally, use the provided SQL script.
+
+### Step 1: Create a Database
+- First, create a new MySQL database (e.g., `my_project_db`):
+
+sql
+CREATE DATABASE my_project_db;
+
+### Ster 2: Run the Schema Script
+Import the SQL script to create all tables and relationships.
+
+- Option 1: Using MySQL Workbench
+   Open MySQL Workbench
+   Connect to your local MySQL server
+   Open the script: File > Open SQL Script and select docs/init-database.sql
+   Click the lightning bolt to execute the script
+
+- Option 2: Using MySQL CLI
+  mysql -u your_username -p my_project_db < docs/init-database.sql
+  Replace your_username and my_project_db with your actual credentials and DB name
+
+
 
 This setting controls how Hibernate handles your database schema at startup. Possible values:
 | Value         | Description                                                          |
@@ -98,6 +122,13 @@ export DATABASE_PASSWORD=yourpassword
 
 
 ## 📫 API Documentation
+
+## 📊 Database Schema
+
+Here is the Entity-Relationship (ER) diagram for the database structure:
+
+![Database Schema](docs/db.schema.png)
+
 
 This project uses a Postman collection to document and test the REST API.
 
