@@ -48,7 +48,7 @@ Before running the application, set the following environment variables:
 
 ### 🛠️ Database Configuration
 This project uses Spring Data JPA with Hibernate for ORM. You can create the database by changing this property in application.properties.
-- spring.jpa.hibernate.ddl-auto
+- spring.jpa.hibernate.ddl-auto=create
 
 
 Or you can set up the database schema locally, use the provided SQL script.
@@ -156,6 +156,8 @@ This project uses a Postman collection to document and test the REST API.
 
 - Spring Data JPA
 
+- Hibernate
+
 - Spring Security
 
 - Spring Mail
@@ -165,3 +167,4 @@ This project uses a Postman collection to document and test the REST API.
 - Maven
 
 - Postman
+
