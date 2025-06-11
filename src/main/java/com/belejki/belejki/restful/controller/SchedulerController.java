@@ -36,7 +36,7 @@ public class SchedulerController {
             @RequestParam("cutoff") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cutoff,
             Pageable pageable) {
         Page<Reminder> founded = reminderRepository.findAllByExpirationBefore(cutoff, pageable);
-        return founded.map(reminderMapper::toFlagsDto);
+        return founded.map(reminderMapper::toSchedulerDto);
     }
 
 
@@ -46,7 +46,7 @@ public class SchedulerController {
         flagsDtos.forEach(dto -> {
             Reminder byId = reminderService.findById(dto.getId());
             if (dto.getName() != null) {
-                byId.setDescription(dto.getName());
+                byId.setName(dto.getName());
             }
             if (dto.getExpiration() != null) {
                 byId.setExpiration(dto.getExpiration());

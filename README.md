@@ -43,6 +43,7 @@ Before running the application, set the following environment variables:
 | `SPRING_MAIL_HOST`         | SMTP server host (e.g., `smtp.gmail.com`)                       | —                  |
 | `SPRING_MAIL_USERNAME`     | Email address used to send emails                               | —                  |
 | `SPRING_MAIL_PASSWORD`     | App-specific email password (for Gmail or similar)              | —                  |
+| `JWT_SECRET`  | Your jwt secret string | `yourSuperSecretKeyForJWTSigning1234567890`|
 
 💡 In IntelliJ, go to Run > Edit Configurations > Environment Variables to set these.
 

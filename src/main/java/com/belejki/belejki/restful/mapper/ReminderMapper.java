@@ -43,17 +43,6 @@ public class ReminderMapper {
         return reminder;
     }
 
-    public ReminderSchedulerDto toFlagsDto(Reminder reminder) {
-        ReminderSchedulerDto flagsDto = new ReminderSchedulerDto();
-        flagsDto.setId(reminder.getId());
-        flagsDto.setExpiration(reminder.getExpiration());
-        flagsDto.setExpired(reminder.isExpired());
-        flagsDto.setExpiresAfterMonth(reminder.isExpiresAfterMonth());
-        flagsDto.setExpiresSoon(reminder.isExpiresSoon());
-        flagsDto.setExpiresToday(reminder.isExpiresToday());
-        return flagsDto;
-    }
-
     public ReminderSchedulerDto toSchedulerDto(Reminder reminder) {
         ReminderSchedulerDto dto = new ReminderSchedulerDto();
         dto.setId(reminder.getId());
