@@ -1,4 +1,4 @@
-package com.belejki.belejki.restful.security;
+package com.belejki.belejki.restful.config;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

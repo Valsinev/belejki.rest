@@ -53,7 +53,15 @@ public class UserService {
         user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setLastLogin(LocalDate.now());
-        user.setAuthorities(List.of(new Authority(null, user, UserRoles.ROLE_USER.name())));
+
+        //if this is first registered user set admin authorities
+        if (userRepository.count() == 0) {
+            Authority userRole = new Authority(null, user, UserRoles.ROLE_USER.name());
+            Authority adminRole = new Authority(null, user, UserRoles.ROLE_ADMIN.name());
+            user.setAuthorities(List.of(userRole, adminRole));
+        } else {
+            user.setAuthorities(List.of(new Authority(null, user, UserRoles.ROLE_USER.name())));
+        }
 
         String token = UUID.randomUUID().toString();
         user.setConfirmationToken(token);
