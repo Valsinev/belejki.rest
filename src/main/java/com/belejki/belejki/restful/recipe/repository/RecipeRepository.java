@@ -1,0 +1,65 @@
+package com.belejki.belejki.restful.recipe.repository;
+
+import com.belejki.belejki.restful.recipe.domain.Recipe;
+import com.belejki.belejki.restful.user.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import java.util.List;
+import java.util.Optional;
+
+@RepositoryRestResource
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+
+    @Query("""
+            SELECT r FROM Recipe r
+            JOIN r.recipeIngredients ri
+            JOIN ri.ingredient i
+            WHERE i.name IN :ingredientNames
+            AND r.user = :user
+            GROUP BY r
+            HAVING COUNT(DISTINCT i.name) = :ingredientCount
+            """)
+    Page<Recipe> findRecipesByAllIngredientNamesAndUser(@Param("ingredientNames") List<String> ingredientNames,
+                                                        @Param("ingredientCount") long ingredientCount,
+                                                        @Param("user")User user,
+                                                        Pageable pageable);
+
+
+
+        @Query("""
+                SELECT r FROM Recipe r
+                JOIN r.recipeIngredients ri
+                JOIN ri.ingredient i
+                WHERE i.name IN :ingredientNames
+                AND r.user.username = :username
+                GROUP BY r
+                HAVING COUNT(DISTINCT i.name) = :ingredientCount""")
+        Page<Recipe> findRecipesByAllIngredientNamesAndUsername(@Param("ingredientNames") List<String> ingredientNames,
+                                                                @Param("ingredientCount") long ingredientCount,
+                                                                @Param("username") String username,
+                                                                Pageable pageable);
+
+
+    Page<Recipe> findAllByNameContainingAndUser_Username(String recipeName, String username, Pageable pageable);
+    Page<Recipe> findAllByNameContainingAndUser(String name, User user, Pageable pageable);
+
+
+    Page<Recipe> findAllByNameContainingIgnoreCase(String recipeName, Pageable pageable);
+
+    Page<Recipe> findAllByUser_Id(Long id, Pageable pageable);
+
+    Page<Recipe> findAllByUser_Username(String username, Pageable pageable);
+
+    Optional<Recipe> findByIdAndUser_Username(Long id, String username);
+
+    void deleteByIdAndUser_Username(Long id, String username);
+
+    void deleteAllByUser_Id(Long id);
+
+    void deleteAllByUser_Username(String username);
+}

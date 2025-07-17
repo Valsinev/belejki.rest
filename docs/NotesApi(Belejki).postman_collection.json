@@ -329,7 +329,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"password\":\"1q2w3e4r.\"\n}",
+							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"password\":\"1q2w3e4r\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -345,7 +345,7 @@
 								"login"
 							]
 						},
-						"description": "This endpoint sends request for existing user in the database and returns JWT token for user authentication."
+						"description": "This endpoint sends request for existing user in the database and returns response with information for jwtToken, user.id, user.firstName, user.lastName, user.username(email), is te user admin based on user.authority roles:\n\n{\n\n\"token\":\"{jwtToken}\",\n\n\"id\": 1,\n\n\"firstName\": \"Pesho\",\n\n\"lastName\": \"Peshev\",\n\n\"email\": \"pesho@abv.bg\",\n\n\"admin\": true\n\n}"
 					},
 					"response": []
 				},
@@ -479,6 +479,48 @@
 							"path": [
 								"admin",
 								"users"
+							]
+						},
+						"description": "Gets all users. Pageable."
+					},
+					"response": []
+				},
+				{
+					"name": "getsCurrentUserInformation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/current",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"current"
 							]
 						},
 						"description": "Gets all users. Pageable."
@@ -1604,6 +1646,37 @@
 							]
 						},
 						"description": "gets all friendships for user by passed username(only admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllByUser_UsernameAndFriend_FirstName",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/friendships/first-name/Venislav",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"friendships",
+								"first-name",
+								"Venislav"
+							]
+						},
+						"description": "Gets all friendships with Friend(User) by the passed friend firstName for User by passed username."
 					},
 					"response": []
 				},
@@ -3014,6 +3087,36 @@
 					"response": []
 				},
 				{
+					"name": "findAllRemindersNotExpiredAndNotExpiresSoon",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reminders/not-soon",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"reminders",
+								"not-soon"
+							]
+						},
+						"description": "Finds all reminders with expiresSoon = false field/flag and expired = false flag/field."
+					},
+					"response": []
+				},
+				{
 					"name": "findAllRemindersWithExpiresAfterMonthFlagTrue",
 					"request": {
 						"auth": {
@@ -3551,7 +3654,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"onion\",\n    \"color\":\"#43eb34\"\n}",
+							"raw": "{\n    \"name\":\"onion\",\n    \"price\":1.5,\n    \"color\":\"#43eb34\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3847,6 +3950,77 @@
 				}
 			],
 			"description": "CRUD"
+		},
+		{
+			"name": "Scheduler",
+			"item": [
+				{
+					"name": "findsRemindersByExpirationDateBeforePassedDate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/flags-before?cutoff=2025-06-11",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"flags-before"
+							],
+							"query": [
+								{
+									"key": "cutoff",
+									"value": "2025-06-11"
+								}
+							]
+						},
+						"description": "Finds all reminders with expiration date before the passed date."
+					},
+					"response": []
+				},
+				{
+					"name": "findsRemindersByExpirationDateBeforePassedDate Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/flags-before",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"flags-before"
+							]
+						},
+						"description": "Finds all reminders with expiration date before the passed date."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [

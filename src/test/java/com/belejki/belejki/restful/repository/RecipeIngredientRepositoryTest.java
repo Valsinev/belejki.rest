@@ -1,15 +1,11 @@
 package com.belejki.belejki.restful.repository;
-import com.belejki.belejki.restful.entity.Ingredient;
-import com.belejki.belejki.restful.entity.Recipe;
-import com.belejki.belejki.restful.entity.RecipeIngredient;
-import com.belejki.belejki.restful.entity.User;
+import com.belejki.belejki.restful.ingredient.repository.IngredientRepository;
+import com.belejki.belejki.restful.recipe.repository.RecipeRepository;
+import com.belejki.belejki.restful.recipeIngredient.repository.RecipeIngredientRepository;
+import com.belejki.belejki.restful.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,0 +1,40 @@
+package com.belejki.belejki.restful.user.repository;
+
+import com.belejki.belejki.restful.user.domain.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+@RepositoryRestResource
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Page<User> findByEnabledFalse(Pageable pageable);
+
+    Page<User> findAllByFirstNameContaining(String firstName, Pageable pageable);
+
+    Page<User> findAllByLastNameContaining(String lastName, Pageable pageable);
+
+    Page<User> findAllByFirstNameContainingAndLastNameContaining(String firstname, String lastName, Pageable pageable);
+
+    boolean existsByUsername(@Email(message = "Invalid format for email address.") @NotBlank(message = "Username is required.") String username);
+
+    Optional<User> findByUsername(String username);
+
+    Page<User> findAllBySetForDeletionTrue(Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE u.lastLogin < :cutoffDate")
+    Page<User> findAllLastLoggedBefore(@Param("cutoffDate") LocalDate cutoffDate, Pageable pageable);
+
+    Optional<User> findByConfirmationToken(String token);
+
+    Page<User> findAllByConfirmationTokenNotNull(Pageable pageable);
+
+}

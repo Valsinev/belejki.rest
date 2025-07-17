@@ -1,9 +1,9 @@
 package com.belejki.belejki.restful.config;
 
-import com.belejki.belejki.restful.repository.UserRepository;
-import com.belejki.belejki.restful.security.CustomUserDetailsService;
-import com.belejki.belejki.restful.security.JwtAuthenticationFilter;
-import com.belejki.belejki.restful.security.JwtTokenProvider;
+import com.belejki.belejki.restful.user.repository.UserRepository;
+import com.belejki.belejki.restful.config.security.CustomUserDetailsService;
+import com.belejki.belejki.restful.config.security.JwtAuthenticationFilter;
+import com.belejki.belejki.restful.config.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
