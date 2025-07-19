@@ -4,9 +4,10 @@ import com.belejki.belejki.restful.shared.AuthService;
 import com.belejki.belejki.restful.user.service.UserService;
 import com.belejki.belejki.restful.user.web.dto.UserDetailsResponseDto;
 import com.belejki.belejki.restful.user.web.dto.UserDetailsShortDto;
+import com.belejki.belejki.restful.user.web.dto.UserRegisterDto;
 import com.belejki.belejki.restful.user.web.dto.UserPatchRequestDto;
-import com.belejki.belejki.restful.user.web.dto.UserRequestDto;
 import com.belejki.belejki.restful.user.domain.User;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,8 +38,9 @@ public class UserController {
 
 	//region POST METHODS
 
+	@Transactional
 	@PostMapping("/user/users")
-	public ResponseEntity<UserDetailsResponseDto> create(@Valid @RequestBody UserRequestDto user, BindingResult bindingResult, Locale locale) {
+	public ResponseEntity<UserDetailsResponseDto> create(@Valid @RequestBody UserRegisterDto user, BindingResult bindingResult, Locale locale) {
 		if (bindingResult.hasErrors()) {
 			return ResponseEntity.badRequest().build();
 		}
@@ -47,41 +49,60 @@ public class UserController {
 		return ResponseEntity.ok(saved);
 	}
 
-	@GetMapping("/confirm")
-	public ResponseEntity<UserDetailsResponseDto> confirmEmail(@RequestParam("token") String token) {
-		UserRequestDto userOpt = userService.findByConfirmationToken(token);
 
-		if (userOpt.getTokenExpiry().isBefore(LocalDateTime.now())) {
-			return ResponseEntity.badRequest().build();
-		}
-
-		UserDetailsResponseDto saved = userService.enable(userOpt);
-
-		return ResponseEntity.ok(saved);
-	}
 
 
 	//endregion
 
 	//region PUT METHODS
 
-	@PutMapping("/user/users/update/{id}")
+	@PutMapping("/user/users")
 	@PreAuthorize("hasRole('ADMIN') or #id == principal.id")
-	public ResponseEntity<UserDetailsResponseDto> updateUserByUserId(@PathVariable Long id,
-	                                                         @Valid @RequestBody UserRequestDto user) {
-		UserDetailsResponseDto updated = userService.update(id, user);
+	public ResponseEntity<UserDetailsResponseDto> updateUserByUserId(@Valid @RequestBody UserRegisterDto user,
+	                                                                 BindingResult bindingResult,
+	                                                                 Authentication authentication) {
+
+		if (bindingResult.hasErrors()) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		String username = authentication.getName();
+
+		boolean admin = authChecker.isAdmin(authentication);
+
+		//if the user is not admin and owner
+		if (!admin || !user.getUsername().equals(username)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+
+		UserDetailsResponseDto updated = userService.update(username, user);
 		return ResponseEntity.ok(updated);
 	}
 
 	//endregion
 
 	//region PATCH METHODS
-	@PatchMapping("/user/users/patch/{id}")
-	public ResponseEntity<UserDetailsResponseDto> patchUser(
-			@PathVariable Long id,
-			@RequestBody UserPatchRequestDto patchDto) {
+	@PatchMapping("/user/users")
+	public ResponseEntity<UserDetailsResponseDto> patchUser(@Valid @RequestBody UserPatchRequestDto patchDto,
+															BindingResult bindingResult,
+	                                                        Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			return ResponseEntity.badRequest().build();
+		}
 
-		UserDetailsResponseDto updated = userService.patchUser(id, patchDto);
+		String username = authentication.getName();
+		UserDetailsResponseDto byUsername = userService.findByUsername(username);
+		Long userId = patchDto.getId();
+
+
+		boolean admin = authChecker.isAdmin(authentication);
+
+		//if the user is not admin and owner
+		if (!admin || !byUsername.getId().equals(userId)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+
+		UserDetailsResponseDto updated = userService.patchUser(patchDto);
 
 		return ResponseEntity.ok(updated);
 	}
@@ -91,7 +112,7 @@ public class UserController {
 	//region GET METHODS
 	@GetMapping("/admin/users/id/{id}")
 	public ResponseEntity<UserDetailsResponseDto> findById(@PathVariable Long id,
-	                                               Authentication authentication) {
+	                                                Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -117,7 +138,7 @@ public class UserController {
 
 	@GetMapping("/admin/users")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAll(Pageable pageable,
-	                                                    Authentication authentication) {
+	                                                     Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -129,8 +150,8 @@ public class UserController {
 
 	@GetMapping("/admin/users/not-logged/{months}")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllNotLoggedBefore(@PathVariable int months,
-	                                                                   Pageable pageable,
-	                                                                   Authentication authentication) {
+	                                                                    Pageable pageable,
+	                                                                    Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -142,7 +163,7 @@ public class UserController {
 
 	@GetMapping("/admin/users/not-confirmed")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllNotConfirmed(Pageable pageable,
-	                                                                Authentication authentication) {
+	                                                                 Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -154,7 +175,7 @@ public class UserController {
 
 	@GetMapping("/admin/users/disabled")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllDisabled(Pageable pageable,
-	                                                            Authentication authentication) {
+	                                                             Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -166,7 +187,7 @@ public class UserController {
 
 	@GetMapping("/admin/users/set-for-deletion")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllBySetForDeletionTrue(Pageable pageable,
-	                                                                        Authentication authentication) {
+	                                                                         Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -178,8 +199,8 @@ public class UserController {
 
 	@GetMapping("/admin/users/{username}")
 	public ResponseEntity<UserDetailsResponseDto> findAllByUsername(@PathVariable String username,
-	                                                        Pageable pageable,
-	                                                        Authentication authentication) {
+	                                                         Pageable pageable,
+	                                                         Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -191,8 +212,8 @@ public class UserController {
 
 	@GetMapping("/admin/users/first-name/{firstName}")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllByFirstNameContaining(@PathVariable String firstName,
-	                                                                         Pageable pageable,
-	                                                                         Authentication authentication) {
+	                                                                          Pageable pageable,
+	                                                                          Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -205,8 +226,8 @@ public class UserController {
 
 	@GetMapping("/admin/users/last-name/{lastName}")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllByLastNameContaining(@PathVariable String lastName,
-	                                                                        Pageable pageable,
-	                                                                        Authentication authentication) {
+	                                                                         Pageable pageable,
+	                                                                         Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -218,9 +239,9 @@ public class UserController {
 
 	@GetMapping("/admin/users/first-and-last-name")
 	public ResponseEntity<Page<UserDetailsResponseDto>> findAllByFirstNameContainingAndLastNameContaining(@RequestParam String firstName,
-	                                                                                              @RequestParam String lastName,
-	                                                                                              Pageable pageable,
-	                                                                                              Authentication authentication) {
+	                                                                                                      @RequestParam String lastName,
+	                                                                                                      Pageable pageable,
+	                                                                                                      Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
@@ -230,10 +251,28 @@ public class UserController {
 		return ResponseEntity.ok(allByFirstNameContainingAndLastNameContaining);
 	}
 
+
+	//for confirming the user from the sended email
+	//EmailService.sendConfirmationEmail ->
+	// String confirmationLink = baseUrl.concat(":").concat(serverPort).concat("/confirm?token=").concat(token);
+	@GetMapping("/confirm")
+	public ResponseEntity<UserDetailsResponseDto> confirmEmail(@RequestParam("token") String token) {
+		UserRegisterDto userOpt = userService.findByConfirmationToken(token);
+
+		if (userOpt.getTokenExpiry().isBefore(LocalDateTime.now())) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		UserDetailsResponseDto saved = userService.enable(userOpt);
+
+		return ResponseEntity.ok(saved);
+	}
+
 	//endregion
 
 	//region DELETE METHODS
 
+	@Transactional
 	@DeleteMapping("/admin/users")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Void> delete(@RequestBody User user, Authentication authentication) {
@@ -247,6 +286,7 @@ public class UserController {
 		return ResponseEntity.ok(null);
 	}
 
+	@Transactional
 	@DeleteMapping("/admin/users/id/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Void> deleteById(@PathVariable Long id, Authentication authentication) {
@@ -259,6 +299,7 @@ public class UserController {
 		return ResponseEntity.ok(null);
 	}
 
+	@Transactional
 	@DeleteMapping("/admin/users/{username}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Void> deleteByUsername(@PathVariable String username, Authentication authentication) {
@@ -271,6 +312,7 @@ public class UserController {
 		return ResponseEntity.ok(null);
 	}
 
+	@Transactional
 	@DeleteMapping("/admin/users/set-for-deletion")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Void> deleteAllByIsSetForDeletion(Authentication authentication, Pageable pageable) {
@@ -282,6 +324,7 @@ public class UserController {
 		return ResponseEntity.ok(null);
 	}
 
+	@Transactional
 	@DeleteMapping("/admin/users/not-logged/{months}")
 	public ResponseEntity<Void> deleteAllNotLoggedInYears(@PathVariable int months, Pageable pageable, Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
@@ -292,6 +335,7 @@ public class UserController {
 		return ResponseEntity.ok(null);
 	}
 
+	@Transactional
 	@DeleteMapping("/admin/users/not-confirmed")
 	public ResponseEntity<Void> deleteAllNotConfirmed(Pageable pageable, Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
@@ -305,6 +349,7 @@ public class UserController {
 
 
 	//endregion
+
 
 
 }

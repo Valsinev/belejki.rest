@@ -4,7 +4,7 @@ import com.belejki.belejki.restful.user.domain.User;
 import com.belejki.belejki.restful.user.web.dto.UserDetailsResponseDto;
 import com.belejki.belejki.restful.user.web.dto.UserDetailsShortDto;
 import com.belejki.belejki.restful.user.web.dto.UserPatchRequestDto;
-import com.belejki.belejki.restful.user.web.dto.UserRequestDto;
+import com.belejki.belejki.restful.user.web.dto.UserRegisterDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,15 +12,15 @@ import org.springframework.data.domain.Pageable;
 import java.util.Locale;
 
 public interface UserService {
-	UserDetailsResponseDto createUser(@Valid UserRequestDto user, Locale locale);
+	UserDetailsResponseDto createUser(@Valid UserRegisterDto user, Locale locale);
 
-	UserRequestDto findByConfirmationToken(String token);
+	UserRegisterDto findByConfirmationToken(String token);
 
-	UserDetailsResponseDto enable(UserRequestDto userDto);
+	UserDetailsResponseDto enable(UserRegisterDto userDto);
 
-	UserDetailsResponseDto update(Long id, @Valid UserRequestDto user);
+	UserDetailsResponseDto update(String username, @Valid UserRegisterDto user);
 
-	UserDetailsResponseDto patchUser(Long id, UserPatchRequestDto patchDto);
+	UserDetailsResponseDto patchUser(UserPatchRequestDto patchDto);
 
 	UserDetailsResponseDto findByUsername(String name);
 

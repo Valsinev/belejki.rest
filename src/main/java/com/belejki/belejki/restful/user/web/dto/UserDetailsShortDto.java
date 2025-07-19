@@ -1,6 +1,5 @@
 package com.belejki.belejki.restful.user.web.dto;
 
-import com.belejki.belejki.restful.authority.domain.UserRoles;
 import lombok.Data;
 
 import java.util.List;
@@ -14,5 +13,4 @@ public class UserDetailsShortDto {
 	private String lastName;
 	private List<String> authorities;
 	private boolean isAdmin;
-
 }

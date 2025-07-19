@@ -18,5 +18,4 @@ public class UserDetailsResponseDto {
 	private boolean setForDeletion;
 	private String locale;
 	private Set<AuthorityDto> authorities;
-
 }

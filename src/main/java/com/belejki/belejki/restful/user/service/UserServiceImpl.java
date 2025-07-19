@@ -4,9 +4,7 @@ import com.belejki.belejki.restful.authority.service.AuthorityServiceImpl;
 import com.belejki.belejki.restful.user.web.dto.UserDetailsResponseDto;
 import com.belejki.belejki.restful.user.web.dto.UserDetailsShortDto;
 import com.belejki.belejki.restful.user.web.dto.UserPatchRequestDto;
-import com.belejki.belejki.restful.user.web.dto.UserRequestDto;
 import com.belejki.belejki.restful.authority.domain.Authority;
-import com.belejki.belejki.restful.friendship.domain.Friendship;
 import com.belejki.belejki.restful.user.domain.User;
 import com.belejki.belejki.restful.authority.domain.UserRoles;
 import com.belejki.belejki.restful.scheduler.service.EmailService;
@@ -14,8 +12,8 @@ import com.belejki.belejki.restful.shared.exception.user.UserAlreadyExistsExcept
 import com.belejki.belejki.restful.shared.exception.user.UserNotFoundException;
 import com.belejki.belejki.restful.friendship.repository.FriendshipRepository;
 import com.belejki.belejki.restful.user.repository.UserRepository;
+import com.belejki.belejki.restful.user.web.dto.UserRegisterDto;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +48,11 @@ public class UserServiceImpl implements UserService{
     }
 
 
-    public UserDetailsResponseDto createUser(UserRequestDto dto, Locale locale) {
+    //POST
+    public UserDetailsResponseDto createUser(UserRegisterDto dto, Locale locale) {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new UserAlreadyExistsException("User with username " + dto.getUsername() + " already exists");
         }
-//        User user = userMapper.toEntity(dto);
         User user = modelMapper.map(dto, User.class);
         user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -91,24 +89,11 @@ public class UserServiceImpl implements UserService{
         }
         return mapped;
     }
+    //PUT
+    public UserDetailsResponseDto update(String username, UserRegisterDto updatedUser) throws UserNotFoundException{
 
-
-    public UserDetailsResponseDto enable(UserRequestDto userDto) {
-
-        userDto.setEnabled(true);
-        userDto.setConfirmationToken(null);
-        userDto.setTokenExpiry(null);
-
-        User user = modelMapper.map(userDto, User.class);
-        User saved = userRepository.save(user);
-        return modelMapper.map(saved, UserDetailsResponseDto.class);
-    }
-
-
-    public UserDetailsResponseDto update(Long userId, UserRequestDto updatedUser) throws UserNotFoundException{
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found for id: " + userId));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("[UserService.update] User not found for username: " + username));
 
         user.setUsername(updatedUser.getUsername());
         user.setFirstName(updatedUser.getFirstName());
@@ -120,8 +105,10 @@ public class UserServiceImpl implements UserService{
         return modelMapper.map(saved, UserDetailsResponseDto.class);
     }
 
-    public UserDetailsResponseDto patchUser(Long id, UserPatchRequestDto dto) {
+    //PATCH
+    public UserDetailsResponseDto patchUser(UserPatchRequestDto dto) {
 
+        Long id = dto.getId();
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found for id: " + id));
 
@@ -130,11 +117,11 @@ public class UserServiceImpl implements UserService{
             user.setUsername(dto.getUsername());
         }
 
-        if (dto.getFirstName() != null) {
+        if (dto.getFirstName() != null && !dto.getFirstName().isEmpty()) {
             user.setFirstName(dto.getFirstName());
         }
 
-        if (dto.getLastName() != null) {
+        if (dto.getLastName() != null && !dto.getLastName().isEmpty()) {
             user.setLastName(dto.getLastName());
         }
 
@@ -145,6 +132,46 @@ public class UserServiceImpl implements UserService{
         User saved = userRepository.save(user);
         return modelMapper.map(saved, UserDetailsResponseDto.class);
     }
+
+    //GET
+    public UserDetailsResponseDto findByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found for username: " + username));
+        return modelMapper.map(user, UserDetailsResponseDto.class);
+    }
+
+    public UserDetailsResponseDto findById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found for id: " + id));
+
+        return modelMapper.map(user, UserDetailsResponseDto.class);
+    }
+
+    @Override
+    public UserDetailsShortDto findCurrentUserBy_Username(String username) {
+        User user = userRepository.findByUsername(username).get();
+        UserDetailsShortDto userDetails = modelMapper.map(user, UserDetailsShortDto.class);
+        List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        userDetails.setAuthorities(authorities);
+        boolean isAdmin = authorities.contains(UserRoles.ROLE_ADMIN.name());
+        userDetails.setAdmin(isAdmin);
+        return userDetails;
+    }
+
+    public UserDetailsResponseDto enable(UserRegisterDto userDto) {
+
+        String username = userDto.getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("[UserService.enable] User not found for username: " + username));
+
+        user.setEnabled(true);
+        user.setConfirmationToken(null);
+        user.setTokenExpiry(null);
+
+        User saved = userRepository.save(user);
+        return modelMapper.map(saved, UserDetailsResponseDto.class);
+    }
+
 
     public Page<UserDetailsResponseDto> findAll(Pageable pageable) {
         Page<User> all = userRepository.findAll(pageable);
@@ -163,23 +190,11 @@ public class UserServiceImpl implements UserService{
         return byEnabledFalse.map(user -> modelMapper.map(user, UserDetailsResponseDto.class));
     }
 
-    public UserDetailsResponseDto findByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found for username: " + username));
-        return modelMapper.map(user, UserDetailsResponseDto.class);
-    }
 
-    public UserDetailsResponseDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User not found for id: " + id));
-
-        return modelMapper.map(user, UserDetailsResponseDto.class);
-    }
-
-    public UserRequestDto findByConfirmationToken(String token) {
+    public UserRegisterDto findByConfirmationToken(String token) {
         User byConfirmationToken = userRepository.findByConfirmationToken(token)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return modelMapper.map(byConfirmationToken, UserRequestDto.class);
+        return modelMapper.map(byConfirmationToken, UserRegisterDto.class);
     }
 
     public Page<UserDetailsResponseDto> findAllBySetForDeletionTrue(Pageable pageable) {
@@ -216,15 +231,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     public void delete(User user) {
-        //setting the linked table constraints to null
-        List<Friendship> byUser = friendshipRepository.findByUser(user);
-        byUser.forEach(friendship -> friendship.setFriend(null));
-        List<Friendship> allByFriendUsername = friendshipRepository.findAllByFriend_Username(user.getUsername());
-        allByFriendUsername.forEach(friendship -> friendship.setUser(null));
-
-        //deleting relations in linked table friendships
-        friendshipRepository.deleteAll(byUser);
-        friendshipRepository.deleteAll(allByFriendUsername);
+        this.nullifyUserRelations(user);
 
         userRepository.delete(user);
     }
@@ -232,11 +239,20 @@ public class UserServiceImpl implements UserService{
     public void deleteByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found for username: " + username));
+        this.nullifyUserRelations(user);
         this.delete(user);
     }
 
     public void deleteById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("[UserService.deleteById] User not found for id: " + id));
+        this.nullifyUserRelations(user);
         userRepository.deleteById(id);
+    }
+
+    private void nullifyUserRelations(User user) {
+        friendshipRepository.deleteAllByUser_Id(user.getId());
+        friendshipRepository.deleteAllByFriend_Id(user.getId());
     }
 
     @Override
@@ -247,16 +263,6 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteAll(allByConfirmationTokenNotNull);
     }
 
-    @Override
-    public UserDetailsShortDto findCurrentUserBy_Username(String username) {
-        User user = userRepository.findByUsername(username).get();
-        UserDetailsShortDto userDetails = modelMapper.map(user, UserDetailsShortDto.class);
-        List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        userDetails.setAuthorities(authorities);
-        boolean isAdmin = authorities.contains(UserRoles.ROLE_ADMIN.name());
-        userDetails.setAdmin(isAdmin);
-        return userDetails;
-    }
 
     public void deleteAllByIsSetForDeletion(Pageable pageable) {
         Page<User> allBySetForDeletionTrue = userRepository.findAllBySetForDeletionTrue(pageable);

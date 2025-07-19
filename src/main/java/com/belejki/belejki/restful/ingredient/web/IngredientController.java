@@ -1,8 +1,7 @@
 package com.belejki.belejki.restful.ingredient.web;
 
 import com.belejki.belejki.restful.ingredient.service.IngredientService;
-import com.belejki.belejki.restful.ingredient.web.dto.IngredientRequestDto;
-import com.belejki.belejki.restful.ingredient.web.dto.IngredientResponseDto;
+import com.belejki.belejki.restful.ingredient.web.dto.IngredientDto;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @RestController
@@ -26,8 +27,13 @@ public class IngredientController {
 	//region POST METHODS
 
     @PostMapping("/user/ingredients")
-    public ResponseEntity<IngredientResponseDto> save(@Valid @RequestBody IngredientRequestDto ingredient) {
-        IngredientResponseDto ingredientRequestDto = ingredientService.save(ingredient);
+    public ResponseEntity<IngredientDto> save(@Valid @RequestBody IngredientDto ingredient, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        IngredientDto ingredientRequestDto = ingredientService.save(ingredient);
 
         return ResponseEntity.ok(ingredientRequestDto);
     }
@@ -37,24 +43,26 @@ public class IngredientController {
     //region GET METHODS
 
     @GetMapping("/admin/ingredients")
-    public ResponseEntity<Page<IngredientResponseDto>> findAll(Pageable pageable) {
-        Page<IngredientResponseDto> all = ingredientService.findAll(pageable);
+    public ResponseEntity<Page<IngredientDto>> findAll(Pageable pageable) {
+        Page<IngredientDto> all = ingredientService.findAll(pageable);
         return ResponseEntity.ok(all);
     }
 
     @GetMapping("/admin/ingredient")
-    public ResponseEntity<IngredientResponseDto> findByName(@Valid @RequestBody IngredientRequestDto dto,
-                                                            BindingResult bindingResult) {
+    public ResponseEntity<IngredientDto> findByName(@Valid @RequestBody IngredientDto dto,
+                                                    BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
-        IngredientResponseDto byName = ingredientService.findByName(dto.getName());
-        return ResponseEntity.ok(byName);
+
+        Optional<IngredientDto> byName = ingredientService.findByName(dto.getName());
+
+	    return byName.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/admin/ingredients/{id}")
-    public ResponseEntity<IngredientResponseDto> findById(@PathVariable Long id) {
-        IngredientResponseDto byId = ingredientService.findById(id);
+    public ResponseEntity<IngredientDto> findById(@PathVariable Long id) {
+        IngredientDto byId = ingredientService.findById(id);
         return ResponseEntity.ok(byId);
     }
 

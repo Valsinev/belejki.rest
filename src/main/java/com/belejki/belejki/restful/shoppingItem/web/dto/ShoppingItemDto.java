@@ -11,8 +11,9 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-public class ShoppingItemRequestDto extends ShoppingItemResponseDto {
+public class ShoppingItemDto {
     private Long id;
+    private String userUsername;
     @NotNull
     @NotBlank(message = "Item name is required.")
     @Size(min = 2, max = 24, message = "Item name must be between 2 and 24 characters.")

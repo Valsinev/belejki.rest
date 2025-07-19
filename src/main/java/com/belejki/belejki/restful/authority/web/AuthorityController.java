@@ -122,6 +122,16 @@ public class AuthorityController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/admin/authorities")
+    public ResponseEntity<Page<Void>> deleteUserRole(@Valid @RequestBody AuthorityDto authorityDto, Authentication authentication) {
+        boolean admin = authService.isAdmin(authentication);
+        if (!admin) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        authorityService.deleteByUser_UsernameAndAuthority(authorityDto.getUserUsername(), authorityDto.getAuthority());
+        return ResponseEntity.ok().build();
+    }
+
 
     //endregion
 

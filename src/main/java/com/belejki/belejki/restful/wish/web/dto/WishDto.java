@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WishRequestDto extends WishResponseDto {
+public class WishDto {
     private Long id;
+    private String userUsername;
     @NotNull
     @Size(min = 2, max = 64, message = "Wish description must be between 2 and 64 characters.")
     private String description;

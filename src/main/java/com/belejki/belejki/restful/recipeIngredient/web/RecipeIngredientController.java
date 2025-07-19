@@ -1,9 +1,8 @@
 package com.belejki.belejki.restful.recipeIngredient.web;
 
 import com.belejki.belejki.restful.recipeIngredient.service.RecipeIngredientService;
-import com.belejki.belejki.restful.recipeIngredient.web.dto.RecipeIngredientRequestDto;
+import com.belejki.belejki.restful.recipeIngredient.web.dto.RecipeIngredientDto;
 import com.belejki.belejki.restful.recipe.domain.Recipe;
-import com.belejki.belejki.restful.recipeIngredient.web.dto.RecipeIngredientResponseDto;
 import com.belejki.belejki.restful.shared.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,53 +28,38 @@ public class RecipeIngredientController {
     }
 
 
-	//region POST METHODS
-
-    @PostMapping("/user/recipe-ingredients")
-    public ResponseEntity<RecipeIngredientResponseDto> save(@Valid @RequestBody RecipeIngredientRequestDto recipeIngredientRequestDto,
-                                                            BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
-        }
-        RecipeIngredientResponseDto dto = recipeIngredientService.save(recipeIngredientRequestDto);
-        return ResponseEntity.ok(dto);
-    }
-
-    //endregion
-
     //region GET METHODS
 
     @GetMapping("/admin/recipe-ingredients")
-    public ResponseEntity<Page<RecipeIngredientResponseDto>> findAll(Pageable pageable, Authentication authentication) {
+    public ResponseEntity<Page<RecipeIngredientDto>> findAll(Pageable pageable, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        Page<RecipeIngredientResponseDto> all = recipeIngredientService.findAll(pageable);
+        Page<RecipeIngredientDto> all = recipeIngredientService.findAll(pageable);
         return ResponseEntity.ok(all);
     }
 
     @GetMapping("/admin/recipe-ingredients/id/{id}")
-    public ResponseEntity<RecipeIngredientResponseDto> findById(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<RecipeIngredientDto> findById(@PathVariable Long id, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        RecipeIngredientResponseDto recipeIngredient = recipeIngredientService.findById(id);
+        RecipeIngredientDto recipeIngredient = recipeIngredientService.findById(id);
         return ResponseEntity.ok(recipeIngredient);
     }
 
     @GetMapping("/user/recipe-ingredients/recipe")
-    public ResponseEntity<Page<RecipeIngredientResponseDto>> findAllByRecipe(@RequestBody Recipe recipe, Authentication authentication, Pageable pageable) {
-        Page<RecipeIngredientResponseDto> byRecipe = recipeIngredientService.findAllByRecipe(recipe, pageable);
+    public ResponseEntity<Page<RecipeIngredientDto>> findAllByRecipe(@RequestBody Recipe recipe, Authentication authentication, Pageable pageable) {
+        Page<RecipeIngredientDto> byRecipe = recipeIngredientService.findAllByRecipe(recipe, pageable);
         return ResponseEntity.ok(byRecipe);
     }
 
     @GetMapping("/user/recipe-ingredients/recipe/id/{recipeId}")
-    public ResponseEntity<Page<RecipeIngredientResponseDto>> findAllByRecipeId(@PathVariable Long recipeId, Authentication authentication, Pageable pageable) {
+    public ResponseEntity<Page<RecipeIngredientDto>> findAllByRecipeId(@PathVariable Long recipeId, Authentication authentication, Pageable pageable) {
         String username = authentication.getName();
-        Page<RecipeIngredientResponseDto> allByRecipeId = recipeIngredientService.findAllByRecipe_IdAndRecipe_User_Username(recipeId, username, pageable);
+        Page<RecipeIngredientDto> allByRecipeId = recipeIngredientService.findAllByRecipe_IdAndRecipe_User_Username(recipeId, username, pageable);
         return ResponseEntity.ok(allByRecipeId);
     }
 
@@ -85,7 +69,7 @@ public class RecipeIngredientController {
     //region DELETE METHODS
 
     @DeleteMapping("/admin/recipe-ingredients")
-    public ResponseEntity<Void> delete(@Valid @RequestBody RecipeIngredientRequestDto recipeIngredient, Authentication authentication) {
+    public ResponseEntity<Void> delete(@Valid @RequestBody RecipeIngredientDto recipeIngredient, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -114,7 +98,7 @@ public class RecipeIngredientController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/adin/recipe-ingredients/recipe/id/{recipeId}")
+    @DeleteMapping("/admin/recipe-ingredients/recipe/id/{recipeId}")
     public ResponseEntity<Void> deleteAllByRecipe_Id(@PathVariable Long recipeId, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {

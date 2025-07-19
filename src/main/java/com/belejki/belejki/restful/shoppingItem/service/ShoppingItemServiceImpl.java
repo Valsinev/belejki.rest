@@ -4,8 +4,7 @@ import com.belejki.belejki.restful.shared.exception.ShoppingItemNotFoundExceptio
 import com.belejki.belejki.restful.shared.exception.user.UserNotFoundException;
 import com.belejki.belejki.restful.shoppingItem.domain.ShoppingItem;
 import com.belejki.belejki.restful.shoppingItem.repository.ShoppingItemRepository;
-import com.belejki.belejki.restful.shoppingItem.web.dto.ShoppingItemRequestDto;
-import com.belejki.belejki.restful.shoppingItem.web.dto.ShoppingItemResponseDto;
+import com.belejki.belejki.restful.shoppingItem.web.dto.ShoppingItemDto;
 import com.belejki.belejki.restful.user.domain.User;
 import com.belejki.belejki.restful.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -30,7 +29,7 @@ public class ShoppingItemServiceImpl implements ShoppingItemService{
 	}
 
 	@Override
-	public ShoppingItemResponseDto save(ShoppingItemRequestDto dto, String username) {
+	public ShoppingItemDto save(ShoppingItemDto dto, String username) {
 
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -38,29 +37,29 @@ public class ShoppingItemServiceImpl implements ShoppingItemService{
 		ShoppingItem item = modelMapper.map(dto, ShoppingItem.class);
 		item.setUser(user);
 		ShoppingItem saved = shoppingItemRepository.save(item);
-		ShoppingItemResponseDto savedResponse = modelMapper.map(saved, ShoppingItemResponseDto.class);
+		ShoppingItemDto savedResponse = modelMapper.map(saved, ShoppingItemDto.class);
 		return savedResponse;
 	}
 
 	@Override
-	public Page<ShoppingItemResponseDto> findAllByUser_Id(Long userId, Pageable pageable) {
+	public Page<ShoppingItemDto> findAllByUser_Id(Long userId, Pageable pageable) {
 
 		Page<ShoppingItem> allByUserId = shoppingItemRepository.findAllByUser_Id(userId, pageable);
 
-		return allByUserId.map(shoppingItem -> modelMapper.map(shoppingItem, ShoppingItemResponseDto.class));
+		return allByUserId.map(shoppingItem -> modelMapper.map(shoppingItem, ShoppingItemDto.class));
 	}
 
 	@Override
-	public Page<ShoppingItemResponseDto> findAllByUser_Username(String username, Pageable pageable) {
+	public Page<ShoppingItemDto> findAllByUser_Username(String username, Pageable pageable) {
 		Page<ShoppingItem> allByUserUsername = shoppingItemRepository.findAllByUser_Username(username, pageable);
-		return allByUserUsername.map(shoppingItem -> modelMapper.map(shoppingItem, ShoppingItemResponseDto.class));
+		return allByUserUsername.map(shoppingItem -> modelMapper.map(shoppingItem, ShoppingItemDto.class));
 	}
 
 	@Override
-	public ShoppingItemResponseDto findByIdAndUser_Username(Long id, String username) {
+	public ShoppingItemDto findByIdAndUser_Username(Long id, String username) {
 		ShoppingItem shoppingItem = shoppingItemRepository.findByIdAndUser_Username(id, username)
 				.orElseThrow(() -> new ShoppingItemNotFoundException("No shopping item found."));
-		return modelMapper.map(shoppingItem, ShoppingItemResponseDto.class);
+		return modelMapper.map(shoppingItem, ShoppingItemDto.class);
 	}
 
 	@Transactional

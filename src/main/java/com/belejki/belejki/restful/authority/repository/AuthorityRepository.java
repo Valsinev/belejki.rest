@@ -21,4 +21,8 @@ public interface AuthorityRepository extends JpaRepository<Authority, Long> {
     Page<Authority> findAllByAuthority(UserRoles role, Pageable pageable);
 
 	void deleteAllByUser_Username(String username);
+
+	void deleteByUser_IdAndAuthority(Long id, UserRoles userRole);
+
+	void deleteByUser_UsernameAndAuthority(String username, UserRoles userRole);
 }

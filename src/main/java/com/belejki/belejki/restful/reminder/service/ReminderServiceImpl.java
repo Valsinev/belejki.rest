@@ -1,8 +1,7 @@
 package com.belejki.belejki.restful.reminder.service;
 
 import com.belejki.belejki.restful.reminder.web.dto.ReminderPatchDto;
-import com.belejki.belejki.restful.reminder.web.dto.ReminderRequestDto;
-import com.belejki.belejki.restful.reminder.web.dto.ReminderResponseDto;
+import com.belejki.belejki.restful.reminder.web.dto.ReminderDto;
 import com.belejki.belejki.restful.scheduler.web.dto.ReminderSchedulerDto;
 import com.belejki.belejki.restful.reminder.domain.Reminder;
 import com.belejki.belejki.restful.shared.exception.RecipeNotFoundException;
@@ -36,7 +35,7 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 
-	public ReminderResponseDto save(@Valid ReminderRequestDto reminder, String username) {
+	public ReminderDto save(@Valid ReminderDto reminder, String username) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
 		Reminder entity = modelMapper.map(reminder, Reminder.class);
@@ -44,105 +43,105 @@ public class ReminderServiceImpl implements ReminderService {
 		entity.setUser(user);
 		Reminder saved = reminderRepository.save(entity);
 
-		return modelMapper.map(saved, ReminderResponseDto.class);
+		return modelMapper.map(saved, ReminderDto.class);
 	}
 
 	@Override
-	public ReminderResponseDto updateByIdAndUser_Username(ReminderRequestDto dto, String username) {
+	public ReminderDto updateByIdAndUser_Username(ReminderDto dto, String username) {
 
 		Reminder byId = reminderRepository.findByIdAndUser_UsernameOrderByExpirationAsc(dto.getId(), username)
 				.orElseThrow(() -> new RecipeNotFoundException("Reminder not found for id: " + dto.getId()));
 
 		Reminder updated = this.update(byId, dto);
-		return modelMapper.map(updated, ReminderResponseDto.class);
+		return modelMapper.map(updated, ReminderDto.class);
 	}
 
 	@Override
-	public ReminderResponseDto patchReminderByIdAndUser_Username(ReminderPatchDto dto, String username) {
+	public ReminderDto patchReminderByIdAndUser_Username(ReminderPatchDto dto, String username) {
 
 		Reminder reminder = reminderRepository.findByIdAndUser_UsernameOrderByExpirationAsc(dto.getId(), username)
 				.orElseThrow(() -> new ReminderNotFoundException("Reminder not found for id: " + dto.getId()));
 
 		Reminder patched = this.patchReminder(reminder, dto);
-		return modelMapper.map(patched, ReminderResponseDto.class);
+		return modelMapper.map(patched, ReminderDto.class);
 	}
 
-	public ReminderResponseDto findById(Long id) {
+	public ReminderDto findById(Long id) {
 		Reminder reminder = reminderRepository.findById(id).orElseThrow(() -> new ReminderNotFoundException("Reminder not found for id: " + id));
-		return modelMapper.map(reminder, ReminderResponseDto.class);
+		return modelMapper.map(reminder, ReminderDto.class);
 	}
 
 	@Override
-	public ReminderResponseDto findByIdAndUser_UsernameOrderByExpirationAsc(Long id, String username) {
+	public ReminderDto findByIdAndUser_UsernameOrderByExpirationAsc(Long id, String username) {
 		Reminder byIdAndUserUsernameOrderByExpirationAsc = reminderRepository.findByIdAndUser_UsernameOrderByExpirationAsc(id, username)
 				.orElseThrow(() -> new ReminderNotFoundException("Reminder not found."));
-		return modelMapper.map(byIdAndUserUsernameOrderByExpirationAsc, ReminderResponseDto.class);
+		return modelMapper.map(byIdAndUserUsernameOrderByExpirationAsc, ReminderDto.class);
 	}
 
 	@Override
-	public Page<ReminderResponseDto> findAll(Pageable pageable) {
+	public Page<ReminderDto> findAll(Pageable pageable) {
 		Page<Reminder> all = reminderRepository.findAll(pageable);
-		return all.map(reminder -> modelMapper.map(reminder, ReminderResponseDto.class));
+		return all.map(reminder -> modelMapper.map(reminder, ReminderDto.class));
 	}
 
 	@Override
-	public Page<ReminderResponseDto> findAllByUser_IdOrderByExpirationAsc(Long userId, Pageable pageable) {
+	public Page<ReminderDto> findAllByUser_IdOrderByExpirationAsc(Long userId, Pageable pageable) {
 		Page<Reminder> allByUserIdOrderByExpirationAsc = reminderRepository.findAllByUser_IdOrderByExpirationAsc(userId, pageable);
-		return allByUserIdOrderByExpirationAsc.map(reminder -> modelMapper.map(reminder, ReminderResponseDto.class));
+		return allByUserIdOrderByExpirationAsc.map(reminder -> modelMapper.map(reminder, ReminderDto.class));
 	}
 
 	@Override
-	public Page<ReminderResponseDto> findAllByUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
 		Page<Reminder> allByUserUsernameOrderByExpirationAsc = reminderRepository.findAllByUser_UsernameOrderByExpirationAsc(username, pageable);
-		return allByUserUsernameOrderByExpirationAsc.map(reminder -> modelMapper.map(reminder, ReminderResponseDto.class));
+		return allByUserUsernameOrderByExpirationAsc.map(reminder -> modelMapper.map(reminder, ReminderDto.class));
 	}
 
 	@Override
-	public Page<ReminderResponseDto> findAllByExpiredTrueOrderByExpirationAsc(Pageable pageable) {
+	public Page<ReminderDto> findAllByExpiredTrueOrderByExpirationAsc(Pageable pageable) {
 		Page<Reminder> allByExpiredTrueOrderByExpirationAsc = reminderRepository.findAllByExpiredTrueOrderByExpirationAsc(pageable);
-		return allByExpiredTrueOrderByExpirationAsc.map(reminder -> modelMapper.map(reminder, ReminderResponseDto.class));
+		return allByExpiredTrueOrderByExpirationAsc.map(reminder -> modelMapper.map(reminder, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByUser_Username(String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByUser_Username(String username, Pageable pageable) {
 		Page<Reminder> allByUserUsernameOrderByExpirationAsc = reminderRepository.findAllByUser_UsernameOrderByExpirationAsc(username, pageable);
-		return allByUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+		return allByUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByUser_Id(Long userId, Pageable pageable) {
+	public Page<ReminderDto> findAllByUser_Id(Long userId, Pageable pageable) {
 		Page<Reminder> allByUserIdOrderByExpirationAsc = reminderRepository.findAllByUser_IdOrderByExpirationAsc(userId, pageable);
-		return allByUserIdOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+		return allByUserIdOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
 		Page<Reminder> allByExpiredFalseAndExpiresSoonFalseAndUserUsernameOrderByExpirationAsc = reminderRepository.findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(username, pageable);
-		return allByExpiredFalseAndExpiresSoonFalseAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+		return allByExpiredFalseAndExpiresSoonFalseAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
 		Page<Reminder> allByExpiredTrueAndUserUsernameOrderByExpirationAsc = reminderRepository.findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
-		return allByExpiredTrueAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+		return allByExpiredTrueAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
 		Page<Reminder> allByExpiresSoonTrueAndUserUsernameOrderByExpirationAsc = reminderRepository.findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
-		return allByExpiresSoonTrueAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+		return allByExpiresSoonTrueAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable) {
 		Page<Reminder> allByExpiresTodayTrueAndUserUsernameOrderByExpirationAsc = reminderRepository.findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
-		return allByExpiresTodayTrueAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+		return allByExpiresTodayTrueAndUserUsernameOrderByExpirationAsc.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(String name, String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(String name, String username, Pageable pageable) {
 		Page<Reminder> allByNameContainingAndUserUsernameOrderByExpirationAsc = reminderRepository.findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(name, username, pageable);
 		return allByNameContainingAndUserUsernameOrderByExpirationAsc
-				.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+				.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
-	public Page<ReminderResponseDto> findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(String descr, String username, Pageable pageable) {
+	public Page<ReminderDto> findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(String descr, String username, Pageable pageable) {
 		Page<Reminder> allByDescriptionContainingAndUserUsernameOrderByExpirationAsc = reminderRepository.findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(descr, username, pageable);
 		return allByDescriptionContainingAndUserUsernameOrderByExpirationAsc
-				.map((element) -> modelMapper.map(element, ReminderResponseDto.class));
+				.map((element) -> modelMapper.map(element, ReminderDto.class));
 	}
 
 
@@ -167,8 +166,8 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Transactional
 	@Override
-	public void deleteAllExpiredBeforeYears() {
-		LocalDate beforeTwoYears = LocalDate.now().minusYears(YEARS_AFTER_EXPIRED);
+	public void deleteAllExpiredBeforeYears(int years) {
+		LocalDate beforeTwoYears = LocalDate.now().minusYears(years);
 		reminderRepository.deleteAllByExpirationBefore(beforeTwoYears);
 
 	}
@@ -178,7 +177,7 @@ public class ReminderServiceImpl implements ReminderService {
 		reminderRepository.deleteAllByUser_Username(username);
 	}
 
-	public Reminder update(Reminder reminder, @Valid ReminderRequestDto dto) {
+	public Reminder update(Reminder reminder, @Valid ReminderDto dto) {
 		reminder.setName(dto.getName());
 		reminder.setDescription(dto.getDescription());
 		reminder.setImportanceLevel(dto.getImportanceLevel());
@@ -198,15 +197,18 @@ public class ReminderServiceImpl implements ReminderService {
 	public Reminder patchReminder(Reminder reminder, ReminderPatchDto dto) {
 
 		// Update only fields that are provided
-		if (dto.getName() != null) {
+		if (dto.getName() != null && !dto.getName().isBlank()) {
 			reminder.setName(dto.getName());
 		}
 
-		if (dto.getDescription() != null) {
+		if (dto.getDescription() != null && !dto.getDescription().isBlank()) {
 			reminder.setDescription(dto.getDescription());
 		}
 
-		if (dto.getImportanceLevel() != null) {
+		if (dto.getImportanceLevel() != null &&
+				dto.getImportanceLevel() > 0 &&
+				dto.getImportanceLevel() < 11) {
+
 			reminder.setImportanceLevel(dto.getImportanceLevel());
 		}
 

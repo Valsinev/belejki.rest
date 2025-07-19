@@ -2,8 +2,7 @@ package com.belejki.belejki.restful.reminder.web;
 
 import com.belejki.belejki.restful.reminder.service.ReminderService;
 import com.belejki.belejki.restful.reminder.web.dto.ReminderPatchDto;
-import com.belejki.belejki.restful.reminder.web.dto.ReminderRequestDto;
-import com.belejki.belejki.restful.reminder.web.dto.ReminderResponseDto;
+import com.belejki.belejki.restful.reminder.web.dto.ReminderDto;
 import com.belejki.belejki.restful.shared.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +31,14 @@ public class ReminderController {
 	//region POST METHODS
 
 	@PostMapping("/user/reminders")
-	public ResponseEntity<ReminderResponseDto> save(@Valid @RequestBody ReminderRequestDto reminder,
+	public ResponseEntity<ReminderDto> save(@Valid @RequestBody ReminderDto reminder,
 	                                                BindingResult bindingResult,
 	                                                Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			return ResponseEntity.badRequest().build();
 		}
 		String username = authentication.getName();
-		ReminderResponseDto saved = reminderService.save(reminder, username);
+		ReminderDto saved = reminderService.save(reminder, username);
 		return ResponseEntity.ok(saved);
 	}
 
@@ -49,46 +48,46 @@ public class ReminderController {
 
 	//region ADMIN
 	@GetMapping("/admin/reminders")
-	public ResponseEntity<Page<ReminderResponseDto>> findAll(Pageable pageable, Authentication authentication) {
+	public ResponseEntity<Page<ReminderDto>> findAll(Pageable pageable, Authentication authentication) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
-		Page<ReminderResponseDto> all = reminderService.findAll(pageable);
+		Page<ReminderDto> all = reminderService.findAll(pageable);
 		return ResponseEntity.ok(all);
 	}
 
 	@GetMapping("/admin/reminders/user/id/{userId}")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllByUser_Id(@PathVariable Long userId,
+	public ResponseEntity<Page<ReminderDto>> findAllByUser_Id(@PathVariable Long userId,
 	                                                                 Pageable pageable,
 	                                                                 Authentication authentication) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
-		Page<ReminderResponseDto> allByUserId = reminderService.findAllByUser_IdOrderByExpirationAsc(userId, pageable);
+		Page<ReminderDto> allByUserId = reminderService.findAllByUser_IdOrderByExpirationAsc(userId, pageable);
 		return ResponseEntity.ok(allByUserId);
 	}
 
 	@GetMapping("/admin/reminders/user/{username}")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllByUser_Username(@PathVariable String username,
+	public ResponseEntity<Page<ReminderDto>> findAllByUser_Username(@PathVariable String username,
 	                                                                       Pageable pageable,
 	                                                                       Authentication authentication) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
-		Page<ReminderResponseDto> allByUserUsername = reminderService.findAllByUser_UsernameOrderByExpirationAsc(username, pageable);
+		Page<ReminderDto> allByUserUsername = reminderService.findAllByUser_UsernameOrderByExpirationAsc(username, pageable);
 		return ResponseEntity.ok(allByUserUsername);
 	}
 
 	@GetMapping("/admin/reminders/expired")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllExpired(Authentication authentication, Pageable pageable) {
+	public ResponseEntity<Page<ReminderDto>> findAllExpired(Authentication authentication, Pageable pageable) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
-		Page<ReminderResponseDto> byExpiredTrue = reminderService.findAllByExpiredTrueOrderByExpirationAsc(pageable);
+		Page<ReminderDto> byExpiredTrue = reminderService.findAllByExpiredTrueOrderByExpirationAsc(pageable);
 		return ResponseEntity.ok(byExpiredTrue);
 	}
 
@@ -98,64 +97,64 @@ public class ReminderController {
 	//region USER
 
 	@GetMapping("/user/reminders/id/{id}")
-	public ResponseEntity<ReminderResponseDto> findByReminder(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<ReminderDto> findByReminder(@PathVariable Long id, Authentication authentication) {
 		String username = authentication.getName();
-		ReminderResponseDto founded = reminderService.findByIdAndUser_UsernameOrderByExpirationAsc(id, username);
+		ReminderDto founded = reminderService.findByIdAndUser_UsernameOrderByExpirationAsc(id, username);
 		return ResponseEntity.ok(founded);
 	}
 
 	@GetMapping("/user/reminders")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnReminders(Pageable pageable, Authentication authentication) {
+	public ResponseEntity<Page<ReminderDto>> findAllOwnReminders(Pageable pageable, Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byUserUseId = reminderService.findAllByUser_UsernameOrderByExpirationAsc(username, pageable);
+		Page<ReminderDto> byUserUseId = reminderService.findAllByUser_UsernameOrderByExpirationAsc(username, pageable);
 		return ResponseEntity.ok(byUserUseId);
 	}
 
 	@GetMapping("/user/reminders/not-soon")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnedRemindersNotExpiredAndNotExpiredSoon(Pageable pageable, Authentication authentication) {
+	public ResponseEntity<Page<ReminderDto>> findAllOwnedRemindersNotExpiredAndNotExpiredSoon(Pageable pageable, Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byUserUseId = reminderService.findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(username, pageable);
+		Page<ReminderDto> byUserUseId = reminderService.findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(username, pageable);
 		return ResponseEntity.ok(byUserUseId);
 	}
 
 
 	@GetMapping("/user/reminders/expired")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnedByExpiredTrueAndUserId(Pageable pageable, Authentication authentication) {
+	public ResponseEntity<Page<ReminderDto>> findAllOwnedByExpiredTrueAndUserId(Pageable pageable, Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byUserUseId = reminderService.findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
+		Page<ReminderDto> byUserUseId = reminderService.findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
 		return ResponseEntity.ok(byUserUseId);
 	}
 
 	@GetMapping("/user/reminders/expires-soon")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnedByExpiresSoonTrueAndUserId(Pageable pageable, Authentication authentication) {
+	public ResponseEntity<Page<ReminderDto>> findAllOwnedByExpiresSoonTrueAndUserId(Pageable pageable, Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byUserUseId = reminderService.findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
+		Page<ReminderDto> byUserUseId = reminderService.findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
 		return ResponseEntity.ok(byUserUseId);
 	}
 
 	@GetMapping("/user/reminders/expires-today")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnedByExpiresTodayTrueAndUserUsername(Pageable pageable, Authentication authentication) {
+	public ResponseEntity<Page<ReminderDto>> findAllOwnedByExpiresTodayTrueAndUserUsername(Pageable pageable, Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byUserUseId = reminderService.findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
+		Page<ReminderDto> byUserUseId = reminderService.findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(username, pageable);
 		return ResponseEntity.ok(byUserUseId);
 	}
 
 
 	@GetMapping("/user/reminders/name/{name}")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnedByNameContaining(@PathVariable String name,
+	public ResponseEntity<Page<ReminderDto>> findAllOwnedByNameContaining(@PathVariable String name,
 	                                                                             Pageable pageable,
 	                                                                             Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byNameContainingAndUser = reminderService.findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(name, username, pageable);
+		Page<ReminderDto> byNameContainingAndUser = reminderService.findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(name, username, pageable);
 		return ResponseEntity.ok(byNameContainingAndUser);
 	}
 
 	@GetMapping("/user/reminders/description/{descr}")
-	public ResponseEntity<Page<ReminderResponseDto>> findAllOwnedByDescriptionContaining(@PathVariable String descr,
+	public ResponseEntity<Page<ReminderDto>> findAllOwnedByDescriptionContaining(@PathVariable String descr,
 	                                                                                    Pageable pageable,
 	                                                                                    Authentication authentication) {
 		String username = authentication.getName();
-		Page<ReminderResponseDto> byNameContainingAndUser = reminderService.findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(descr, username, pageable);
+		Page<ReminderDto> byNameContainingAndUser = reminderService.findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(descr, username, pageable);
 		return ResponseEntity.ok(byNameContainingAndUser);
 	}
 
@@ -168,16 +167,16 @@ public class ReminderController {
 	//region PUT METHODS
 
 	@PutMapping("/user/reminders")
-	public ResponseEntity<ReminderResponseDto> updateReminderById(@Valid @RequestBody ReminderRequestDto dto,
+	public ResponseEntity<ReminderDto> updateReminderById(@Valid @RequestBody ReminderDto dto,
 																 BindingResult bindingResult,
 	                                                             Authentication authentication) {
 
-		if (bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors() || dto.getId()==null) {
 			return ResponseEntity.badRequest().build();
 		}
 
 		String username = authentication.getName();
-		ReminderResponseDto updated = reminderService.updateByIdAndUser_Username(dto, username);
+		ReminderDto updated = reminderService.updateByIdAndUser_Username(dto, username);
 		return ResponseEntity.ok(updated);
 	}
 
@@ -186,7 +185,7 @@ public class ReminderController {
 
 	//region PATCH METHODS
 	@PatchMapping("/user/reminders")
-	public ResponseEntity<ReminderResponseDto> patchUser(@Valid @RequestBody ReminderPatchDto dto,
+	public ResponseEntity<ReminderDto> patchReminder(@Valid @RequestBody ReminderPatchDto dto,
 	                                                     BindingResult bindingResult,
 	                                                     Authentication authentication) {
 
@@ -195,7 +194,7 @@ public class ReminderController {
 		}
 		String username = authentication.getName();
 
-		ReminderResponseDto patchedReminder = reminderService.patchReminderByIdAndUser_Username(dto, username);
+		ReminderDto patchedReminder = reminderService.patchReminderByIdAndUser_Username(dto, username);
 		return ResponseEntity.ok(patchedReminder);
 	}
 
@@ -234,13 +233,13 @@ public class ReminderController {
 		return ResponseEntity.ok().build();
 	}
 
-	@DeleteMapping("/admin/reminders/clear")
-	public ResponseEntity<Void> deleteAllExpiredInYears(Authentication authentication) {
+	@DeleteMapping("/admin/reminders/clear/{years}")
+	public ResponseEntity<Void> deleteAllExpiredInYears(@PathVariable int years, Authentication authentication) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		reminderService.deleteAllExpiredBeforeYears();
+		reminderService.deleteAllExpiredBeforeYears(years);
 		return ResponseEntity.ok().build();
 	}
 

@@ -4,9 +4,11 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class WishResponseDto {
+public class WishPatchDto {
+
+	@NotNull
 	private Long id;
-	private String user;  //username (email)
+	private String userUsername;
 	private String description;
 	private Double approximatePrice;
 	private String link;

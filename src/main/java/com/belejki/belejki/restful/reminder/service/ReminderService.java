@@ -1,41 +1,39 @@
 package com.belejki.belejki.restful.reminder.service;
 
 import com.belejki.belejki.restful.reminder.web.dto.ReminderPatchDto;
-import com.belejki.belejki.restful.reminder.web.dto.ReminderRequestDto;
-import com.belejki.belejki.restful.reminder.web.dto.ReminderResponseDto;
+import com.belejki.belejki.restful.reminder.web.dto.ReminderDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.validation.BindingResult;
 
 public interface ReminderService {
-	ReminderResponseDto save(@Valid ReminderRequestDto reminder, String username);
+	ReminderDto save(@Valid ReminderDto reminder, String username);
 
-	Page<ReminderResponseDto> findAll(Pageable pageable);
+	Page<ReminderDto> findAll(Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByUser_IdOrderByExpirationAsc(Long userId, Pageable pageable);
+	Page<ReminderDto> findAllByUser_IdOrderByExpirationAsc(Long userId, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
+	Page<ReminderDto> findAllByUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByExpiredTrueOrderByExpirationAsc(Pageable pageable);
+	Page<ReminderDto> findAllByExpiredTrueOrderByExpirationAsc(Pageable pageable);
 
-	ReminderResponseDto findByIdAndUser_UsernameOrderByExpirationAsc(Long id, String username);
+	ReminderDto findByIdAndUser_UsernameOrderByExpirationAsc(Long id, String username);
 
-	Page<ReminderResponseDto> findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
+	Page<ReminderDto> findAllByExpiredFalseAndExpiresSoonFalseAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
+	Page<ReminderDto> findAllByExpiredTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
+	Page<ReminderDto> findAllByExpiresSoonTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
+	Page<ReminderDto> findAllByExpiresTodayTrueAndUser_UsernameOrderByExpirationAsc(String username, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(String name, String username, Pageable pageable);
+	Page<ReminderDto> findAllByNameContainingAndUser_UsernameOrderByExpirationAsc(String name, String username, Pageable pageable);
 
-	Page<ReminderResponseDto> findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(String descr, String username, Pageable pageable);
+	Page<ReminderDto> findAllByDescriptionContainingAndUser_UsernameOrderByExpirationAsc(String descr, String username, Pageable pageable);
 
-	ReminderResponseDto updateByIdAndUser_Username(@Valid ReminderRequestDto dto, String username);
+	ReminderDto updateByIdAndUser_Username(@Valid ReminderDto dto, String username);
 
-	ReminderResponseDto patchReminderByIdAndUser_Username(@Valid ReminderPatchDto dto, String username);
+	ReminderDto patchReminderByIdAndUser_Username(@Valid ReminderPatchDto dto, String username);
 
 	void deleteById(Long id);
 
@@ -44,7 +42,7 @@ public interface ReminderService {
 	void deleteAllByUser_Id(Long id);
 
 
-	void deleteAllExpiredBeforeYears();
+	void deleteAllExpiredBeforeYears(int years);
 
 	void deleteByIdAndUser_Username(Long id, String username);
 }

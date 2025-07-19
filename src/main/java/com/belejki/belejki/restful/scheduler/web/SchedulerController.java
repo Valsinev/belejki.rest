@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/schedule/reminders")
 public class SchedulerController {
 
    private final ScheduleService scheduleService;
@@ -29,7 +29,7 @@ public class SchedulerController {
    }
 
 
-	@GetMapping("/reminders/flags-before")
+	@GetMapping("/flags-before")
     public ResponseEntity<Page<ReminderSchedulerDto>> findAllBeforePassedDate(
             @RequestParam("cutoff") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cutoff,
             Authentication authentication,
@@ -44,7 +44,9 @@ public class SchedulerController {
 
 
 
-    @PatchMapping("/reminders/patch")
+    //The idea of this method is to patch expiration flags when the scheduler sets them according to the expiration date
+    //it just updates expiration flags
+    @PatchMapping("/patch")
     public ResponseEntity<Void> patchScheduleReminder(@RequestBody List<ReminderSchedulerDto> flagsDtos, Authentication authentication) {
        boolean admin = authService.isAdmin(authentication);
         if (!admin) {
@@ -57,7 +59,7 @@ public class SchedulerController {
 
 
 
-    @GetMapping("/reminders/expires-soon")
+    @GetMapping("/expires-soon")
     public ResponseEntity<Page<ReminderSchedulerDto>> findAllExpiresSoon(Pageable pageable, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
@@ -67,7 +69,7 @@ public class SchedulerController {
         return ResponseEntity.ok(byExpiresSoonTrue);
     }
 
-    @GetMapping("/admin/reminders/expires-today")
+    @GetMapping("/expires-today")
     public ResponseEntity<Page<ReminderSchedulerDto>> findAllExpiresToday(Pageable pageable, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
@@ -78,7 +80,7 @@ public class SchedulerController {
     }
 
 
-    @GetMapping("/reminders/expires-month")
+    @GetMapping("/expires-month")
     public ResponseEntity<Page<ReminderSchedulerDto>> findAllExpiresAfterMonth(Pageable pageable, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {

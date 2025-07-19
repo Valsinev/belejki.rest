@@ -1,8 +1,7 @@
 package com.belejki.belejki.restful.ingredient.service;
 
-import com.belejki.belejki.restful.ingredient.web.dto.IngredientRequestDto;
 import com.belejki.belejki.restful.ingredient.domain.Ingredient;
-import com.belejki.belejki.restful.ingredient.web.dto.IngredientResponseDto;
+import com.belejki.belejki.restful.ingredient.web.dto.IngredientDto;
 import com.belejki.belejki.restful.shared.exception.IngredientNotFoundException;
 import com.belejki.belejki.restful.ingredient.repository.IngredientRepository;
 import jakarta.transaction.Transactional;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
@@ -27,28 +27,28 @@ public class IngredientServiceImpl implements IngredientService {
 		this.modelMapper = modelMapper;
 	}
 
-	public IngredientResponseDto save(IngredientRequestDto ingredient) {
+	public IngredientDto save(IngredientDto ingredient) {
 
 		Ingredient findOrSaved = ingredientRepository.findByName(ingredient.getName())
 				.orElseGet(() -> ingredientRepository.save(new Ingredient(ingredient.getName())));
 
-		return modelMapper.map(findOrSaved, IngredientResponseDto.class);
+		return modelMapper.map(findOrSaved, IngredientDto.class);
 	}
 
-	public Page<IngredientResponseDto> findAll(Pageable pageable) {
+	public Page<IngredientDto> findAll(Pageable pageable) {
 		Page<Ingredient> all = ingredientRepository.findAll(pageable);
-		return all.map((element) -> modelMapper.map(element, IngredientResponseDto.class));
+		return all.map((element) -> modelMapper.map(element, IngredientDto.class));
 	}
 
-	public IngredientResponseDto findByName(String name) {
+	public Optional<IngredientDto> findByName(String name) {
 
-		Ingredient ingredient = ingredientRepository.findByNameIgnoreCase(name).orElseThrow(() -> new IngredientNotFoundException("No ingredient found for name: " + name));
-		return modelMapper.map(ingredient, IngredientResponseDto.class);
+		Optional<Ingredient> ingredient = ingredientRepository.findByNameIgnoreCase(name);
+		return ingredient.map(value -> modelMapper.map(value, IngredientDto.class));
 	}
 
-	public IngredientResponseDto findById(Long id) {
+	public IngredientDto findById(Long id) {
 		Ingredient ingredient = ingredientRepository.findById(id).orElseThrow(() -> new IngredientNotFoundException("No ingredient found for id: " + id));
-		return modelMapper.map(ingredient, IngredientResponseDto.class);
+		return modelMapper.map(ingredient, IngredientDto.class);
 	}
 
 	@Transactional

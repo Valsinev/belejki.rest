@@ -8,9 +8,10 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class ReminderRequestDto {
+public class ReminderDto {
 
     private Long id;
+    private String userUsername;
     @NotBlank(message = "Reminder name cannot be blank.")
     private String name;
     @Min(value = 1, message = "Minimal value is 1")

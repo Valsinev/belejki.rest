@@ -2,11 +2,13 @@ package com.belejki.belejki.restful.friendship.service;
 
 import com.belejki.belejki.restful.friendship.domain.Friendship;
 import com.belejki.belejki.restful.friendship.web.dto.FriendshipDto;
+import com.belejki.belejki.restful.friendship.web.dto.FriendshipResponseDto;
 import com.belejki.belejki.restful.shared.exception.user.UserNotFoundException;
 import com.belejki.belejki.restful.user.domain.User;
 import com.belejki.belejki.restful.shared.exception.FriendshipNotFoundException;
 import com.belejki.belejki.restful.friendship.repository.FriendshipRepository;
 import com.belejki.belejki.restful.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,8 +33,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public FriendshipDto save(String username, FriendshipDto friendshipDto) {
-        String friendUsername = friendshipDto.getFriend().getUsername();
+    public FriendshipResponseDto save(String username, String friendUsername) {
 
         //check if username adds himself as friend
         if (friendUsername.equals(username)) {
@@ -51,22 +52,28 @@ public class FriendshipServiceImpl implements FriendshipService {
         user.addFriendship(friendship);
         Friendship saved = friendshipRepository.save(friendship);
 
-        return modelMapper.map(saved, FriendshipDto.class);
+        return modelMapper.map(saved, FriendshipResponseDto.class);
     }
 
-    public Page<FriendshipDto> findAllByUser_Username(String username, Pageable pageable) {
+    @Override
+    public Page<FriendshipResponseDto> findAll(Pageable pageable) {
+        Page<Friendship> all = friendshipRepository.findAll(pageable);
+        return all.map((element) -> modelMapper.map(element, FriendshipResponseDto.class));
+    }
+
+    public Page<FriendshipResponseDto> findAllByUser_Username(String username, Pageable pageable) {
         Page<Friendship> allByUserUsername = friendshipRepository.findAllByUser_Username(username, pageable);
-        return allByUserUsername.map((element) -> modelMapper.map(element, FriendshipDto.class));
+        return allByUserUsername.map((element) -> modelMapper.map(element, FriendshipResponseDto.class));
     }
 
-    public Page<FriendshipDto> findAllUserFriendshipsByFirstName(String username, String friendFirstName, Pageable pageable) {
+    public Page<FriendshipResponseDto> findAllUserFriendshipsByFirstName(String username, String friendFirstName, Pageable pageable) {
         Page<Friendship> allByUserUsernameAndFriendFirstNameContaining = friendshipRepository.findAllByUser_UsernameAndFriend_firstNameContaining(username, friendFirstName, pageable);
-        return allByUserUsernameAndFriendFirstNameContaining.map((element) -> modelMapper.map(element, FriendshipDto.class));
+        return allByUserUsernameAndFriendFirstNameContaining.map((element) -> modelMapper.map(element, FriendshipResponseDto.class));
     }
 
-    public FriendshipDto findById(Long id) {
+    public FriendshipResponseDto findById(Long id) {
         Friendship friendship = friendshipRepository.findById(id).orElseThrow(() -> new FriendshipNotFoundException("Friendship not found with id: " + id));
-        return modelMapper.map(friendship, FriendshipDto.class);
+        return modelMapper.map(friendship, FriendshipResponseDto.class);
     }
 
 
@@ -86,30 +93,28 @@ public class FriendshipServiceImpl implements FriendshipService {
         friendshipRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void deleteByFriendshipAndUser_Username(FriendshipDto friendshipDto, String username) {
         friendshipRepository.deleteByIdAndUser_Username(friendshipDto.getId(), username);
     }
 
+    @Transactional
     @Override
     public void deleteByIdAndUser_Username(Long id, String username) {
         friendshipRepository.deleteByIdAndUser_Username(id, username);
     }
 
+    @Transactional
     @Override
     public void deleteAllByFriend_Username(String friendUsername) {
         friendshipRepository.deleteAllByFriend_Username(friendUsername);
     }
 
+    @Transactional
     @Override
     public void deleteAllByUser_Username(String username) {
         friendshipRepository.deleteAllByUser_Username(username);
     }
 
-
-    @Override
-    public Page<FriendshipDto> findAll(Pageable pageable) {
-        Page<Friendship> all = friendshipRepository.findAll(pageable);
-        return all.map((element) -> modelMapper.map(element, FriendshipDto.class));
-    }
 }

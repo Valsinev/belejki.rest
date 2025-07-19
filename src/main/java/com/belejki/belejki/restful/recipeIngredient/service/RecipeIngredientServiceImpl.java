@@ -4,8 +4,7 @@ import com.belejki.belejki.restful.ingredient.domain.Ingredient;
 import com.belejki.belejki.restful.ingredient.repository.IngredientRepository;
 import com.belejki.belejki.restful.recipe.domain.Recipe;
 import com.belejki.belejki.restful.recipeIngredient.domain.RecipeIngredient;
-import com.belejki.belejki.restful.recipeIngredient.web.dto.RecipeIngredientRequestDto;
-import com.belejki.belejki.restful.recipeIngredient.web.dto.RecipeIngredientResponseDto;
+import com.belejki.belejki.restful.recipeIngredient.web.dto.RecipeIngredientDto;
 import com.belejki.belejki.restful.shared.exception.RecipeIngredientNotFoundException;
 import com.belejki.belejki.restful.recipeIngredient.repository.RecipeIngredientRepository;
 import jakarta.transaction.Transactional;
@@ -15,58 +14,48 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RecipeIngredientServiceImpl implements RecipeIngredientService {
 
     private final RecipeIngredientRepository recipeIngredientRepository;
-    private final IngredientRepository ingredientRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository, IngredientRepository ingredientRepository, ModelMapper modelMapper) {
+    public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository , ModelMapper modelMapper) {
         this.recipeIngredientRepository = recipeIngredientRepository;
-	    this.ingredientRepository = ingredientRepository;
 	    this.modelMapper = modelMapper;
     }
 
-    public RecipeIngredientResponseDto save(RecipeIngredientRequestDto recipeIngredientRequestDto) {
 
-        RecipeIngredient recipeIngredient = modelMapper.map(recipeIngredientRequestDto, RecipeIngredient.class);
-
-        recipeIngredient.setIngredient(ingredientRepository.findByName(recipeIngredientRequestDto.getIngredient().getName())
-                .orElse(new Ingredient(recipeIngredientRequestDto.getIngredient().getName())));
-
-        RecipeIngredient saved = recipeIngredientRepository.save(recipeIngredient);
-        return modelMapper.map(saved, RecipeIngredientResponseDto.class);
-    }
-
-    public RecipeIngredientResponseDto findById(Long id) {
+    public RecipeIngredientDto findById(Long id) {
         RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(id)
                 .orElseThrow(() -> new RecipeIngredientNotFoundException("Recipe ingredient not found for id: " + id));
-        return modelMapper.map(recipeIngredient, RecipeIngredientResponseDto.class);
+        return modelMapper.map(recipeIngredient, RecipeIngredientDto.class);
     }
 
     @Override
-    public Page<RecipeIngredientResponseDto> findAll(Pageable pageable) {
+    public Page<RecipeIngredientDto> findAll(Pageable pageable) {
         Page<RecipeIngredient> all = recipeIngredientRepository.findAll(pageable);
-        return all.map((element) -> modelMapper.map(element, RecipeIngredientResponseDto.class));
+        return all.map((element) -> modelMapper.map(element, RecipeIngredientDto.class));
     }
 
     @Override
-    public Page<RecipeIngredientResponseDto> findAllByRecipe(Recipe recipe, Pageable pageable) {
+    public Page<RecipeIngredientDto> findAllByRecipe(Recipe recipe, Pageable pageable) {
         Page<RecipeIngredient> allByRecipe = recipeIngredientRepository.findAllByRecipe(recipe, pageable);
-        return allByRecipe.map((element) -> modelMapper.map(element, RecipeIngredientResponseDto.class));
+        return allByRecipe.map((element) -> modelMapper.map(element, RecipeIngredientDto.class));
     }
 
     @Override
-    public Page<RecipeIngredientResponseDto> findAllByRecipe_IdAndRecipe_User_Username(Long recipeId, String username, Pageable pageable) {
+    public Page<RecipeIngredientDto> findAllByRecipe_IdAndRecipe_User_Username(Long recipeId, String username, Pageable pageable) {
         Page<RecipeIngredient> allByRecipeIdAndRecipeUserUsername = recipeIngredientRepository.findAllByRecipe_IdAndRecipe_User_Username(recipeId, username, pageable);
-        return allByRecipeIdAndRecipeUserUsername.map((element) -> modelMapper.map(element, RecipeIngredientResponseDto.class));
+        return allByRecipeIdAndRecipeUserUsername.map((element) -> modelMapper.map(element, RecipeIngredientDto.class));
     }
 
     @Transactional
     @Override
-    public void delete(RecipeIngredientRequestDto recipeIngredient) {
+    public void delete(RecipeIngredientDto recipeIngredient) {
         recipeIngredientRepository.deleteById(recipeIngredient.getId());
     }
 

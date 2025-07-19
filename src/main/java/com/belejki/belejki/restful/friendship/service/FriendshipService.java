@@ -1,17 +1,18 @@
 package com.belejki.belejki.restful.friendship.service;
 
 import com.belejki.belejki.restful.friendship.web.dto.FriendshipDto;
+import com.belejki.belejki.restful.friendship.web.dto.FriendshipResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface FriendshipService {
-	FriendshipDto save(String username, FriendshipDto  friendshipDto);
+	FriendshipResponseDto save(String username, String  friendUsername);
 
-	Page<FriendshipDto> findAll(Pageable pageable);
+	Page<FriendshipResponseDto> findAll(Pageable pageable);
 
-	Page<FriendshipDto> findAllByUser_Username(String username, Pageable pageable);
+	Page<FriendshipResponseDto> findAllByUser_Username(String username, Pageable pageable);
 
-	Page<FriendshipDto> findAllUserFriendshipsByFirstName(String username, String firstName, Pageable pageable);
+	Page<FriendshipResponseDto> findAllUserFriendshipsByFirstName(String username, String firstName, Pageable pageable);
 
 	void deleteByFriendshipAndUser_Username(FriendshipDto friendshipDto, String username);
 

@@ -37,7 +37,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 
 	public AuthorityDto save(AuthorityDto authorityDto) {
 
-        String username = authorityDto.getUser();
+        String username = authorityDto.getUserUsername();
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("[Authority] User not Found for username " + username));
@@ -92,6 +92,18 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Transactional
     public void deleteAllByUser_Username(String username) {
         authorityRepository.deleteAllByUser_Username(username);
+    }
+
+    @Transactional
+    @Override
+    public void deleteByUser_IdAndAuthority(Long id, UserRoles userRole) {
+        authorityRepository.deleteByUser_IdAndAuthority(id, userRole);
+    }
+
+    @Transactional
+    @Override
+    public void deleteByUser_UsernameAndAuthority(String username, UserRoles userRole) {
+        authorityRepository.deleteByUser_UsernameAndAuthority(username, userRole);
     }
 
 }
