@@ -144,8 +144,7 @@ public class WishServiceImpl implements WishService {
 	}
 
 	@Override
-	public Page<WishDto> findAllFriendWishes(FriendshipDto friendshipDto, String username, Pageable pageable) {
-		String friendUsername = friendshipDto.getFriendUsername();
+	public Page<WishDto> findAllFriendWishes(String friendUsername, String username, Pageable pageable) {
 		Friendship byUserUsernameAndFriendUsername = friendshipRepository.findByUser_UsernameAndFriend_Username(username, friendUsername)
 				.orElseThrow(() -> new FriendshipNotFoundException("[WishService.findAllFriendWishes] Friendship not found."));
 

@@ -52,29 +52,6 @@ This project uses Spring Data JPA with Hibernate for ORM. You can create the dat
 - spring.jpa.hibernate.ddl-auto=create
 
 
-Or you can set up the database schema locally, use the provided SQL script.
-
-### Step 1: Create a Database
-- First, create a new MySQL database (e.g., `my_project_db`):
-
-sql
-CREATE DATABASE my_project_db;
-
-### Ster 2: Run the Schema Script
-Import the SQL script to create all tables and relationships.
-
-- Option 1: Using MySQL Workbench
-   Open MySQL Workbench
-   Connect to your local MySQL server
-   Open the script: File > Open SQL Script and select docs/init-database.sql
-   Click the lightning bolt to execute the script
-
-- Option 2: Using MySQL CLI
-  mysql -u your_username -p my_project_db < docs/init-database.sql
-  Replace your_username and my_project_db with your actual credentials and DB name
-
-
-
 This setting controls how Hibernate handles your database schema at startup. Possible values:
 | Value         | Description                                                          |
 | ------------- | -------------------------------------------------------------------- |
@@ -90,7 +67,32 @@ jdbc:mysql://localhost:3306/belejki
 - localhost – Your DB host
 - 3306 – MySQL default port
 - belejki – Schema name you must create manually
-dont forget there is environment variable for the database url
+  dont forget there is environment variable for the database url
+
+
+Or you can set up the database schema locally, use the provided SQL script.
+
+### Step 1: Create a Database
+- First, create a new MySQL database (e.g., `my_project_db`):
+
+sql
+CREATE DATABASE my_project_db;
+
+
+### Ster 2: Run the Schema Script
+Import the SQL script to create all tables and relationships.
+
+- Option 1: Using MySQL Workbench
+   Open MySQL Workbench
+   Connect to your local MySQL server
+   Open the script: File > Open SQL Script and select docs/init-database.sql
+   Click the lightning bolt to execute the script
+
+- Option 2: Using MySQL CLI
+  mysql -u your_username -p my_project_db < docs/Create_Database_SQL_script.sql
+  Replace your_username and my_project_db with your actual credentials and DB name
+
+
 
 ### 🚀 Running the Application
 ✅ In IntelliJ (Recommended)
@@ -128,7 +130,7 @@ export DATABASE_PASSWORD=yourpassword
 
 Here is the Entity-Relationship (ER) diagram for the database structure:
 
-![Database Schema](docs/db.schema.png)
+![Database Schema](docs/EER_Diagram.png)
 
 
 This project uses a Postman collection to document and test the REST API.
@@ -136,7 +138,7 @@ This project uses a Postman collection to document and test the REST API.
 ### ▶️ How to Use
 
 1. **Download the collection file**:
-   [📄 BelejkiApi.postman_collection.json](./docs/BelejkiApi.postman_collection.json)
+   [NotesApi(Belejki).postman_collection.json](./docs/NotesApi(Belejki).postman_collection.json)
 
 2. **Import into Postman**:
     - Open Postman.

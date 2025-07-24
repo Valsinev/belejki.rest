@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class ShoppingItemServiceImpl implements ShoppingItemService{
 
@@ -62,6 +64,13 @@ public class ShoppingItemServiceImpl implements ShoppingItemService{
 		return modelMapper.map(shoppingItem, ShoppingItemDto.class);
 	}
 
+	@Override
+	public BigDecimal findSumOfAllItemsPriceOfUserByUsername(String username) {
+		BigDecimal sumOfAllItemsPrice = shoppingItemRepository.getSumOfAllItemsPrice(username);
+		if (sumOfAllItemsPrice == null) return BigDecimal.ZERO;
+		return sumOfAllItemsPrice;
+	}
+
 	@Transactional
 	@Override
 	public void deleteByIdAndUser_Username(Long id, String username) {
@@ -80,4 +89,5 @@ public class ShoppingItemServiceImpl implements ShoppingItemService{
 	public void deleteById(Long id) {
 		shoppingItemRepository.deleteById(id);
 	}
+
 }

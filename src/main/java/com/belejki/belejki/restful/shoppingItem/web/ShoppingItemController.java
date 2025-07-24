@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 public class ShoppingItemController {
 
@@ -79,6 +81,13 @@ public class ShoppingItemController {
 		String username = authentication.getName();
 		ShoppingItemDto founded = shoppingItemService.findByIdAndUser_Username(id, username);
 		return ResponseEntity.ok(founded);
+	}
+
+	@GetMapping("/user/shopping-list/total")
+	ResponseEntity<BigDecimal> findSumOfAllItemsPriceOfUserByUsername(Authentication authentication) {
+		String username = authentication.getName();
+		BigDecimal sum = shoppingItemService.findSumOfAllItemsPriceOfUserByUsername(username);
+		return ResponseEntity.ok(sum);
 	}
 
 

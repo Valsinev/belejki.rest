@@ -167,7 +167,7 @@ public class ReminderController {
 	//region PUT METHODS
 
 	@PutMapping("/user/reminders")
-	public ResponseEntity<ReminderDto> updateReminderById(@Valid @RequestBody ReminderDto dto,
+	public ResponseEntity<ReminderDto> updateReminder(@Valid @RequestBody ReminderDto dto,
 																 BindingResult bindingResult,
 	                                                             Authentication authentication) {
 

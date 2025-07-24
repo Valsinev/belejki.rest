@@ -23,7 +23,6 @@ public class ShoppingItemDto {
     @Size(min = 2, max = 24, message = "Item color must be between 2 and 24 characters.")
     private String color;
 
-    @NotNull
-    @DecimalMin(value = "1.0")
+    @DecimalMin(value = "0")
     private BigDecimal price;
 }

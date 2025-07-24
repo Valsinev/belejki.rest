@@ -1,8 +1,9 @@
 package com.belejki.belejki.restful.friendship.service;
 
 import com.belejki.belejki.restful.friendship.domain.Friendship;
+import com.belejki.belejki.restful.friendship.web.dto.FriendshipDetailResponseDto;
 import com.belejki.belejki.restful.friendship.web.dto.FriendshipDto;
-import com.belejki.belejki.restful.friendship.web.dto.FriendshipResponseDto;
+import com.belejki.belejki.restful.friendship.web.dto.FriendshipDetailResponseDto;
 import com.belejki.belejki.restful.shared.exception.user.UserNotFoundException;
 import com.belejki.belejki.restful.user.domain.User;
 import com.belejki.belejki.restful.shared.exception.FriendshipNotFoundException;
@@ -33,7 +34,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public FriendshipResponseDto save(String username, String friendUsername) {
+    public FriendshipDetailResponseDto save(String username, String friendUsername) {
 
         //check if username adds himself as friend
         if (friendUsername.equals(username)) {
@@ -52,28 +53,28 @@ public class FriendshipServiceImpl implements FriendshipService {
         user.addFriendship(friendship);
         Friendship saved = friendshipRepository.save(friendship);
 
-        return modelMapper.map(saved, FriendshipResponseDto.class);
+        return modelMapper.map(saved, FriendshipDetailResponseDto.class);
     }
 
     @Override
-    public Page<FriendshipResponseDto> findAll(Pageable pageable) {
+    public Page<FriendshipDetailResponseDto> findAll(Pageable pageable) {
         Page<Friendship> all = friendshipRepository.findAll(pageable);
-        return all.map((element) -> modelMapper.map(element, FriendshipResponseDto.class));
+        return all.map((element) -> modelMapper.map(element, FriendshipDetailResponseDto.class));
     }
 
-    public Page<FriendshipResponseDto> findAllByUser_Username(String username, Pageable pageable) {
+    public Page<FriendshipDetailResponseDto> findAllByUser_Username(String username, Pageable pageable) {
         Page<Friendship> allByUserUsername = friendshipRepository.findAllByUser_Username(username, pageable);
-        return allByUserUsername.map((element) -> modelMapper.map(element, FriendshipResponseDto.class));
+        return allByUserUsername.map((element) -> modelMapper.map(element, FriendshipDetailResponseDto.class));
     }
 
-    public Page<FriendshipResponseDto> findAllUserFriendshipsByFirstName(String username, String friendFirstName, Pageable pageable) {
+    public Page<FriendshipDetailResponseDto> findAllUserFriendshipsByFirstName(String username, String friendFirstName, Pageable pageable) {
         Page<Friendship> allByUserUsernameAndFriendFirstNameContaining = friendshipRepository.findAllByUser_UsernameAndFriend_firstNameContaining(username, friendFirstName, pageable);
-        return allByUserUsernameAndFriendFirstNameContaining.map((element) -> modelMapper.map(element, FriendshipResponseDto.class));
+        return allByUserUsernameAndFriendFirstNameContaining.map((element) -> modelMapper.map(element, FriendshipDetailResponseDto.class));
     }
 
-    public FriendshipResponseDto findById(Long id) {
+    public FriendshipDetailResponseDto findById(Long id) {
         Friendship friendship = friendshipRepository.findById(id).orElseThrow(() -> new FriendshipNotFoundException("Friendship not found with id: " + id));
-        return modelMapper.map(friendship, FriendshipResponseDto.class);
+        return modelMapper.map(friendship, FriendshipDetailResponseDto.class);
     }
 
 
@@ -115,6 +116,13 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public void deleteAllByUser_Username(String username) {
         friendshipRepository.deleteAllByUser_Username(username);
+    }
+
+    @Override
+    public FriendshipDetailResponseDto findByFriend_Username(String username, String friendUsername) {
+        Friendship friendship = friendshipRepository.findByUser_UsernameAndFriend_Username(username, friendUsername)
+                .orElseThrow(() -> new FriendshipNotFoundException("[FriendshipService.findByFriend_Username] Friend not found."));
+        return modelMapper.map(friendship, FriendshipDetailResponseDto.class);
     }
 
 }

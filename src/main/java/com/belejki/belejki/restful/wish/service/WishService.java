@@ -31,5 +31,5 @@ public interface WishService {
 
 	void deleteAllByUser_Username(String username);
 
-	Page<WishDto> findAllFriendWishes(@Valid FriendshipDto friendshipDto, String username, Pageable pageable);
+	Page<WishDto> findAllFriendWishes(String friendUsername, String username, Pageable pageable);
 }

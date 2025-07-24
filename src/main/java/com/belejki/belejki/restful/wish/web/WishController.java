@@ -73,17 +73,14 @@ public class WishController {
 		return ResponseEntity.ok(allByUserId);
 	}
 
-	@GetMapping("/user/friend/wishlist")
-	public ResponseEntity<Page<WishDto>> findAllFriendWishes(@Valid @RequestBody FriendshipDto friendshipDto,
-	                                                         BindingResult bindingResult,
+	@GetMapping("/user/friend/wishlist/{friendUsername}")
+	public ResponseEntity<Page<WishDto>> findAllFriendWishes(@Email @PathVariable String friendUsername,
 	                                                         Pageable pageable,
 	                                                         Authentication authentication) {
-		if (bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
+
 		String username = authentication.getName();
 
-		Page<WishDto> allByUserId = wishService.findAllFriendWishes(friendshipDto, username, pageable);
+		Page<WishDto> allByUserId = wishService.findAllFriendWishes(friendUsername, username, pageable);
 		return ResponseEntity.ok(allByUserId);
 	}
 

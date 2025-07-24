@@ -30,7 +30,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"authority\":\"ROLE_USER\"\n}",
+									"raw": "{\n    \"user\":\"tosho@abv.bg\",\n    \"authority\":\"ROLE_USER\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -38,16 +38,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/admin/authorities/user/id/2",
+									"raw": "{{base_url}}/admin/authorities",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
 										"admin",
-										"authorities",
-										"user",
-										"id",
-										"2"
+										"authorities"
 									]
 								},
 								"description": "**Creates new authority for passed user id. Only users with ROLE_ADMIN can access this endpoint.**\n\nuser authority can be:\n\n- ROLE_USER\n- ROLE_ADMIN"
@@ -176,46 +173,6 @@
 							"response": []
 						},
 						{
-							"name": "updatesAuthorityByPassedId",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwtToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"userId\":3,\n    \"authority\":\"DISABLED\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/admin/authorities/id/3",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"admin",
-										"authorities",
-										"id",
-										"3"
-									]
-								},
-								"description": "Updates authority by passed authority id."
-							},
-							"response": []
-						},
-						{
 							"name": "deleteAllAuthoritiesOfPassedUser_Username",
 							"request": {
 								"auth": {
@@ -275,6 +232,36 @@
 								"description": "Deletes authority by passed authority id."
 							},
 							"response": []
+						},
+						{
+							"name": "deleteByUser_IdAndUserRole",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwtToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/admin/authorities/4",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"admin",
+										"authorities",
+										"4"
+									]
+								},
+								"description": "Deletes authority by passed authority id."
+							},
+							"response": []
 						}
 					],
 					"description": "**CRUD methods for maniipulating authorities/roles for Users.**\n\n**Only Users with ROLE_ADMIN authentication have access.**"
@@ -286,7 +273,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Peshev\",\n    \"password\":\"1q2w3e4r.\"\n}",
+							"raw": "{\n    \"username\":\"pesho@abv.bg\",\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Peshev\",\n    \"password\":\"1q2w3e4r\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -304,6 +291,56 @@
 							]
 						},
 						"description": "Creates new user. Required:\n\n- username = valid email format\n- firstName = between 2 and 24 characters long\n- lastName = between 2 and 24 characters long\n- password = between 8 and 64 characters long\n    \n\nThis sends confirmation token/link to the email/username. The user is disabled until he visit the link."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmRegistration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/confirm?token=09fc5ca5-8f4a-4365-a5e3-a68b0fe80b03",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"confirm"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "09fc5ca5-8f4a-4365-a5e3-a68b0fe80b03"
+								}
+							]
+						},
+						"description": "This endpoint Gets the confirmation token (sended to the user email) and enables the user."
 					},
 					"response": []
 				},
@@ -350,7 +387,7 @@
 					"response": []
 				},
 				{
-					"name": "updateUserById",
+					"name": "updateUser",
 					"event": [
 						{
 							"listen": "test",
@@ -380,7 +417,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\":\"Pesho@abv.bg\",\n    \"firstName\":\"Updated Pesho\",\n    \"lastName\":\"Updated Stoev\",\n    \"password\":\"1q2w3e4r\"\n}",
+							"raw": "{\n    \"username\":\"Pesho@abv.bg\",\n    \"firstName\":\"Pesho2\",\n    \"lastName\":\"Stoev\",\n    \"password\":\"1q2w3e4r\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -388,18 +425,16 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/users/update/1",
+							"raw": "{{base_url}}/user/users",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"users",
-								"update",
-								"1"
+								"users"
 							]
 						},
-						"description": "Updates user by passed user id."
+						"description": "Updates user by passing all updateable fields as body."
 					},
 					"response": []
 				},
@@ -420,7 +455,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Stoev\"\n}",
+							"raw": "{\n    \"id\":1,\n    \"firstName\":\"Pesho\",\n    \"lastName\":\"Stoev\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -428,18 +463,16 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/users/patch/1",
+							"raw": "{{base_url}}/user/users",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"users",
-								"patch",
-								"1"
+								"users"
 							]
 						},
-						"description": "Partial update for user by passing user id."
+						"description": "Partial update for user by passing body with fields to be updated (\"username\":{userEmail} is required, others are optional): \"firstName\", \"lastName\", \"password\"."
 					},
 					"response": []
 				},
@@ -646,16 +679,11 @@
 					"name": "findAllUsersWithSetForDeletionFlag",
 					"request": {
 						"auth": {
-							"type": "basic",
-							"basic": [
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "username",
-									"value": "pesho@abv.bg",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "1q2w3e4r",
+									"key": "token",
+									"value": "{{jwtToken}}",
 									"type": "string"
 								}
 							]
@@ -857,7 +885,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\":1\n}",
+							"raw": "{\n    \"id\":2\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -967,14 +995,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/admin/users/pesho@abv.bg",
+							"raw": "{{base_url}}/admin/users/rado@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"admin",
 								"users",
-								"pesho@abv.bg"
+								"rado@abv.bg"
 							],
 							"query": [
 								{
@@ -1322,7 +1350,7 @@
 					"response": []
 				},
 				{
-					"name": "findAllByUser_Username",
+					"name": "findAllFriendWishesByFriend_Username",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1337,15 +1365,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/user/wishlist/user/valsinev@abv.bg",
+							"raw": "{{base_url}}/user/friend/wishlist/tosho@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
+								"friend",
 								"wishlist",
-								"user",
-								"valsinev@abv.bg"
+								"tosho@abv.bg"
 							]
 						},
 						"description": "Finds all Wishes for a user by passed username.(Only for users with ROLE_ADMIN)"
@@ -1369,7 +1397,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"description\":\"Asus Laptop\",\n    \"approximatePrice\": 1350,\n    \"link\":\"https://www.asus.com/laptops/for-work/all-series/filter?Category=2-in-1-laptops\"\n}",
+							"raw": "{\n    \"id\":1,\n    \"description\":\"Asus Laptop\",\n    \"approximatePrice\": 1350,\n    \"link\":\"https://www.asus.com/laptops/for-work/all-series/filter?Category=2-in-1-laptops\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1377,15 +1405,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/wishlist/update/6",
+							"raw": "{{base_url}}/user/wishlist",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"wishlist",
-								"update",
-								"6"
+								"wishlist"
 							]
 						},
 						"description": "Updates a wish by passed wish id."
@@ -1409,7 +1435,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"approximatePrice\": 1050\n}",
+							"raw": "{\n    \"id\":6,\n    \"approximatePrice\": 1050\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1417,15 +1443,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/wishlist/patch/6",
+							"raw": "{{base_url}}/user/wishlist",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"wishlist",
-								"patch",
-								"6"
+								"wishlist"
 							]
 						},
 						"description": "Updates only the passed fields of a Wish by passed wish id."
@@ -1546,15 +1570,23 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"friendUsername\":\"pesho@abv.bg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/user/friendships/pesho@abv.bg",
+							"raw": "{{base_url}}/user/friendships",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"friendships",
-								"pesho@abv.bg"
+								"friendships"
 							]
 						},
 						"description": "Adds a Friend to a user."
@@ -1616,6 +1648,36 @@
 							]
 						},
 						"description": "Gets all of the logged user friendships."
+					},
+					"response": []
+				},
+				{
+					"name": "findUserFriendshipByFriend_Username",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/friendships/tosho@abv.bg",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"friendships",
+								"tosho@abv.bg"
+							]
+						},
+						"description": "Find a friendship of the user by passed the friend username(email)."
 					},
 					"response": []
 				},
@@ -1800,7 +1862,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"name\":\"tomatos\"\n}",
+											"raw": "{\n    \"name\":\"tomatoes\"\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1852,6 +1914,9 @@
 								},
 								{
 									"name": "findIngredientByIngredient_Name",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
 									"request": {
 										"auth": {
 											"type": "bearer",
@@ -1865,15 +1930,23 @@
 										},
 										"method": "GET",
 										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\":\"tomatoes\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
 										"url": {
-											"raw": "{{base_url}}/admin/ingredients/tomatoes",
+											"raw": "{{base_url}}/admin/ingredient",
 											"host": [
 												"{{base_url}}"
 											],
 											"path": [
 												"admin",
-												"ingredients",
-												"tomatoes"
+												"ingredient"
 											]
 										},
 										"description": "find ingredient by passed ingredient name."
@@ -1896,15 +1969,14 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{base_url}}/admin/ingredients/id/12",
+											"raw": "{{base_url}}/admin/ingredients/1",
 											"host": [
 												"{{base_url}}"
 											],
 											"path": [
 												"admin",
 												"ingredients",
-												"id",
-												"12"
+												"1"
 											]
 										},
 										"description": "finds ingredient by passed ingredient id."
@@ -2006,44 +2078,6 @@
 							"description": "For CRUD operations for ingredients(mostly admin access). The table exists to create RecipeIngredients."
 						},
 						{
-							"name": "saveNewRecipeIngredientForRecipe",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwtToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"recipeId\":7,\n    \"ingredient\":\"tomatos\",\n    \"quantity\":\"500g\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/user/recipe-ingredients",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"user",
-										"recipe-ingredients"
-									]
-								},
-								"description": "Saves new recipe ingredient for recipe by passed recipe id."
-							},
-							"response": []
-						},
-						{
 							"name": "findAllRecipeIngredients",
 							"request": {
 								"auth": {
@@ -2088,7 +2122,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/admin/recipe-ingredients/id/39",
+									"raw": "{{base_url}}/admin/recipe-ingredients/id/1",
 									"host": [
 										"{{base_url}}"
 									],
@@ -2096,41 +2130,10 @@
 										"admin",
 										"recipe-ingredients",
 										"id",
-										"39"
+										"1"
 									]
 								},
 								"description": "finds recipe ingredient by passed recipeIngredient id."
-							},
-							"response": []
-						},
-						{
-							"name": "findAllRecipeIngredientsForPassedRecipeName",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwtToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/admin/recipe-ingredients/recipe/One-Pot Chicken Stew",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"admin",
-										"recipe-ingredients",
-										"recipe",
-										"One-Pot Chicken Stew"
-									]
-								},
-								"description": "Finds all recipe ingredients for passed recipe by recipe name."
 							},
 							"response": []
 						},
@@ -2224,12 +2227,12 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/user/recipe-ingredients",
+									"raw": "{{base_url}}/admin/recipe-ingredients",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"user",
+										"admin",
 										"recipe-ingredients"
 									]
 								},
@@ -2253,12 +2256,12 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/user/recipe-ingredients/id/42",
+									"raw": "{{base_url}}/admin/recipe-ingredients/id/42",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"user",
+										"admin",
 										"recipe-ingredients",
 										"id",
 										"42"
@@ -2332,16 +2335,16 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/user/recipe-ingredients/recipe/id/9",
+									"raw": "{{base_url}}/admin/recipe-ingredients/recipe/id/36",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"user",
+										"admin",
 										"recipe-ingredients",
 										"recipe",
 										"id",
-										"9"
+										"36"
 									]
 								},
 								"description": "Deletes all recipe ingredients for a recipe by passing the recipe id."
@@ -2367,7 +2370,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"Easy Weeknight Spaghetti\",\n    \"howToMake\":\"How to Make the Best Spaghetti You’ll start by making the easy meat sauce. Brown your meat in a bit of oil, and then stir in onions until they soften. Then add lots of flavor with garlic, tomato paste, oregano, and red pepper flakes. To finish the sauce, add a bit of water (or broth) and crushed tomatoes. Our easy sauce simmers for about 25 minutes, so about 15 minutes before it is ready, you can cook your spaghetti. For the best spaghetti, cook it in salted water. Pasta water should taste salty. I add a lot of salt to our pasta water (it makes the pasta taste delicious). I add about one tablespoon of salt for every four quarts (16 cups) of water, which is perfect for cooking one pound of pasta. If you still have it, check your package instructions. If you’ve tossed the package already, spaghetti takes 8 to 12 minutes. We recommend setting a timer for 8 minutes and then checking your spaghetti to see if it needs longer.There’s no need to rinse spaghetti after cooking, especially if you plan to toss it with a sauce. Rinsing removes the starch, which helps our sauce cling to the noodles. My only caveat to this is when I’m making cold pasta dishes, like pasta salad or macaroni salad. When your spaghetti is ready, toss it with your delicious homemade meat sauce and serve with some parmesan cheese sprinkled on top. Yum! \",\n\n    \"ingredients\": [\n        {\n        \"ingredient\":\"Spaghetti\",\n        \"quantity\":\"500g\"\n        },\n        {\n        \"ingredient\": \"Ground meat\",\n        \"quantity\":\"350g\"\n        },\n        {\n        \"ingredient\":\"Tomatoes and tomato paste\",\n        \"quantity\":\"150g\"\n        },\n        {\n        \"ingredient\":\"Onion, garlic, and spices\",\n        \"quantity\":\"by taste\"\n        }\n    ]\n}",
+							"raw": "{\n    \"name\":\"Easy Weeknight Spaghetti\",\n    \"instructions\":\"How to Make the Best Spaghetti You’ll start by making the easy meat sauce. Brown your meat in a bit of oil, and then stir in onions until they soften. Then add lots of flavor with garlic, tomato paste, oregano, and red pepper flakes. To finish the sauce, add a bit of water (or broth) and crushed tomatoes. Our easy sauce simmers for about 25 minutes, so about 15 minutes before it is ready, you can cook your spaghetti. For the best spaghetti, cook it in salted water. Pasta water should taste salty. I add a lot of salt to our pasta water (it makes the pasta taste delicious). I add about one tablespoon of salt for every four quarts (16 cups) of water, which is perfect for cooking one pound of pasta. If you still have it, check your package instructions. If you’ve tossed the package already, spaghetti takes 8 to 12 minutes. We recommend setting a timer for 8 minutes and then checking your spaghetti to see if it needs longer.There’s no need to rinse spaghetti after cooking, especially if you plan to toss it with a sauce. Rinsing removes the starch, which helps our sauce cling to the noodles. My only caveat to this is when I’m making cold pasta dishes, like pasta salad or macaroni salad. When your spaghetti is ready, toss it with your delicious homemade meat sauce and serve with some parmesan cheese sprinkled on top. Yum! \",\n\n    \"videoLink\":\"https://www.youtube.com/shorts/Z3Z4t5e_3uc\",\n    \"ingredients\": [\n        {\n        \"ingredientName\": \"Spaghetti\",\n        \"quantity\":\"500g\"\n        },\n        {\n        \"ingredientName\":\"Ground meat\",\n        \"quantity\":\"350g\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2555,7 +2558,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/recipes/user/tosho@abv.bg",
+							"raw": "{{base_url}}/admin/recipes/user/pesho@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2563,7 +2566,7 @@
 								"admin",
 								"recipes",
 								"user",
-								"tosho@abv.bg"
+								"pesho@abv.bg"
 							]
 						},
 						"description": "Gets all recipes of an user by passed username.(admin access)"
@@ -2594,46 +2597,6 @@
 								"user",
 								"recipes",
 								"chicken"
-							]
-						},
-						"description": "Finds all recipes contained passed string in their name."
-					},
-					"response": []
-				},
-				{
-					"name": "findRecipeByNameContainingAndUsername",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/user/recipes/by-name-and-username?recipeName=Spaghetti&username=pesho@abv.bg",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"user",
-								"recipes",
-								"by-name-and-username"
-							],
-							"query": [
-								{
-									"key": "recipeName",
-									"value": "Spaghetti"
-								},
-								{
-									"key": "username",
-									"value": "pesho@abv.bg"
-								}
 							]
 						},
 						"description": "Finds all recipes contained passed string in their name."
@@ -2681,7 +2644,10 @@
 					"response": []
 				},
 				{
-					"name": "findAllUserRecipesAllWithPassedIngredientsAndUsername",
+					"name": "findAllFriendRecipesWithPassedIngredientsAndFriend_Username",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -2695,32 +2661,70 @@
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"friendUsername\":\"pesho@abv.bg\",\n    \"ingredients\":\n    [\n        \"Ground meat\",\n        \"spaghetti\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/user/recipes/by-ingredients-and-username?ingredients=Spaghetti&ingredients=Ground meat&username=pesho@abv.bg",
+							"raw": "{{base_url}}/user/friend/recipes/by-ingredients-and-username",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
+								"friend",
 								"recipes",
 								"by-ingredients-and-username"
-							],
-							"query": [
+							]
+						},
+						"description": "Finds all friend recipes of the logged user by passed collection ingredient names and friend username. The \"friendUsername\" must be valid email format, \"ingredients\" must not be null."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllFriendRecipesByNameContainingAndFriend_Username",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "ingredients",
-									"value": "Spaghetti"
-								},
-								{
-									"key": "ingredients",
-									"value": "Ground meat"
-								},
-								{
-									"key": "username",
-									"value": "pesho@abv.bg"
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
 								}
 							]
 						},
-						"description": "Finds all recipes of the logged user containing the passed ingredients with params."
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"friendUsername\":\"pesho@abv.bg\",\n    \"recipeName\":\"easy\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/friend/recipes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"friend",
+								"recipes"
+							]
+						},
+						"description": "Finds all friend recipes of the logged user by passed recipe name and friend username. \"friendUsername\" must be valid email format, \"recipeName\" must not be null/blank."
 					},
 					"response": []
 				},
@@ -2741,7 +2745,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\":2\n}",
+							"raw": "{\n    \"id\":35\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2749,12 +2753,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/recipes",
+							"raw": "{{base_url}}/admin/recipes",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"user",
+								"admin",
 								"recipes"
 							]
 						},
@@ -2877,7 +2881,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"almost\",\n    \"description\": \"Address: Sofia 'Pirotska' street 78\",\n    \"importanceLevel\":6,\n    \"expiration\": \"2025-05-22\"\n}",
+							"raw": "{\n    \"name\":\"almost\",\n    \"description\": \"Address: Sofia 'Pirotska' street 78\",\n    \"importanceLevel\":6,\n    \"expiration\": \"22-10-2025\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2924,42 +2928,6 @@
 							]
 						},
 						"description": "admin access"
-					},
-					"response": []
-				},
-				{
-					"name": "findAllReminderFlagsBeforePassedDate",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/schedule/reminders/flags-before?cutoff=2025-06-29",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"schedule",
-								"reminders",
-								"flags-before"
-							],
-							"query": [
-								{
-									"key": "cutoff",
-									"value": "2025-06-29"
-								}
-							]
-						},
-						"description": "Returns the flags and expiration date of all reminders before passed date. (used for scheduler app to get and later update the flags)."
 					},
 					"response": []
 				},
@@ -3011,7 +2979,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/reminders/user/tosho@abv.bg",
+							"raw": "{{base_url}}/admin/reminders/user/pesho@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
@@ -3019,7 +2987,7 @@
 								"admin",
 								"reminders",
 								"user",
-								"tosho@abv.bg"
+								"pesho@abv.bg"
 							]
 						},
 						"description": "Finds all reminders of an user by passed username."
@@ -3057,36 +3025,6 @@
 					"response": []
 				},
 				{
-					"name": "findAllRemindersWithExpiresSoonFlagTrue",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/reminders/expires-soon",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"reminders",
-								"expires-soon"
-							]
-						},
-						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"
-					},
-					"response": []
-				},
-				{
 					"name": "findAllRemindersNotExpiredAndNotExpiresSoon",
 					"request": {
 						"auth": {
@@ -3113,36 +3051,6 @@
 							]
 						},
 						"description": "Finds all reminders with expiresSoon = false field/flag and expired = false flag/field."
-					},
-					"response": []
-				},
-				{
-					"name": "findAllRemindersWithExpiresAfterMonthFlagTrue",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/reminders/expires-month",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"reminders",
-								"expires-month"
-							]
-						},
-						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"
 					},
 					"response": []
 				},
@@ -3375,7 +3283,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"car: change oil\",\n    \"description\": \"last changed 11-11-2024\",\n    \"importanceLevel\":8,\n    \"expiration\":\"2026-11-23\"\n}",
+							"raw": "{\n    \"id\":10,\n    \"name\":\"car: change oil\",\n    \"description\": \"last changed 11-11-2024\",\n    \"importanceLevel\":8,\n    \"expiration\":\"23-11-2026\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3383,56 +3291,16 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/reminders/6",
+							"raw": "{{base_url}}/user/reminders",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"reminders",
-								"6"
+								"reminders"
 							]
 						},
 						"description": "Updates reminder by passed reminder id."
-					},
-					"response": []
-				},
-				{
-					"name": "patchesAllReminders",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwtToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[\n    {\n        \"id\":1,\n        \"expired\":true,\n        \"expiresSoon\":true,\n        \"expiresAfterMonth\":true,\n        \"expiresToday\":true\n    },\n    {\n        \"id\":2,\n        \"expired\":true,\n        \"expiresSoon\":true,\n        \"expiresAfterMonth\":true,\n        \"expiresToday\":true\n    }\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/schedule/reminders/patch",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"schedule",
-								"reminders",
-								"patch"
-							]
-						},
-						"description": "Partial update for schedule reminder entity for all passed reminders. Available fields for update:\n\n``` java\nprivate String description;\nprivate LocalDate expiration;\nprivate boolean expired;\nprivate boolean expiresSoon;\nprivate boolean expiresToday;\nprivate boolean expiresAfterMonth;\nprivate String username;\nprivate String locale;\nprivate boolean monthMail;\nprivate boolean weekMail;\nprivate boolean todayMail;\n\n ```"
 					},
 					"response": []
 				},
@@ -3453,7 +3321,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"description\": \"last changed 10-11-2024\"\n}",
+							"raw": "{\n    \"id\":10,\n    \"description\": \"last changed 10-11-2025\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3461,15 +3329,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/reminders/patch/2",
+							"raw": "{{base_url}}/user/reminders",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"reminders",
-								"patch",
-								"2"
+								"reminders"
 							]
 						},
 						"description": "Partial update for Reminder of the logged user by passed reminder id."
@@ -3523,7 +3389,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/reminders/user/tosho@abv.bg",
+							"raw": "{{base_url}}/admin/reminders/user/pesho@abv.bg",
 							"host": [
 								"{{base_url}}"
 							],
@@ -3531,7 +3397,7 @@
 								"admin",
 								"reminders",
 								"user",
-								"tosho@abv.bg"
+								"pesho@abv.bg"
 							]
 						},
 						"description": "Deletes all reminders of an user by passed username(ADMIN)"
@@ -3554,7 +3420,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/reminders/user/id/2",
+							"raw": "{{base_url}}/admin/reminders/user/id/1",
 							"host": [
 								"{{base_url}}"
 							],
@@ -3563,7 +3429,7 @@
 								"reminders",
 								"user",
 								"id",
-								"2"
+								"1"
 							]
 						},
 						"description": "Deletes all reminders of an user by passed user id(ADMIN)"
@@ -3571,7 +3437,7 @@
 					"response": []
 				},
 				{
-					"name": "deletesAllRemindersExpiredBefore2YearsByDefault",
+					"name": "deletesAllRemindersExpiredBeforeYearsByPassedNumberOfYears",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -3586,14 +3452,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/admin/reminders/clear",
+							"raw": "{{base_url}}/admin/reminders/clear/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"admin",
 								"reminders",
-								"clear"
+								"clear",
+								"2"
 							]
 						},
 						"description": "Deletes all reminders expired by more than 2 years.(ADMIN)"
@@ -3701,6 +3568,36 @@
 							]
 						},
 						"description": "finds all shopping items for the logged user."
+					},
+					"response": []
+				},
+				{
+					"name": "findSumOfAllItemsPrices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/shopping-list/total",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"shopping-list",
+								"total"
+							]
+						},
+						"description": "finds the sum of all shopping items prices for the logged user."
 					},
 					"response": []
 				},
@@ -3970,7 +3867,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/schedule/reminders/flags-before?cutoff=2025-06-11",
+							"raw": "{{base_url}}/schedule/reminders/flags-before?cutoff=2027-06-11",
 							"host": [
 								"{{base_url}}"
 							],
@@ -3982,11 +3879,140 @@
 							"query": [
 								{
 									"key": "cutoff",
-									"value": "2025-06-11"
+									"value": "2027-06-11"
 								}
 							]
 						},
 						"description": "Finds all reminders with expiration date before the passed date."
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersWithExpiresTodayFlagTrue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/expires-today",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"expires-today"
+							]
+						},
+						"description": "Finds all reminders of the logged user with expiresToday = true field/flag"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersWithExpiresAfterMonthFlagTrue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/expires-month",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"expires-month"
+							]
+						},
+						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "findAllRemindersWithExpiresSoonFlagTrue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/expires-soon",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"expires-soon"
+							]
+						},
+						"description": "Finds all reminders with expiresSoon = true field/flag(admin access)"
+					},
+					"response": []
+				},
+				{
+					"name": "patchesAllReminders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"id\":1,\n        \"expired\":true,\n        \"expiresSoon\":true,\n        \"expiresAfterMonth\":true,\n        \"expiresToday\":true\n    },\n    {\n        \"id\":2,\n        \"expired\":true,\n        \"expiresSoon\":true,\n        \"expiresAfterMonth\":true,\n        \"expiresToday\":true\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/schedule/reminders/patch",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedule",
+								"reminders",
+								"patch"
+							]
+						},
+						"description": "Partial update for schedule reminder entity for all passed reminders. Available fields for update:\n\n``` java\nprivate String description;\nprivate LocalDate expiration;\nprivate boolean expired;\nprivate boolean expiresSoon;\nprivate boolean expiresToday;\nprivate boolean expiresAfterMonth;\nprivate String username;\nprivate String locale;\nprivate boolean monthMail;\nprivate boolean weekMail;\nprivate boolean todayMail;\n\n ```"
 					},
 					"response": []
 				},

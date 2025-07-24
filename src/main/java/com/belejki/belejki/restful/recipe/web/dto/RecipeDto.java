@@ -22,7 +22,7 @@ public class RecipeDto {
     @Size(min = 10, max = 4000, message = "Instructions must be between 10 and 4000 characters.")
     @NotBlank(message = "Recipe must have instructions how to make.")
     private String instructions;
-    @Pattern(regexp = "https?:\\/\\/[\\w\\-\\.~:\\/?#\\[\\]@!$&'()*+,;=%]+", message = "{recipe.invalid.link}")
+//    @Pattern(regexp = "https?:\\/\\/[\\w\\-\\.~:\\/?#\\[\\]@!$&'()*+,;=%]+", message = "{recipe.invalid.link}")
     private String videoLink;
     @NotNull
     @Valid

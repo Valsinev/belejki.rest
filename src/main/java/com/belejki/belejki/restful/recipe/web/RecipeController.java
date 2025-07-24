@@ -41,7 +41,7 @@ public class RecipeController {
                                                           BindingResult bindingResult,
                                                           Authentication authentication) {
         if (bindingResult.hasErrors()) {
-            ResponseEntity.badRequest().body(recipeDto);
+            ResponseEntity.badRequest().build();
         }
         String username = authentication.getName();
 
@@ -76,7 +76,7 @@ public class RecipeController {
         return ResponseEntity.ok(allByNameContainingIgnoreCase);
     }
 
-    @GetMapping("/user/friend/recipes")
+    @PostMapping("/user/friend/recipes")
     public ResponseEntity<Page<RecipeDto>> findAllFriendsRecipesByNameContaining(@Valid @RequestBody FriendRecipesByUsernameDto friendRecipesByUsernameDto,
                                                                                    BindingResult bindingResult,
                                                                                    Authentication authentication,
@@ -91,7 +91,7 @@ public class RecipeController {
     }
 
 
-    @GetMapping("/user/friend/recipes/by-ingredients-and-username")
+    @PostMapping("/user/friend/recipes/by-ingredients-and-username")
     public ResponseEntity<Page<RecipeDto>> findAllByIngredientsAndUsername(@Valid @RequestBody FriendRecipesByIngredientsAndUsernameDto friendRecipesRequestDto,
                                                                    BindingResult bindingResult,
                                                                    Authentication authentication,

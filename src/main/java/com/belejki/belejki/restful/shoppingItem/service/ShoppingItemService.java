@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+
 public interface ShoppingItemService {
 	ShoppingItemDto save(@Valid ShoppingItemDto dto, String username);
 
@@ -20,4 +22,5 @@ public interface ShoppingItemService {
 
 	void deleteById(Long id);
 
+	BigDecimal findSumOfAllItemsPriceOfUserByUsername(String username);
 }

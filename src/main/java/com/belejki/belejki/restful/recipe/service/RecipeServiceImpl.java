@@ -4,12 +4,10 @@ import com.belejki.belejki.restful.friendship.domain.Friendship;
 import com.belejki.belejki.restful.friendship.repository.FriendshipRepository;
 import com.belejki.belejki.restful.ingredient.domain.Ingredient;
 import com.belejki.belejki.restful.ingredient.repository.IngredientRepository;
-import com.belejki.belejki.restful.ingredient.service.IngredientService;
 import com.belejki.belejki.restful.recipe.domain.Recipe;
 import com.belejki.belejki.restful.recipe.web.dto.FriendRecipesByIngredientsAndUsernameDto;
 import com.belejki.belejki.restful.recipe.web.dto.FriendRecipesByUsernameDto;
 import com.belejki.belejki.restful.recipe.web.dto.RecipeDto;
-import com.belejki.belejki.restful.recipeIngredient.service.RecipeIngredientService;
 import com.belejki.belejki.restful.shared.exception.FriendshipNotFoundException;
 import com.belejki.belejki.restful.shared.exception.user.UserNotFoundException;
 import com.belejki.belejki.restful.user.domain.User;
@@ -24,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,6 +85,12 @@ public class RecipeServiceImpl implements RecipeService{
 
     //Get
 
+
+    public RecipeDto findById(@NonNull Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe not found for id: " + recipeId));
+        return modelMapper.map(recipe, RecipeDto.class);
+    }
+
     public Page<RecipeDto> findAllByUser_Id(Long id, Pageable pageable) {
         Page<Recipe> allByUserId = recipeRepository.findAllByUser_Id(id, pageable);
         return allByUserId.map((element) -> modelMapper.map(element, RecipeDto.class));
@@ -123,9 +126,28 @@ public class RecipeServiceImpl implements RecipeService{
         return allByNameContainingIgnoreCase.map((element) -> modelMapper.map(element, RecipeDto.class));
     }
 
-    public RecipeDto findById(@NonNull Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException("Recipe not found for id: " + recipeId));
-        return modelMapper.map(recipe, RecipeDto.class);
+
+    @Override
+    public Page<RecipeDto> findAllFriendRecipesByName(FriendRecipesByUsernameDto friendRecipesByUsernameDto, String username, Pageable pageable) {
+        //search if the user has friend with that username
+        Optional<Friendship> foundFriend = friendshipRepository.findByUser_UsernameAndFriend_Username(username, friendRecipesByUsernameDto.getFriendUsername());
+        if (foundFriend.isEmpty()) {
+            throw new FriendshipNotFoundException("[RecipeService.findAllFriendRecipesByName] The user is not friend with the searched user.");
+        }
+        Page<Recipe> allByNameContainingIgnoreCase = recipeRepository.findAllByNameContainingIgnoreCase(friendRecipesByUsernameDto.getRecipeName(), pageable);
+        return allByNameContainingIgnoreCase.map((element) -> modelMapper.map(element, RecipeDto.class));
+    }
+
+    @Override
+    public Page<RecipeDto> findAllFriendRecipesByIngredients(FriendRecipesByIngredientsAndUsernameDto friendRecipesRequestDto, String username, Pageable pageable) {
+        //search if the user has friend with that username
+        Optional<Friendship> foundFriend = friendshipRepository.findByUser_UsernameAndFriend_Username(username, friendRecipesRequestDto.getFriendUsername());
+        if (foundFriend.isEmpty()) {
+            throw new FriendshipNotFoundException("[RecipeService.findAllFriendRecipesByName] The user is not friend with the searched user.");
+        }
+        List<String> ingredients = friendRecipesRequestDto.getIngredients();
+        Page<Recipe> recipesByAllIngredientNamesAndUsername = recipeRepository.findRecipesByAllIngredientNamesAndUsername(ingredients, ingredients.size(), friendRecipesRequestDto.getFriendUsername(), pageable);
+        return recipesByAllIngredientNamesAndUsername.map((element) -> modelMapper.map(element, RecipeDto.class));
     }
 
     //Delete
@@ -160,27 +182,5 @@ public class RecipeServiceImpl implements RecipeService{
         recipeRepository.deleteAllByUser_Username(username);
     }
 
-    @Override
-    public Page<RecipeDto> findAllFriendRecipesByName(FriendRecipesByUsernameDto friendRecipesByUsernameDto, String username, Pageable pageable) {
-        //search if the user has friend with that username
-        Optional<Friendship> foundFriend = friendshipRepository.findByUser_UsernameAndFriend_Username(username, friendRecipesByUsernameDto.getFriendUsername());
-        if (foundFriend.isEmpty()) {
-            throw new FriendshipNotFoundException("[RecipeService.findAllFriendRecipesByName] The user is not friend with the searched user.");
-        }
-        Page<Recipe> allByNameContainingIgnoreCase = recipeRepository.findAllByNameContainingIgnoreCase(friendRecipesByUsernameDto.getRecipeName(), pageable);
-        return allByNameContainingIgnoreCase.map((element) -> modelMapper.map(element, RecipeDto.class));
-    }
-
-    @Override
-    public Page<RecipeDto> findAllFriendRecipesByIngredients(FriendRecipesByIngredientsAndUsernameDto friendRecipesRequestDto, String username, Pageable pageable) {
-        //search if the user has friend with that username
-        Optional<Friendship> foundFriend = friendshipRepository.findByUser_UsernameAndFriend_Username(username, friendRecipesRequestDto.getFriendUsername());
-        if (foundFriend.isEmpty()) {
-            throw new FriendshipNotFoundException("[RecipeService.findAllFriendRecipesByName] The user is not friend with the searched user.");
-        }
-        List<String> ingredients = friendRecipesRequestDto.getIngredients();
-        Page<Recipe> recipesByAllIngredientNamesAndUsername = recipeRepository.findRecipesByAllIngredientNamesAndUsername(ingredients, ingredients.size(), friendRecipesRequestDto.getFriendUsername(), pageable);
-        return recipesByAllIngredientNamesAndUsername.map((element) -> modelMapper.map(element, RecipeDto.class));
-    }
 
 }

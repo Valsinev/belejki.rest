@@ -1,8 +1,9 @@
 package com.belejki.belejki.restful.friendship.web;
 
 import com.belejki.belejki.restful.friendship.service.FriendshipService;
+import com.belejki.belejki.restful.friendship.web.dto.FriendshipDetailResponseDto;
 import com.belejki.belejki.restful.friendship.web.dto.FriendshipDto;
-import com.belejki.belejki.restful.friendship.web.dto.FriendshipResponseDto;
+import com.belejki.belejki.restful.friendship.web.dto.FriendshipDetailResponseDto;
 import com.belejki.belejki.restful.shared.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class FriendshipController {
 	//region POST METHODS
 
 	@PostMapping("/user/friendships")
-	public ResponseEntity<FriendshipResponseDto> save(@Valid @RequestBody FriendshipDto friendshipDto,
+	public ResponseEntity<FriendshipDetailResponseDto> save(@Valid @RequestBody FriendshipDto friendshipDto,
 	                                                  BindingResult bindingResult,
 	                                                  Authentication authentication) {
 
@@ -41,7 +42,7 @@ public class FriendshipController {
 			return ResponseEntity.badRequest().build();
 		}
 
-		FriendshipResponseDto saved = friendshipService.save(username, friendshipDto.getFriendUsername());
+		FriendshipDetailResponseDto saved = friendshipService.save(username, friendshipDto.getFriendUsername());
 		return ResponseEntity.ok(saved);
 	}
 
@@ -51,41 +52,49 @@ public class FriendshipController {
 	//region GET METHODS
 
 	@GetMapping("/admin/friendships")
-	public ResponseEntity<Page<FriendshipResponseDto>> findAll(Authentication authentication, Pageable pageable) {
+	public ResponseEntity<Page<FriendshipDetailResponseDto>> findAll(Authentication authentication, Pageable pageable) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		Page<FriendshipResponseDto> all = friendshipService.findAll(pageable);
+		Page<FriendshipDetailResponseDto> all = friendshipService.findAll(pageable);
 		return ResponseEntity.ok(all);
 	}
 
 	@GetMapping("/user/friendships")
-	public ResponseEntity<Page<FriendshipResponseDto>> findAllUserFriendships(Pageable pageable,
+	public ResponseEntity<Page<FriendshipDetailResponseDto>> findAllUserFriendships(Pageable pageable,
 	                                                                  Authentication authentication) {
 		String username = authentication.getName();
-		Page<FriendshipResponseDto> allByUser_Username = friendshipService.findAllByUser_Username(username, pageable);
+		Page<FriendshipDetailResponseDto> allByUser_Username = friendshipService.findAllByUser_Username(username, pageable);
 		return ResponseEntity.ok(allByUser_Username);
 	}
 
+	@GetMapping("/user/friendships/{friendUsername}")
+	public ResponseEntity<FriendshipDetailResponseDto> findUserFriendDetails(@PathVariable String friendUsername,
+	                                                                         Authentication authentication) {
+		String username = authentication.getName();
+		FriendshipDetailResponseDto byFriend_Username = friendshipService.findByFriend_Username(username, friendUsername);
+		return ResponseEntity.ok(byFriend_Username);
+	}
+
 	@GetMapping("/user/friendships/first-name/{firstName}")
-	public ResponseEntity<Page<FriendshipResponseDto>> findAllUserFriendshipsByFirstName(@PathVariable String firstName,
+	public ResponseEntity<Page<FriendshipDetailResponseDto>> findAllUserFriendshipsByFirstName(@PathVariable String firstName,
 	                                                                             Pageable pageable,
 	                                                                             Authentication authentication) {
 		String username = authentication.getName();
-		Page<FriendshipResponseDto> allUserFriendshipsByFirstName = friendshipService.findAllUserFriendshipsByFirstName(username, firstName, pageable);
+		Page<FriendshipDetailResponseDto> allUserFriendshipsByFirstName = friendshipService.findAllUserFriendshipsByFirstName(username, firstName, pageable);
 		return ResponseEntity.ok(allUserFriendshipsByFirstName);
 	}
 
 	@GetMapping("/admin/friendships/{username}")
-	public ResponseEntity<Page<FriendshipResponseDto>> findAllByUser_Username(@PathVariable String username,
+	public ResponseEntity<Page<FriendshipDetailResponseDto>> findAllByUser_Username(@PathVariable String username,
 	                                                                  Pageable pageable,
 	                                                                  Authentication authentication) {
 		boolean admin = authService.isAdmin(authentication);
 		if (!admin) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		Page<FriendshipResponseDto> allByUserUsername = friendshipService.findAllByUser_Username(username, pageable);
+		Page<FriendshipDetailResponseDto> allByUserUsername = friendshipService.findAllByUser_Username(username, pageable);
 		return ResponseEntity.ok(allByUserUsername);
 	}
 
