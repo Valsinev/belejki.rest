@@ -279,11 +279,11 @@ public class UserController {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 
 		if (!isAdmin) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
 		userService.delete(user);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok().build();
 	}
 
 	@Transactional
@@ -292,11 +292,11 @@ public class UserController {
 	public ResponseEntity<Void> deleteById(@PathVariable Long id, Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 		if (!isAdmin) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
 		userService.deleteById(id);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok().build();
 	}
 
 	@Transactional
@@ -306,10 +306,10 @@ public class UserController {
 		String loggedInUsername = authentication.getName();
 		boolean isAdmin = authChecker.isAdmin(authentication);
 		if (!loggedInUsername.equals(username) && !isAdmin) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		userService.deleteByUsername(username);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok().build();
 	}
 
 	@Transactional
@@ -318,10 +318,10 @@ public class UserController {
 	public ResponseEntity<Void> deleteAllByIsSetForDeletion(Authentication authentication, Pageable pageable) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 		if (!isAdmin) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		userService.deleteAllByIsSetForDeletion(pageable);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok().build();
 	}
 
 	@Transactional
@@ -329,10 +329,10 @@ public class UserController {
 	public ResponseEntity<Void> deleteAllNotLoggedInYears(@PathVariable int months, Pageable pageable, Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 		if (!isAdmin) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		userService.deleteAllNotLoggedBefore(months, pageable);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok().build();
 	}
 
 	@Transactional
@@ -340,10 +340,10 @@ public class UserController {
 	public ResponseEntity<Void> deleteAllNotConfirmed(Pageable pageable, Authentication authentication) {
 		boolean isAdmin = authChecker.isAdmin(authentication);
 		if (!isAdmin) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		userService.deleteAllByConfirmationTokenNotNull(pageable);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok().build();
 
 	}
 

@@ -31,12 +31,12 @@ public class SchedulerController {
 
 	@GetMapping("/flags-before")
     public ResponseEntity<Page<ReminderSchedulerDto>> findAllBeforePassedDate(
-            @RequestParam("cutoff") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cutoff,
+            @RequestParam("cutoff") LocalDate cutoff,
             Authentication authentication,
             Pageable pageable) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Page<ReminderSchedulerDto> founded = scheduleService.findAllByExpirationBeforeOrderByExpirationAsc(cutoff, pageable);
         return ResponseEntity.ok(founded);
@@ -46,11 +46,11 @@ public class SchedulerController {
 
     //The idea of this method is to patch expiration flags when the scheduler sets them according to the expiration date
     //it just updates expiration flags
-    @PatchMapping("/patch")
+    @PutMapping("/patch")
     public ResponseEntity<Void> patchScheduleReminder(@RequestBody List<ReminderSchedulerDto> flagsDtos, Authentication authentication) {
        boolean admin = authService.isAdmin(authentication);
         if (!admin) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         scheduleService.patchReminderFlags(flagsDtos);
 
@@ -63,7 +63,7 @@ public class SchedulerController {
     public ResponseEntity<Page<ReminderSchedulerDto>> findAllExpiresSoon(Pageable pageable, Authentication authentication) {
         boolean admin = authService.isAdmin(authentication);
         if (!admin) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Page<ReminderSchedulerDto> byExpiresSoonTrue = scheduleService.findAllByExpiresSoonTrueOrderByExpirationAsc(pageable);
         return ResponseEntity.ok(byExpiresSoonTrue);
