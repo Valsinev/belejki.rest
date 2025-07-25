@@ -53,7 +53,7 @@ public class ShoppingItemServiceImpl implements ShoppingItemService{
 
 	@Override
 	public Page<ShoppingItemDto> findAllByUser_Username(String username, Pageable pageable) {
-		Page<ShoppingItem> allByUserUsername = shoppingItemRepository.findAllByUser_Username(username, pageable);
+		Page<ShoppingItem> allByUserUsername = shoppingItemRepository.findAllByUser_UsernameOrderByColor(username, pageable);
 		return allByUserUsername.map(shoppingItem -> modelMapper.map(shoppingItem, ShoppingItemDto.class));
 	}
 
