@@ -158,9 +158,6 @@ public class ReminderController {
 		return ResponseEntity.ok(byNameContainingAndUser);
 	}
 
-
-	//endregion
-
 	//endregion
 
 

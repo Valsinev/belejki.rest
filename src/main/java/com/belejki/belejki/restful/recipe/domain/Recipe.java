@@ -31,6 +31,7 @@ public class Recipe {
     private User user;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients;
+
     public Recipe() {
         this.recipeIngredients = new ArrayList<>();
     }
